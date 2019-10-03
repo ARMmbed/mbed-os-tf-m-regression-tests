@@ -1,0 +1,102 @@
+{
+    "mbed-os": {
+        "files": {
+            "common": [
+                {
+                    "src_file": "install/export/tfm/src/tfm_crypto_ipc_api.c",
+                    "dst_file": "features/FEATURE_PSA/TARGET_TFM/src/tfm_crypto_ipc_api.c"
+                },
+                {
+                    "src_file": "install/export/tfm/src/tfm_initial_attestation_ipc_api.c",
+                    "dst_file": "features/FEATURE_PSA/TARGET_TFM/src/tfm_initial_attestation_ipc_api.c"
+                },
+                {
+                    "src_file": "install/export/tfm/src/tfm_sst_ipc_api.c",
+                    "dst_file": "features/FEATURE_PSA/TARGET_TFM/src/tfm_sst_ipc_api.c"
+                },
+                {
+                    "src_file": "install/export/tfm/src/tfm_its_ipc_api.c",
+                    "dst_file": "features/FEATURE_PSA/TARGET_TFM/src/tfm_its_ipc_api.c"
+                }
+            ],
+            "v8-m": [
+                {
+                    "src_file": "install/export/tfm/src/tfm_psa_ns_api.c",
+                    "dst_file": "features/FEATURE_PSA/TARGET_TFM/TARGET_TFM_V8M/src/tfm_psa_ns_api.c"
+                },
+                {
+                    "src_file": "install/export/tfm/src/tfm_ns_interface.c",
+                    "dst_file": "features/FEATURE_PSA/TARGET_TFM/TARGET_TFM_V8M/src/tfm_ns_interface.c"
+                }
+            ],
+            "dualcpu": [
+                {
+                    "src_file": "install/export/platform/ext/target/cypress/psoc64/partition/flash_layout.h",
+                    "dst_file": "targets/TARGET_Cypress/TARGET_PSOC6/TARGET_CY8CKIT_064S2_4343W/partition/flash_layout.h"
+                },
+                {
+                    "src_file": "install/export/platform/ext/target/cypress/psoc64/partition/region_defs.h",
+                    "dst_file": "targets/TARGET_Cypress/TARGET_PSOC6/TARGET_CY8CKIT_064S2_4343W/partition/region_defs.h"
+                },
+                {
+                    "src_file": "install/export/tfm/src/tfm_multi_core_api.c",
+                    "dst_file": "features/FEATURE_PSA/TARGET_TFM/TARGET_TFM_DUALCPU/src/tfm_multi_core_api.c"
+                },
+                {
+                    "src_file": "install/export/tfm/src/platform_ns_mailbox.c",
+                    "dst_file": "features/FEATURE_PSA/TARGET_TFM/TARGET_TFM_DUALCPU/src/platform_ns_mailbox.c"
+                },
+                {
+                    "src_file": "install/export/tfm/src/tfm_multi_core_psa_ns_api.c",
+                    "dst_file": "features/FEATURE_PSA/TARGET_TFM/TARGET_TFM_DUALCPU/src/tfm_multi_core_psa_ns_api.c"
+                },
+                {
+                    "src_file": "install/export/tfm/src/tfm_ns_mailbox.c",
+                    "dst_file": "features/FEATURE_PSA/TARGET_TFM/TARGET_TFM_DUALCPU/src/tfm_ns_mailbox.c"
+                },
+                {
+                    "src_file": "install/export/tfm/src/platform_multicore.c",
+                    "dst_file": "features/FEATURE_PSA/TARGET_TFM/TARGET_TFM_DUALCPU/src/platform_multicore.c"
+                },
+                {
+                    "src_file": "install/export/tfm/include/tfm_multi_core_api.h",
+                    "dst_file": "features/FEATURE_PSA/TARGET_TFM/TARGET_TFM_DUALCPU/include/tfm_multi_core_api.h"
+                },
+                {
+                    "src_file": "install/export/tfm/include/tfm_ns_mailbox.h",
+                    "dst_file": "features/FEATURE_PSA/TARGET_TFM/TARGET_TFM_DUALCPU/include/tfm_ns_mailbox.h"
+                },
+                {
+                    "src_file": "install/export/tfm/include/tfm_mailbox.h",
+                    "dst_file": "features/FEATURE_PSA/TARGET_TFM/TARGET_TFM_DUALCPU/include/tfm_mailbox.h"
+                },
+                {
+                    "src_file": "install/export/tfm/include/ns_ipc_config.h",
+                    "dst_file": "features/FEATURE_PSA/TARGET_TFM/TARGET_TFM_DUALCPU/include/ns_ipc_config.h"
+                },
+                {
+                    "src_file": "install/export/tfm/include/platform_multicore.h",
+                    "dst_file": "features/FEATURE_PSA/TARGET_TFM/TARGET_TFM_DUALCPU/include/platform_multicore.h"
+                }
+            ]
+        },
+        "folders": {
+            "common": [
+                {
+                    "src_folder": "install/export/tfm/include",
+                    "dst_folder": "features/FEATURE_PSA/TARGET_TFM/include"
+                },
+                {
+                    "src_folder": "install/export/tfm/include/psa",
+                    "dst_folder": "features/FEATURE_PSA/TARGET_TFM/include/psa"
+                },
+                {
+                    "src_folder": "install/export/tfm/include/psa_manifest",
+                    "dst_folder": "features/FEATURE_PSA/TARGET_TFM/include/psa_manifest"
+                }
+            ],
+            "dualcpu": [
+            ]
+        }
+    }
+}
