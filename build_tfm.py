@@ -298,7 +298,7 @@ def _commit_changes(directory, target_toolchain=None):
         logger.info("No changes detected for %s, skipping commit" %
                                                             target_toolchain)
 
-def _run_cmake_build(cmake_build_dir, debug, tgt):
+def _run_cmake_build(cmake_build_dir, debug, tgt, tfm_config):
     """
     Run the Cmake build
 
@@ -320,7 +320,7 @@ def _run_cmake_build(cmake_build_dir, debug, tgt):
 
     cmake_cmd = ['cmake', '-GUnix Makefiles']
     cmake_cmd.append('-DPROJ_CONFIG=' + (join(TF_M_BUILD_DIR,
-                        'trusted-firmware-m', 'configs/ConfigCoreIPC.cmake')))
+                        'trusted-firmware-m', tfm_config)))
     cmake_cmd.append('-DTARGET_PLATFORM=' + tgt[1])
     cmake_cmd.append('-DCOMPILER=' + tgt[2])
     if debug:
@@ -469,6 +469,8 @@ def _build_tfm(args):
         shutil.rmtree(cmake_build_dir)
         os.mkdir(cmake_build_dir)
 
+    tfm_config = args.config
+
     if args.mcu:
         if args.toolchain:
             """
@@ -482,7 +484,7 @@ def _build_tfm(args):
         else:
             tgt = _get_target_info(args.mcu)
 
-        _run_cmake_build(cmake_build_dir, args.debug, tgt)
+        _run_cmake_build(cmake_build_dir, args.debug, tgt, tfm_config)
 
         source = join(cmake_build_dir, 'install', 'outputs' ,tgt[1])
         _copy_binaries(source, tgt[3], tgt[2], tgt[0])
@@ -532,6 +534,9 @@ def _exit_gracefully(signum, frame):
 def _get_parser():
     parser = argparse.ArgumentParser()
 
+    parser.add_argument("-c", "--config",
+                        help="Use the specified TF-M configuration",
+                        default='configs/ConfigCoreIPC.cmake')
     parser.add_argument("-m", "--mcu",
                         help="Build for the given MCU",
                         default=None,
