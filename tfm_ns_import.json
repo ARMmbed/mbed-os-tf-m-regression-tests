@@ -98,5 +98,23 @@
             "dualcpu": [
             ]
         }
+    },
+    "tf-m-regression": {
+        "folders": [
+            {
+                "src_folder": "install/export/tfm/test/inc",
+                "dst_folder": "test/inc"
+            },
+            {
+                "src_folder": "install/export/tfm/test/lib",
+                "dst_folder": "test/lib"
+            }
+        ],
+        "dualcpu": [
+            {
+                "src_folder": "install/export/tfm/inc",
+                "dst_folder": "features/FEATURE_PSA/TARGET_TFM/TARGET_TFM_DUALCPU/inc"
+            }
+        ]
     }
 }

@@ -166,6 +166,9 @@ def _detect_and_write_tfm_version(tfm_dir, commit):
     # Write the version to Mbed OS
     with open(join(VERSION_FILE_PATH, 'VERSION.txt'), 'w') as f:
         f.write(tfm_version)
+    # Write the version to the current directory
+    with open('VERSION.txt', 'w') as f:
+        f.write(tfm_version)
 
     if commit:
         _commit_changes(VERSION_FILE_PATH)
@@ -453,6 +456,9 @@ def _copy_tfm_ns_files(source, target):
         copy_folders(mbed_os_data["folders"]["common"], mbed_path)
         if "TFM_DUALCPU" in TARGET_MAP[target].extra_labels:
             copy_folders(mbed_os_data["folders"]["dualcpu"], mbed_path)
+
+        tf_regression_data = json_data["tf-m-regression"]
+        copy_folders(tf_regression_data["folders"], ROOT)
 
 def _build_tfm(args):
     """
