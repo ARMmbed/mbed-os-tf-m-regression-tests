@@ -1,0 +1,20 @@
+{
+    "config": {
+        "os-mutex-num": 4,
+        "os-semaphore-num": 4,
+        "os-thread-num": 9,
+        "os-thread-user-stack-size": 16384
+    },
+    "target_overrides": {
+        "*": {
+             "platform.stdio-convert-newlines": true,
+             "platform.stdio-baud-rate": 115200
+        }
+    },
+    "macros": [
+        "TFM_ENABLE_IRQ_TEST=1",
+        "TFM_MULTI_CORE_TEST=1",
+        "TFM_MULTI_CORE_MULTI_CLIENT_CALL=1",
+        "NUM_MAILBOX_QUEUE_SLOT=4"
+    ]
+}
