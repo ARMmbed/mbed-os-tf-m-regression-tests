@@ -100,6 +100,50 @@
         }
     },
     "tf-m-regression": {
+        "files": {
+            "common": [
+                {
+                    "src_file": "platform/include/tfm_plat_defs.h",
+                    "dst_file": "tfm/platform/include/tfm_plat_defs.h"
+                },
+                {
+                    "src_file": "platform/include/tfm_plat_ns.h",
+                    "dst_file": "tfm/platform/include/tfm_plat_ns.h"
+                }
+            ],
+            "dualcpu": [
+                {
+                    "src_file": "platform/ext/target/cypress/psoc64/Device/Source/device_definition.c",
+                    "dst_file": "tfm/targets/TARGET_Cypress/TARGET_PSOC6/TARGET_CY8CKIT_064S2_4343W/device/COMPONENT_CM4/device_definition.c"
+                },
+                {
+                    "src_file": "platform/ext/target/cypress/psoc64/Device/Include/device_definition.h",
+                    "dst_file": "tfm/targets/TARGET_Cypress/TARGET_PSOC6/TARGET_CY8CKIT_064S2_4343W/device/COMPONENT_CM4/device_definition.h"
+                },
+                {
+                    "src_file": "platform/ext/target/cypress/psoc64/Device/Include/platform_base_address.h",
+                    "dst_file": "tfm/targets/TARGET_Cypress/TARGET_PSOC6/TARGET_CY8CKIT_064S2_4343W/device/COMPONENT_CM4/platform_base_address.h"
+                },
+                {
+                    "src_file": "platform/ext/target/cypress/psoc64/tfm_peripherals_def.h",
+                    "dst_file": "tfm/targets/TARGET_Cypress/TARGET_PSOC6/TARGET_CY8CKIT_064S2_4343W/device/COMPONENT_CM4/tfm_peripherals_def.h"
+                },
+                {
+                    "src_file": "platform/ext/target/cypress/psoc64/Device/Include/platform_irq.h",
+                    "dst_file": "tfm/targets/TARGET_Cypress/TARGET_PSOC6/TARGET_CY8CKIT_064S2_4343W/device/COMPONENT_CM4/platform_irq.h"
+                }
+            ],
+            "v8-m": [
+                {
+                    "src_file": "platform/ext/target/musca_a/Device/Include/platform_base_address.h",
+                    "dst_file": "tfm/targets/TARGET_ARM_SSG/TARGET_MUSCA_A1/device/platform_base_address.h"
+                },
+                {
+                    "src_file": "platform/ext/target/musca_a/tfm_peripherals_def.h",
+                    "dst_file": "tfm/targets/TARGET_ARM_SSG/TARGET_MUSCA_A1/device/tfm_peripherals_def.h"
+                }
+            ]
+        },
         "folders": [
             {
                 "src_folder": "install/export/tfm/test/inc",

@@ -458,6 +458,12 @@ def _copy_tfm_ns_files(source, target):
             copy_folders(mbed_os_data["folders"]["dualcpu"], mbed_path)
 
         tf_regression_data = json_data["tf-m-regression"]
+        copy_files(tf_regression_data["files"]["common"], ROOT)
+        if "TFM_V8M" in TARGET_MAP[target].extra_labels:
+            copy_files(tf_regression_data["files"]["v8-m"], ROOT)
+        if "TFM_DUALCPU" in TARGET_MAP[target].extra_labels:
+            copy_files(tf_regression_data["files"]["dualcpu"], ROOT)
+
         copy_folders(tf_regression_data["folders"], ROOT)
 
 def _build_tfm(args):
