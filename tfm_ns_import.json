@@ -17,6 +17,26 @@
                 {
                     "src_file": "install/export/tfm/src/tfm_its_ipc_api.c",
                     "dst_file": "features/FEATURE_PSA/TARGET_TFM/src/tfm_its_ipc_api.c"
+                },
+                {
+                    "src_file": "bl2/ext/mcuboot/scripts/assemble.py",
+                    "dst_file": "tools/psa/tfm/bin_utils/assemble.py"
+                },
+                {
+                    "src_file": "bl2/ext/mcuboot/scripts/imgtool.py",
+                    "dst_file": "tools/psa/tfm/bin_utils/imgtool.py"
+                },
+                {
+                    "src_file": "bl2/ext/mcuboot/scripts/imgtool_lib/__init__.py",
+                    "dst_file": "tools/psa/tfm/bin_utils/imgtool_lib/__init__.py"
+                },
+                {
+                    "src_file": "bl2/ext/mcuboot/scripts/imgtool_lib/image.py",
+                    "dst_file": "tools/psa/tfm/bin_utils/imgtool_lib/image.py"
+                },
+                {
+                    "src_file": "bl2/ext/mcuboot/scripts/imgtool_lib/version.py",
+                    "dst_file": "tools/psa/tfm/bin_utils/imgtool_lib/version.py"
                 }
             ],
             "v8-m": [
