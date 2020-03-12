@@ -41,6 +41,10 @@
             ],
             "v8-m": [
                 {
+                    "src_file": "image_macros_preprocessed.c",
+                    "dst_file": "targets/TARGET_ARM_SSG/TARGET_MUSCA_A1/partition/image_macros_preprocessed.c"
+                },
+                {
                     "src_file": "install/export/tfm/src/tfm_psa_ns_api.c",
                     "dst_file": "features/FEATURE_PSA/TARGET_TFM/TARGET_TFM_V8M/src/tfm_psa_ns_api.c"
                 },
