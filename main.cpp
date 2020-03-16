@@ -1,15 +1,27 @@
+/* mbed Microcontroller Library
+* Copyright (c) 2020 ARM Limited
+* SPDX-License-Identifier: Apache-2.0
+*/
+
+// Toggle only one appropriate test.
+#define RUN_REGRESSION_TESTS        1
+#define RUN_BLINKY_EXAMPLE          0
+#define RUN_PSA_COMPLIANCE_TESTS    0
+
 #include "mbed.h"
 #include "unity.h"
+
+#if RUN_REGRESSION_TESTS
+
 #include "test_framework_integ_test.h"
 #include "tfm_peripherals_def.h"
-#include <stdio.h>
-
-extern "C" void TIMER1_Handler(void);
 
 extern "C" int tfm_log_printf(const char *fmt, ...)
 {
     return printf(fmt);
 }
+
+extern "C" void TIMER1_Handler(void);
 
 int main(void)
 {
@@ -28,3 +40,57 @@ int main(void)
 
     return 0;
 }
+
+#endif //RUN_REGRESSION_TESTS
+
+#if RUN_PSA_COMPLIANCE_TESTS
+
+extern "C" int32_t val_entry(void);
+
+extern "C" int tfm_log_printf(const char *fmt, ...)
+{
+    return printf(fmt);
+}
+
+int main(void)
+{
+    // Disable deep sleep
+    sleep_manager_lock_deep_sleep();
+
+    tfm_log_printf("Starting TF-M PSA API tests\r\n");
+
+    return val_entry();
+}
+
+#endif //RUN_PSA_COMPLIANCE_TESTS
+
+#if RUN_BLINKY_EXAMPLE
+
+#include "platform/mbed_thread.h"
+#include "psa/client.h"
+
+#define BLINKING_RATE_MS                                                    3000
+
+int main(void)
+{
+    uint32_t count = 0;
+
+    DigitalOut led(LED1);
+
+    printf("PSA Framework Version : %ld\r\n", psa_framework_version());
+
+    while (true)
+    {
+        led = !led;
+
+        thread_sleep_for(BLINKING_RATE_MS);
+
+        // Print only after (BLINKING_RATE_MS * 10) milliseconds.
+        if ((count++ % 10) == 0)
+        {
+            printf("Executing from NS Core... LED Blink rate : %d ms\r\n", BLINKING_RATE_MS);
+        }
+    }
+}
+
+#endif //RUN_BLINKY_EXAMPLE
