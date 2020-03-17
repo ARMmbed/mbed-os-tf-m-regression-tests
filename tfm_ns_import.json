@@ -19,6 +19,10 @@
                     "dst_file": "features/FEATURE_PSA/TARGET_TFM/src/tfm_its_ipc_api.c"
                 },
                 {
+                    "src_file": "install/export/tfm/src/tfm_platform_ipc_api.c",
+                    "dst_file": "features/FEATURE_PSA/TARGET_TFM/src/tfm_platform_ipc_api.c"
+                },
+                {
                     "src_file": "bl2/ext/mcuboot/scripts/assemble.py",
                     "dst_file": "tools/psa/tfm/bin_utils/assemble.py"
                 },
