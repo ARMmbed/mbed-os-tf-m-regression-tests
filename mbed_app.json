@@ -9,6 +9,9 @@
         "*": {
              "platform.stdio-convert-newlines": true,
              "platform.stdio-baud-rate": 115200
+        },
+        "ARM_MUSCA_A1": {
+            "app.os-thread-user-stack-size": 8096
         }
     },
     "macros": [
