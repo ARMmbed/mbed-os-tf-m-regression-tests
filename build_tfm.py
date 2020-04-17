@@ -43,10 +43,20 @@ VERSION_FILE_PATH = join(mbed_path, 'features/FEATURE_PSA/TARGET_TFM')
 TC_DICT = {"ARMCLANG": "ARMC6",
            "GNUARM": "GCC_ARM"}
 
+SUITE_CHOICES = ['CRYPTO',
+                 'INITIAL_ATTESTATION',
+                 'PROTECTED_STORAGE',
+                 'INTERNAL_TRUSTED_STORAGE']
+SUPPORTED_TFM_PSA_CONFIGS = ['configs/ConfigPsaApiTestIPC.cmake']
+SUPPORTED_TFM_CONFIGS = ['configs/ConfigCoreIPC.cmake', # Default config
+                         'configs/ConfigRegressionIPC.cmake'] + SUPPORTED_TFM_PSA_CONFIGS
+
 upstream_tfm = 'https://git.trustedfirmware.org/trusted-firmware-m.git'
 mbed_tfm = 'https://github.com/ARMmbed/trusted-firmware-m.git'
 
 dependencies = {
+    # If the remote repo is changed, please delete TARGET_IGNORE folder.
+    # Quick switch between remotes is not supported.
     "trusted-firmware-m": [mbed_tfm, 'dev/feature-dualcore'],
     "mbed-crypto": ['https://github.com/ARMmbed/mbed-crypto.git',
                     'mbedcrypto-3.0.1'],
@@ -221,6 +231,16 @@ def _run_cmake_build(cmake_build_dir, args, tgt, tfm_config):
 
     cmake_cmd.append('-DENABLE_PLATFORM_SERVICE_TESTS=FALSE')
 
+    if args.config in SUPPORTED_TFM_PSA_CONFIGS:
+        if args.suite == 'CRYPTO':
+            cmake_cmd.append('-DPSA_API_TEST_CRYPTO=ON')
+        elif args.suite == 'INITIAL_ATTESTATION':
+            cmake_cmd.append('-DPSA_API_TEST_INITIAL_ATTESTATION=ON')
+        elif args.suite == 'INTERNAL_TRUSTED_STORAGE':
+            cmake_cmd.append('-DPSA_API_TEST_INTERNAL_TRUSTED_STORAGE=ON')
+        elif args.suite == 'PROTECTED_STORAGE':
+            cmake_cmd.append('-DPSA_API_TEST_PROTECTED_STORAGE=ON')
+
     cmake_cmd.append('..')
 
     retcode = run_cmd_output_realtime(cmake_cmd, cmake_build_dir)
@@ -361,11 +381,10 @@ def _build_tfm(args):
     _clone_tfm_repo(args.commit)
 
     cmake_build_dir = join(TF_M_BUILD_DIR, 'trusted-firmware-m', 'cmake_build')
-    if not isdir(cmake_build_dir):
-        os.mkdir(cmake_build_dir)
-    else:
+    if isdir(cmake_build_dir):
         shutil.rmtree(cmake_build_dir)
-        os.mkdir(cmake_build_dir)
+
+    os.mkdir(cmake_build_dir)
 
     tfm_config = args.config
 
@@ -416,7 +435,8 @@ def _get_parser():
 
     parser.add_argument("-c", "--config",
                         help="Use the specified TF-M configuration",
-                        default='configs/ConfigCoreIPC.cmake')
+                        default=SUPPORTED_TFM_CONFIGS[0],
+                        choices=SUPPORTED_TFM_CONFIGS)
     parser.add_argument("-m", "--mcu",
                         help="Build for the given MCU",
                         default=None,
@@ -445,6 +465,11 @@ def _get_parser():
                         action="store_true",
                         default=False)
 
+    parser.add_argument("-s", "--suite",
+                        help="Suite name for PSA API Tests",
+                        choices=SUITE_CHOICES,
+                        default=None)
+
     return parser
 
 def _main():
@@ -460,6 +485,17 @@ def _main():
         logging.info("Supported TF-M targets are: {}".format(
                             ', '.join([t for t in _get_tfm_secure_targets()])))
         return
+
+    if args.config not in SUPPORTED_TFM_CONFIGS:
+        logging.info("Supported TF-M configs are: {}".format(
+                            ', '.join([t for t in SUPPORTED_TFM_CONFIGS])))
+        return
+
+    if args.config in SUPPORTED_TFM_PSA_CONFIGS:
+        if not args.suite:
+            logging.info("Test suite required for supplied config: {}".format(
+                            ', '.join([t for t in SUITE_CHOICES])))
+            return
 
     if not isdir(TF_M_BUILD_DIR):
         os.mkdir(TF_M_BUILD_DIR)
