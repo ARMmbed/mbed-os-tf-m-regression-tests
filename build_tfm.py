@@ -24,9 +24,9 @@ import json
 import sys
 import signal
 import shutil
-import subprocess
 import logging
-import tempfile
+from psa_builder import are_dependencies_installed, check_and_clone_repo, exit_gracefully
+from psa_builder import run_cmd_and_return, run_cmd_output_realtime
 
 ROOT = abspath(dirname(__file__))
 mbed_path = join(ROOT, "mbed-os")
@@ -35,11 +35,9 @@ from tools.toolchains import TOOLCHAIN_CLASSES, TOOLCHAIN_PATHS
 from tools.targets import Target, TARGET_MAP, TARGET_NAMES
 
 logging.basicConfig(level=logging.INFO,
-                    format='[%(name)s] %(asctime)s: %(message)s.',
+                    format='[Build-TF-M] %(asctime)s: %(message)s.',
                     datefmt='%H:%M:%S')
-logger = logging.getLogger('Build-TF-M')
 
-POPEN_INSTANCE = None
 TF_M_BUILD_DIR = join(mbed_path, 'features/FEATURE_PSA/TARGET_TFM/TARGET_IGNORE')
 VERSION_FILE_PATH = join(mbed_path, 'features/FEATURE_PSA/TARGET_TFM')
 TC_DICT = {"ARMCLANG": "ARMC6",
@@ -55,102 +53,6 @@ dependencies = {
     "CMSIS_5": ['https://github.com/ARM-software/CMSIS_5.git', '5.5.0'],
 }
 
-def _are_dependencies_installed():
-    def _is_cmake_installed():
-        """
-        Check if Cmake is installed
-        :return: errorcode
-        """
-        command = ['cmake', '--version']
-        return _run_cmd_and_return(command)
-
-    def _is_make_installed():
-        """
-        Check if GNU Make is installed
-        :return: errorcode
-        """
-        command = ['make', '--version']
-        return _run_cmd_and_return(command)
-
-    def _is_git_installed():
-        """
-        Check if git is installed
-        :return: errorcode
-        """
-        command = ['git', '--version']
-        return _run_cmd_and_return(command)
-
-    def _is_git_lfs_installed():
-        """
-        Check if git-lfs is installed
-        :return: errorcode
-        """
-        command = ['git', 'config', '--get', 'filter.lfs.required']
-        return _run_cmd_and_return(command)
-
-    if _is_git_installed() != 0:
-        logger.error('"git" is not installed. Exiting...')
-        return -1
-    elif _is_git_lfs_installed() != 0:
-        logger.error('"git-lfs" is not installed. Exiting...')
-        return -1
-    elif _is_cmake_installed() != 0:
-        logger.error('"Cmake" is not installed. Exiting...')
-        return -1
-    elif _is_make_installed() != 0:
-        logger.error('"Make" is not installed. Exiting...')
-        return -1
-    else:
-        return 0
-
-def _run_cmd_and_return(command, output=False):
-    """
-    Run the command in the system and return either error code or output.
-    Commands are passed as a list of tokens.
-    E.g. The command 'git remote -v' would be passed in as:
-     ['git', 'remote', '-v']
-
-    :param command: System command as a list of tokens
-    :param output: If set to True return output from child process
-    :return: Return either output from child process or error code
-    """
-
-    global POPEN_INSTANCE
-    with open(os.devnull, 'w') as fnull:
-        POPEN_INSTANCE = subprocess.Popen(command, stdout=subprocess.PIPE,
-                                stderr=fnull)
-
-        std_out, __ = POPEN_INSTANCE.communicate()
-        retcode = POPEN_INSTANCE.returncode
-        POPEN_INSTANCE = None
-
-        if output:
-            return std_out.decode("utf-8")
-        else:
-            return retcode
-
-def _run_cmd_output_realtime(command, cmake_build_dir):
-    """
-    Run the command in the system and print output in realtime.
-    Commands are passed as a list of tokens.
-    E.g. The command 'git remote -v' would be passed in as:
-     ['git', 'remote', '-v']
-
-    :param command: System command as a list of tokens
-    :param cmake_build_dir: Cmake build directory
-    :return: Return the error code from child process
-    """
-    global POPEN_INSTANCE
-    POPEN_INSTANCE = subprocess.Popen(command, stdout=subprocess.PIPE,
-                                stderr=subprocess.STDOUT, cwd=cmake_build_dir)
-    for line in iter(POPEN_INSTANCE.stdout.readline, b''):
-        logger.info(line.decode("utf-8").strip('\n'))
-
-    POPEN_INSTANCE.communicate()
-    retcode = POPEN_INSTANCE.returncode
-    POPEN_INSTANCE = None
-    return retcode
-
 def _detect_and_write_tfm_version(tfm_dir, commit):
     """
     Identify the version of TF-M and write it to VERSION.txt
@@ -159,8 +61,8 @@ def _detect_and_write_tfm_version(tfm_dir, commit):
     """
     cmd = ['git', '-C', tfm_dir, 'describe', '--tags',
            '--abbrev=12', '--dirty', '--always']
-    tfm_version = _run_cmd_and_return(cmd, True)
-    logger.info('TF-M version: %s', tfm_version.strip('\n'))
+    tfm_version = run_cmd_and_return(cmd, True)
+    logging.info('TF-M version: %s', tfm_version.strip('\n'))
     if not isdir(VERSION_FILE_PATH):
         os.makedirs(VERSION_FILE_PATH)
     # Write the version to Mbed OS
@@ -173,34 +75,14 @@ def _detect_and_write_tfm_version(tfm_dir, commit):
     if commit:
         _commit_changes(VERSION_FILE_PATH)
 
-def _check_and_clone_repo(name, deps):
-    """
-    Check if the repositories are already cloned. If not clone them
-    :param name: Name of the git repository
-    :param deps: Dictionary containing dependency details
-    """
-
-    gitref = deps.get(name)[1]
-    if not isdir(join(TF_M_BUILD_DIR, name)):
-        logger.info('Cloning %s repo', name)
-        cmd = ['git', '-C', TF_M_BUILD_DIR, 'clone', '-b',
-               gitref, deps.get(name)[0]]
-        _run_cmd_and_return(cmd)
-        logger.info('Cloned %s repo successfully', name)
-    else:
-        logger.info('%s repo exists, checking out %s...', name, gitref)
-        cmd = ['git', '-C', join(TF_M_BUILD_DIR, name), 'checkout', gitref]
-        _run_cmd_and_return(cmd)
-        logger.info('Checked out %s successfully', gitref)
-
 def _clone_tfm_repo(commit):
     """
     Clone TF-M git repos and it's dependencies
     :param commit: If True then commit VERSION.txt
     """
-    _check_and_clone_repo('trusted-firmware-m', dependencies)
-    _check_and_clone_repo('mbed-crypto', dependencies)
-    _check_and_clone_repo('CMSIS_5', dependencies)
+    check_and_clone_repo('trusted-firmware-m', dependencies, TF_M_BUILD_DIR)
+    check_and_clone_repo('mbed-crypto', dependencies, TF_M_BUILD_DIR)
+    check_and_clone_repo('CMSIS_5', dependencies, TF_M_BUILD_DIR)
     _detect_and_write_tfm_version(join(TF_M_BUILD_DIR, 'trusted-firmware-m'),
                                   commit)
 
@@ -258,7 +140,7 @@ def _get_mbed_supported_tfm_targets():
     (target name, TF-M target name, toolchain, delivery directory)
     """
     tfm_secure_targets = _get_tfm_secure_targets()
-    logger.info("Found the following TF-M targets: {}".format(
+    logging.info("Found the following TF-M targets: {}".format(
                                                 ', '.join(tfm_secure_targets)))
 
     return (_get_target_info(t) for t in tfm_secure_targets)
@@ -271,42 +153,42 @@ def _commit_changes(directory, target_toolchain=None):
     """
     # Use --intent-to-add option of git status to identify un-tracked files
     cmd = ['git', '-C', mbed_path, 'status', 'N', directory]
-    _run_cmd_and_return(cmd)
+    run_cmd_and_return(cmd)
 
     cmd = ['git', '-C', mbed_path, 'diff', '--exit-code', '--quiet', directory]
-    changes_made = _run_cmd_and_return(cmd)
+    changes_made = run_cmd_and_return(cmd)
 
     if target_toolchain is None:
         if changes_made:
-            logger.info("Committing changes in directory %s" % directory)
+            logging.info("Committing changes in directory %s" % directory)
             cmd = ['git', '-C', mbed_path, 'add', relpath(directory, mbed_path)]
-            _run_cmd_and_return(cmd)
+            run_cmd_and_return(cmd)
             msg = '--message="Updated directory %s "' % directory
             cmd = ['git', '-C', mbed_path, 'commit', msg]
-            _run_cmd_and_return(cmd)
+            run_cmd_and_return(cmd)
         else:
-            logger.info("No changes detected in %s, skipping commit" %
+            logging.info("No changes detected in %s, skipping commit" %
                                                     relpath(directory,
                                                     mbed_path))
         return
 
     if changes_made:
-        logger.info("Committing image for %s" % target_toolchain)
+        logging.info("Committing image for %s" % target_toolchain)
         cmd = ['git', '-C', mbed_path, 'add', relpath(directory, mbed_path)]
-        _run_cmd_and_return(cmd)
+        run_cmd_and_return(cmd)
         msg = '--message="Updated secure binaries for %s"' % target_toolchain
         cmd = ['git', '-C', mbed_path, 'commit', msg]
-        _run_cmd_and_return(cmd)
+        run_cmd_and_return(cmd)
     else:
-        logger.info("No changes detected for %s, skipping commit" %
+        logging.info("No changes detected for %s, skipping commit" %
                                                             target_toolchain)
 
-def _run_cmake_build(cmake_build_dir, debug, tgt, tfm_config):
+def _run_cmake_build(cmake_build_dir, args, tgt, tfm_config):
     """
     Run the Cmake build
 
     :param cmake_build_dir: Base directory for Cmake build
-    :param debug: Debug build
+    :param args: Command-line arguments
     :param tgt[]:
     0: Target name
     1: TF-M target name
@@ -314,45 +196,49 @@ def _run_cmake_build(cmake_build_dir, debug, tgt, tfm_config):
     3: Delivery directory
     :return Error code returned by Cmake build
     """
-    if debug:
+    if args.debug:
         msg = "Building TF-M for target %s using toolchain %s in DEBUG mode" % (
                                             tgt[0], tgt[2])
     else:
         msg = "Building TF-M for target %s using toolchain %s" % (tgt[0], tgt[2])
-    logger.info(msg)
+    logging.info(msg)
 
     cmake_cmd = ['cmake', '-GUnix Makefiles']
     cmake_cmd.append('-DPROJ_CONFIG=' + (join(TF_M_BUILD_DIR,
                         'trusted-firmware-m', tfm_config)))
     cmake_cmd.append('-DTARGET_PLATFORM=' + tgt[1])
     cmake_cmd.append('-DCOMPILER=' + tgt[2])
-    if debug:
+
+    if args.debug:
         cmake_cmd.append('-DCMAKE_BUILD_TYPE=Debug')
     else:
         cmake_cmd.append('-DCMAKE_BUILD_TYPE=Release')
+
     if not TARGET_MAP[tgt[0]].tfm_bootloader_supported:
         cmake_cmd.append('-DBL2=FALSE')
     else:
         cmake_cmd.append('-DBL2=True')
+
     cmake_cmd.append('-DENABLE_PLATFORM_SERVICE_TESTS=FALSE')
+
     cmake_cmd.append('..')
 
-    retcode = _run_cmd_output_realtime(cmake_cmd, cmake_build_dir)
+    retcode = run_cmd_output_realtime(cmake_cmd, cmake_build_dir)
     if retcode:
         msg = "Cmake configure failed for target %s using toolchain %s" % (
                                                         tgt[0],  tgt[2])
-        logger.critical(msg)
+        logging.critical(msg)
         sys.exit(1)
 
     # install option exports NS APIs to a dedicated folder under
     # cmake build folder
     cmake_cmd = ['cmake', '--build', '.', '--', 'install']
 
-    retcode = _run_cmd_output_realtime(cmake_cmd, cmake_build_dir)
+    retcode = run_cmd_output_realtime(cmake_cmd, cmake_build_dir)
     if retcode:
         msg = "Cmake build failed for target %s using toolchain %s" % (
                                                         tgt[0],  tgt[2])
-        logger.critical(msg)
+        logging.critical(msg)
         sys.exit(1)
 
 def _copy_binaries(source, destination, toolchain, target):
@@ -370,7 +256,7 @@ def _copy_binaries(source, destination, toolchain, target):
         output_dir = destination + '/'
 
     tfm_secure_axf = join(source, 'tfm_s.axf')
-    logger.info("Copying %s to %s" % (relpath(tfm_secure_axf, mbed_path),
+    logging.info("Copying %s to %s" % (relpath(tfm_secure_axf, mbed_path),
                                       relpath(output_dir, mbed_path)))
     shutil.copy2(tfm_secure_axf, output_dir)
 
@@ -378,7 +264,7 @@ def _copy_binaries(source, destination, toolchain, target):
         out_ext = TARGET_MAP[target].TFM_OUTPUT_EXT
     except AttributeError:
         tfm_secure_bin = join(source, 'tfm_s.bin')
-        logger.info("Copying %s to %s" % (relpath(tfm_secure_bin, mbed_path),
+        logging.info("Copying %s to %s" % (relpath(tfm_secure_bin, mbed_path),
                                           relpath(output_dir, mbed_path)))
         shutil.copy2(tfm_secure_bin, output_dir)
     else:
@@ -395,9 +281,9 @@ def _copy_binaries(source, destination, toolchain, target):
                             "arm-none-eabi-objcopy")
                 cmd = [elf2bin, "-O", "ihex", tfm_secure_axf, tfm_secure_bin]
 
-            _run_cmd_and_return(cmd)
+            run_cmd_and_return(cmd)
 
-            logger.info("Copying %s to %s" % (relpath(tfm_secure_bin, mbed_path),
+            logging.info("Copying %s to %s" % (relpath(tfm_secure_bin, mbed_path),
                                               relpath(output_dir, mbed_path)))
             shutil.copy2(tfm_secure_bin, output_dir)
 
@@ -445,7 +331,7 @@ def _copy_tfm_ns_files(source, target):
 
     with open(join(dirname(__file__), "tfm_ns_import.json")) as ns_import:
         json_data = json.load(ns_import)
-        logger.info("Copying NS API source from TF-M to Mbed OS")
+        logging.info("Copying NS API source from TF-M to Mbed OS")
         mbed_os_data = json_data["mbed-os"]
         copy_files(mbed_os_data["files"]["common"], mbed_path)
         if "TFM_V8M" in TARGET_MAP[target].extra_labels:
@@ -496,7 +382,7 @@ def _build_tfm(args):
         else:
             tgt = _get_target_info(args.mcu)
 
-        _run_cmake_build(cmake_build_dir, args.debug, tgt, tfm_config)
+        _run_cmake_build(cmake_build_dir, args, tgt, tfm_config)
 
         source = join(cmake_build_dir, 'install', 'outputs' ,tgt[1])
         _copy_binaries(source, tgt[3], tgt[2], tgt[0])
@@ -514,7 +400,7 @@ def _build_tfm(args):
             2: Toolchain
             3: Delivery directory
             """
-            _run_cmake_build(cmake_build_dir, args.debug, tgt)
+            _run_cmake_build(cmake_build_dir, args, tgt, tfm_config)
 
             source = join(cmake_build_dir, 'install', 'outputs' ,tgt[1])
             _copy_binaries(source, tgt[3], tgt[2], tgt[0])
@@ -524,24 +410,6 @@ def _build_tfm(args):
             _commit_changes(tgt[3], tgt_list)
 
     _copy_tfm_ns_files(cmake_build_dir, tgt[0])
-
-def _exit_gracefully(signum, frame):
-    """
-    Crtl+C signal handler to exit gracefully
-    :param signum: Signal number
-    :param frame:  Current stack frame object
-    """
-    logger.info("Received signal %s, exiting..." % signum)
-    global POPEN_INSTANCE
-    try:
-        if POPEN_INSTANCE:
-            POPEN_INSTANCE.terminate()
-            while not POPEN_INSTANCE.poll():
-                continue
-    except:
-        pass
-
-    sys.exit(0)
 
 def _get_parser():
     parser = argparse.ArgumentParser()
@@ -584,23 +452,23 @@ def _main():
     Build TrustedFirmware-M (TF-M) image for supported targets
     """
     global TF_M_BUILD_DIR
-    signal.signal(signal.SIGINT, _exit_gracefully)
+    signal.signal(signal.SIGINT, exit_gracefully)
     parser = _get_parser()
     args = parser.parse_args()
 
     if args.list:
-        logger.info("Supported TF-M targets are: {}".format(
+        logging.info("Supported TF-M targets are: {}".format(
                             ', '.join([t for t in _get_tfm_secure_targets()])))
         return
 
     if not isdir(TF_M_BUILD_DIR):
         os.mkdir(TF_M_BUILD_DIR)
 
-    logger.info("Using folder %s" % TF_M_BUILD_DIR)
+    logging.info("Using folder %s" % TF_M_BUILD_DIR)
     _build_tfm(args)
 
 if __name__ == '__main__':
-    if _are_dependencies_installed() != 0:
+    if are_dependencies_installed() != 0:
         sys.exit(1)
     else:
         _main()
