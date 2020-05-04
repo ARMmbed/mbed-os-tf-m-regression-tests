@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-Copyright (c) 2019 ARM Limited. All rights reserved.
+Copyright (c) 2019-2020 ARM Limited. All rights reserved.
 
 SPDX-License-Identifier: Apache-2.0
 
@@ -20,13 +20,19 @@ limitations under the License.
 import os
 from os.path import join, abspath, dirname, isdir, relpath
 import argparse
-import json
 import sys
 import signal
 import shutil
 import logging
 from psa_builder import are_dependencies_installed, check_and_clone_repo, exit_gracefully
 from psa_builder import run_cmd_and_return, run_cmd_output_realtime
+
+try:
+    import yaml
+except ImportError as e:
+    print(str(e) + " To install it, type:")
+    print("python3 -m pip install PyYAML")
+    exit(1)
 
 ROOT = abspath(dirname(__file__))
 mbed_path = join(ROOT, "mbed-os")
@@ -332,7 +338,7 @@ def _copy_tfm_ns_files(source, target):
                 shutil.copy2(src_file, dst_file)
             except FileNotFoundError:
                 # Workaround: TF-M build process exports all NS API files to
-                # cmake build folder. The json file `tfm_ns_import.json` contains
+                # cmake build folder. The yaml file `tfm_ns_import.yaml` contains
                 # list of files and folder relative to cmake build folder.
                 # But it doesn't export the OS abstraction layer app/os_wrapper_cmsis_rtos_v2.c
                 # which is handled as an exception.
@@ -349,10 +355,10 @@ def _copy_tfm_ns_files(source, target):
                 if os.path.isfile(join(src_folder, f)):
                     shutil.copy2(join(src_folder, f), join(dst_folder, f))
 
-    with open(join(dirname(__file__), "tfm_ns_import.json")) as ns_import:
-        json_data = json.load(ns_import)
+    with open(join(dirname(__file__), "tfm_ns_import.yaml")) as ns_import:
+        yaml_data = yaml.safe_load(ns_import)
         logging.info("Copying NS API source from TF-M to Mbed OS")
-        mbed_os_data = json_data["mbed-os"]
+        mbed_os_data = yaml_data["mbed-os"]
         copy_files(mbed_os_data["files"]["common"], mbed_path)
         if "TFM_V8M" in TARGET_MAP[target].extra_labels:
             copy_files(mbed_os_data["files"]["v8-m"], mbed_path)
@@ -363,7 +369,7 @@ def _copy_tfm_ns_files(source, target):
         if "TFM_DUALCPU" in TARGET_MAP[target].extra_labels:
             copy_folders(mbed_os_data["folders"]["dualcpu"], mbed_path)
 
-        tf_regression_data = json_data["tf-m-regression"]
+        tf_regression_data = yaml_data["tf-m-regression"]
         copy_files(tf_regression_data["files"]["common"], ROOT)
         if "TFM_V8M" in TARGET_MAP[target].extra_labels:
             copy_files(tf_regression_data["files"]["v8-m"], ROOT)
