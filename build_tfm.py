@@ -328,55 +328,57 @@ def _copy_tfm_ns_files(source, target):
     Copy TF-M NS API files into Mbed OS
     :param source: Source directory containing TF-M NS API files
     """
-    def copy_files(files, path):
-        for f in files:
-            src_file = join(source, f["src_file"])
-            dst_file = join(path, f["dst_file"])
-            if not isdir(dirname(dst_file)):
-                os.makedirs(dirname(dst_file))
-            try:
-                shutil.copy2(src_file, dst_file)
-            except FileNotFoundError:
-                # Workaround: TF-M build process exports all NS API files to
-                # cmake build folder. The yaml file `tfm_ns_import.yaml` contains
-                # list of files and folder relative to cmake build folder.
-                # But it doesn't export the OS abstraction layer app/os_wrapper_cmsis_rtos_v2.c
-                # which is handled as an exception.
-                src_file = join(source, os.pardir, f["src_file"])
-                shutil.copy2(src_file, dst_file)
+    def _copy_file(fname, path):
+        src_file = join(source, fname["src"])
+        dst_file = join(path, fname["dst"])
+        if not isdir(dirname(dst_file)):
+            os.makedirs(dirname(dst_file))
+        try:
+            shutil.copy2(src_file, dst_file)
+        except FileNotFoundError:
+            # Workaround: TF-M build process exports all NS API files to
+            # cmake build folder. The yaml file `tfm_ns_import.yaml` contains
+            # list of files and folder relative to cmake build folder.
+            # However, both mbed-os and regression tests needs some
+            # files/folders which are not exported (the path names in
+            # `tfm_ns_import.yaml` which don't begin with `install`). These
+            # are handled as exceptions.
+            src_file = join(source, os.pardir, fname["src"])
+            shutil.copy2(src_file, dst_file)
 
-    def copy_folders(folders, path):
-        for folder in folders:
-            src_folder = join(source, folder["src_folder"])
-            dst_folder = join(path, folder["dst_folder"])
-            if not isdir(dst_folder):
-                os.makedirs(dst_folder)
-            for f in os.listdir(src_folder):
-                if os.path.isfile(join(src_folder, f)):
-                    shutil.copy2(join(src_folder, f), join(dst_folder, f))
+    def _copy_folder(folder, path):
+        src_folder = join(source, folder["src"])
+        dst_folder = join(path, folder["dst"])
+        if not isdir(dst_folder):
+            os.makedirs(dst_folder)
+        for f in os.listdir(src_folder):
+            if os.path.isfile(join(src_folder, f)):
+                shutil.copy2(join(src_folder, f), join(dst_folder, f))
+
+    def _check_and_copy(list_of_items, path):
+        for item in list_of_items:
+            if isdir(join(source, item["src"])):
+                _copy_folder(item, path)
+            else:
+                _copy_file(item, path)
 
     with open(join(dirname(__file__), "tfm_ns_import.yaml")) as ns_import:
         yaml_data = yaml.safe_load(ns_import)
-        logging.info("Copying NS API source from TF-M to Mbed OS")
+        logging.info("Copying files/folders from TF-M to Mbed OS")
         mbed_os_data = yaml_data["mbed-os"]
-        copy_files(mbed_os_data["files"]["common"], mbed_path)
+        _check_and_copy(mbed_os_data["common"], mbed_path)
         if "TFM_V8M" in TARGET_MAP[target].extra_labels:
-            copy_files(mbed_os_data["files"]["v8-m"], mbed_path)
+            _check_and_copy(mbed_os_data["v8-m"], mbed_path)
         if "TFM_DUALCPU" in TARGET_MAP[target].extra_labels:
-            copy_files(mbed_os_data["files"]["dualcpu"], mbed_path)
+            _check_and_copy(mbed_os_data["dualcpu"], mbed_path)
 
-        copy_folders(mbed_os_data["folders"]["common"], mbed_path)
-        if "TFM_DUALCPU" in TARGET_MAP[target].extra_labels:
-            copy_folders(mbed_os_data["folders"]["dualcpu"], mbed_path)
-
+        logging.info("Copying files/folders from TF-M to regression test")
         tf_regression_data = yaml_data["tf-m-regression"]
-        copy_files(tf_regression_data["files"]["common"], ROOT)
+        _check_and_copy(tf_regression_data["common"], ROOT)
         if "TFM_V8M" in TARGET_MAP[target].extra_labels:
-            copy_files(tf_regression_data["files"]["v8-m"], ROOT)
+            _check_and_copy(tf_regression_data["v8-m"], ROOT)
         if "TFM_DUALCPU" in TARGET_MAP[target].extra_labels:
-            copy_files(tf_regression_data["files"]["dualcpu"], ROOT)
-
-        copy_folders(tf_regression_data["folders"], ROOT)
+            _check_and_copy(tf_regression_data["dualcpu"], ROOT)
 
 def _build_tfm(args):
     """

@@ -16,194 +16,180 @@
 {
     # Files/folders to be copied to mbed-os folder
     "mbed-os": {
-        "files": {
-            "common": [
-                {
-                    "src_file": "install/export/tfm/src/tfm_crypto_ipc_api.c",
-                    "dst_file": "features/FEATURE_PSA/TARGET_TFM/src/tfm_crypto_ipc_api.c"
-                },
-                {
-                    "src_file": "install/export/tfm/src/tfm_initial_attestation_ipc_api.c",
-                    "dst_file": "features/FEATURE_PSA/TARGET_TFM/src/tfm_initial_attestation_ipc_api.c"
-                },
-                {
-                    "src_file": "install/export/tfm/src/tfm_sst_ipc_api.c",
-                    "dst_file": "features/FEATURE_PSA/TARGET_TFM/src/tfm_sst_ipc_api.c"
-                },
-                {
-                    "src_file": "install/export/tfm/src/tfm_its_ipc_api.c",
-                    "dst_file": "features/FEATURE_PSA/TARGET_TFM/src/tfm_its_ipc_api.c"
-                },
-                {
-                    "src_file": "install/export/tfm/src/tfm_platform_ipc_api.c",
-                    "dst_file": "features/FEATURE_PSA/TARGET_TFM/src/tfm_platform_ipc_api.c"
-                },
-                {
-                    "src_file": "bl2/ext/mcuboot/scripts/assemble.py",
-                    "dst_file": "tools/psa/tfm/bin_utils/assemble.py"
-                },
-                {
-                    "src_file": "bl2/ext/mcuboot/scripts/imgtool.py",
-                    "dst_file": "tools/psa/tfm/bin_utils/imgtool.py"
-                },
-                {
-                    "src_file": "bl2/ext/mcuboot/scripts/imgtool_lib/__init__.py",
-                    "dst_file": "tools/psa/tfm/bin_utils/imgtool_lib/__init__.py"
-                },
-                {
-                    "src_file": "bl2/ext/mcuboot/scripts/imgtool_lib/image.py",
-                    "dst_file": "tools/psa/tfm/bin_utils/imgtool_lib/image.py"
-                },
-                {
-                    "src_file": "bl2/ext/mcuboot/scripts/imgtool_lib/version.py",
-                    "dst_file": "tools/psa/tfm/bin_utils/imgtool_lib/version.py"
-                }
-            ],
-            "v8-m": [
-                {
-                    "src_file": "image_macros_preprocessed.c",
-                    "dst_file": "targets/TARGET_ARM_SSG/TARGET_MUSCA_A1/partition/image_macros_preprocessed.c"
-                },
-                {
-                    "src_file": "install/export/tfm/src/tfm_psa_ns_api.c",
-                    "dst_file": "features/FEATURE_PSA/TARGET_TFM/TARGET_TFM_V8M/src/tfm_psa_ns_api.c"
-                },
-                {
-                    "src_file": "install/export/tfm/src/tfm_ns_interface.c",
-                    "dst_file": "features/FEATURE_PSA/TARGET_TFM/TARGET_TFM_V8M/src/tfm_ns_interface.c"
-                }
-            ],
-            "dualcpu": [
-                {
-                    "src_file": "install/export/platform/ext/target/cypress/psoc64/partition/flash_layout.h",
-                    "dst_file": "targets/TARGET_Cypress/TARGET_PSOC6/TARGET_CY8CKIT_064S2_4343W/partition/flash_layout.h"
-                },
-                {
-                    "src_file": "install/export/platform/ext/target/cypress/psoc64/partition/region_defs.h",
-                    "dst_file": "targets/TARGET_Cypress/TARGET_PSOC6/TARGET_CY8CKIT_064S2_4343W/partition/region_defs.h"
-                },
-                {
-                    "src_file": "install/export/tfm/src/tfm_multi_core_api.c",
-                    "dst_file": "features/FEATURE_PSA/TARGET_TFM/TARGET_TFM_DUALCPU/src/tfm_multi_core_api.c"
-                },
-                {
-                    "src_file": "install/export/tfm/src/platform_ns_mailbox.c",
-                    "dst_file": "features/FEATURE_PSA/TARGET_TFM/TARGET_TFM_DUALCPU/src/platform_ns_mailbox.c"
-                },
-                {
-                    "src_file": "install/export/tfm/src/tfm_multi_core_psa_ns_api.c",
-                    "dst_file": "features/FEATURE_PSA/TARGET_TFM/TARGET_TFM_DUALCPU/src/tfm_multi_core_psa_ns_api.c"
-                },
-                {
-                    "src_file": "install/export/tfm/src/tfm_ns_mailbox.c",
-                    "dst_file": "features/FEATURE_PSA/TARGET_TFM/TARGET_TFM_DUALCPU/src/tfm_ns_mailbox.c"
-                },
-                {
-                    "src_file": "install/export/tfm/src/platform_multicore.c",
-                    "dst_file": "features/FEATURE_PSA/TARGET_TFM/TARGET_TFM_DUALCPU/src/platform_multicore.c"
-                },
-                {
-                    "src_file": "install/export/tfm/include/tfm_multi_core_api.h",
-                    "dst_file": "features/FEATURE_PSA/TARGET_TFM/TARGET_TFM_DUALCPU/include/tfm_multi_core_api.h"
-                },
-                {
-                    "src_file": "install/export/tfm/include/tfm_ns_mailbox.h",
-                    "dst_file": "features/FEATURE_PSA/TARGET_TFM/TARGET_TFM_DUALCPU/include/tfm_ns_mailbox.h"
-                },
-                {
-                    "src_file": "install/export/tfm/include/tfm_mailbox.h",
-                    "dst_file": "features/FEATURE_PSA/TARGET_TFM/TARGET_TFM_DUALCPU/include/tfm_mailbox.h"
-                },
-                {
-                    "src_file": "install/export/tfm/include/ns_ipc_config.h",
-                    "dst_file": "features/FEATURE_PSA/TARGET_TFM/TARGET_TFM_DUALCPU/include/ns_ipc_config.h"
-                },
-                {
-                    "src_file": "install/export/tfm/include/platform_multicore.h",
-                    "dst_file": "features/FEATURE_PSA/TARGET_TFM/TARGET_TFM_DUALCPU/include/platform_multicore.h"
-                }
-            ]
-        },
-        "folders": {
-            "common": [
-                {
-                    "src_folder": "install/export/tfm/include",
-                    "dst_folder": "features/FEATURE_PSA/TARGET_TFM/include"
-                },
-                {
-                    "src_folder": "install/export/tfm/include/psa",
-                    "dst_folder": "features/FEATURE_PSA/TARGET_TFM/include/psa"
-                },
-                {
-                    "src_folder": "install/export/tfm/include/psa_manifest",
-                    "dst_folder": "features/FEATURE_PSA/TARGET_TFM/include/psa_manifest"
-                }
-            ],
-            "dualcpu": [
-            ]
-        }
-    },
-    # Files/folders to be copied to tf-m-regression folder
-    "tf-m-regression": {
-        "files": {
-            "common": [
-                {
-                    "src_file": "platform/include/tfm_plat_defs.h",
-                    "dst_file": "tfm/platform/include/tfm_plat_defs.h"
-                },
-                {
-                    "src_file": "platform/include/tfm_plat_ns.h",
-                    "dst_file": "tfm/platform/include/tfm_plat_ns.h"
-                }
-            ],
-            "dualcpu": [
-                {
-                    "src_file": "platform/ext/target/cypress/psoc64/Device/Source/device_definition.c",
-                    "dst_file": "tfm/targets/TARGET_Cypress/TARGET_PSOC6/TARGET_CY8CKIT_064S2_4343W/device/COMPONENT_CM4/device_definition.c"
-                },
-                {
-                    "src_file": "platform/ext/target/cypress/psoc64/Device/Include/device_definition.h",
-                    "dst_file": "tfm/targets/TARGET_Cypress/TARGET_PSOC6/TARGET_CY8CKIT_064S2_4343W/device/COMPONENT_CM4/device_definition.h"
-                },
-                {
-                    "src_file": "platform/ext/target/cypress/psoc64/Device/Include/platform_base_address.h",
-                    "dst_file": "tfm/targets/TARGET_Cypress/TARGET_PSOC6/TARGET_CY8CKIT_064S2_4343W/device/COMPONENT_CM4/platform_base_address.h"
-                },
-                {
-                    "src_file": "platform/ext/target/cypress/psoc64/tfm_peripherals_def.h",
-                    "dst_file": "tfm/targets/TARGET_Cypress/TARGET_PSOC6/TARGET_CY8CKIT_064S2_4343W/device/COMPONENT_CM4/tfm_peripherals_def.h"
-                },
-                {
-                    "src_file": "platform/ext/target/cypress/psoc64/Device/Include/platform_irq.h",
-                    "dst_file": "tfm/targets/TARGET_Cypress/TARGET_PSOC6/TARGET_CY8CKIT_064S2_4343W/device/COMPONENT_CM4/platform_irq.h"
-                }
-            ],
-            "v8-m": [
-                {
-                    "src_file": "platform/ext/target/musca_a/Device/Include/platform_base_address.h",
-                    "dst_file": "tfm/targets/TARGET_ARM_SSG/TARGET_MUSCA_A1/device/platform_base_address.h"
-                },
-                {
-                    "src_file": "platform/ext/target/musca_a/tfm_peripherals_def.h",
-                    "dst_file": "tfm/targets/TARGET_ARM_SSG/TARGET_MUSCA_A1/device/tfm_peripherals_def.h"
-                }
-            ]
-        },
-        "folders": [
+        "common": [
             {
-                "src_folder": "install/export/tfm/test/inc",
-                "dst_folder": "test/inc"
+                "src": "install/export/tfm/src/tfm_crypto_ipc_api.c",
+                "dst": "features/FEATURE_PSA/TARGET_TFM/src/tfm_crypto_ipc_api.c"
             },
             {
-                "src_folder": "install/export/tfm/test/lib",
-                "dst_folder": "test/lib"
+                "src": "install/export/tfm/src/tfm_initial_attestation_ipc_api.c",
+                "dst": "features/FEATURE_PSA/TARGET_TFM/src/tfm_initial_attestation_ipc_api.c"
+            },
+            {
+                "src": "install/export/tfm/src/tfm_sst_ipc_api.c",
+                "dst": "features/FEATURE_PSA/TARGET_TFM/src/tfm_sst_ipc_api.c"
+            },
+            {
+                "src": "install/export/tfm/src/tfm_its_ipc_api.c",
+                "dst": "features/FEATURE_PSA/TARGET_TFM/src/tfm_its_ipc_api.c"
+            },
+            {
+                "src": "install/export/tfm/src/tfm_platform_ipc_api.c",
+                "dst": "features/FEATURE_PSA/TARGET_TFM/src/tfm_platform_ipc_api.c"
+            },
+            {
+                "src": "bl2/ext/mcuboot/scripts/assemble.py",
+                "dst": "tools/psa/tfm/bin_utils/assemble.py"
+            },
+            {
+                "src": "bl2/ext/mcuboot/scripts/imgtool.py",
+                "dst": "tools/psa/tfm/bin_utils/imgtool.py"
+            },
+            {
+                "src": "bl2/ext/mcuboot/scripts/imgtool_lib/__init__.py",
+                "dst": "tools/psa/tfm/bin_utils/imgtool_lib/__init__.py"
+            },
+            {
+                "src": "bl2/ext/mcuboot/scripts/imgtool_lib/image.py",
+                "dst": "tools/psa/tfm/bin_utils/imgtool_lib/image.py"
+            },
+            {
+                "src": "bl2/ext/mcuboot/scripts/imgtool_lib/version.py",
+                "dst": "tools/psa/tfm/bin_utils/imgtool_lib/version.py"
+            },
+            {
+                "src": "install/export/tfm/include",
+                "dst": "features/FEATURE_PSA/TARGET_TFM/include"
+            },
+            {
+                "src": "install/export/tfm/include/psa",
+                "dst": "features/FEATURE_PSA/TARGET_TFM/include/psa"
+            },
+            {
+                "src": "install/export/tfm/include/psa_manifest",
+                "dst": "features/FEATURE_PSA/TARGET_TFM/include/psa_manifest"
+            }
+        ],
+        "v8-m": [
+            {
+                "src": "image_macros_preprocessed.c",
+                "dst": "targets/TARGET_ARM_SSG/TARGET_MUSCA_A1/partition/image_macros_preprocessed.c"
+            },
+            {
+                "src": "install/export/tfm/src/tfm_psa_ns_api.c",
+                "dst": "features/FEATURE_PSA/TARGET_TFM/TARGET_TFM_V8M/src/tfm_psa_ns_api.c"
+            },
+            {
+                "src": "install/export/tfm/src/tfm_ns_interface.c",
+                "dst": "features/FEATURE_PSA/TARGET_TFM/TARGET_TFM_V8M/src/tfm_ns_interface.c"
             }
         ],
         "dualcpu": [
             {
-                "src_folder": "install/export/tfm/inc",
-                "dst_folder": "features/FEATURE_PSA/TARGET_TFM/TARGET_TFM_DUALCPU/inc"
+                "src": "install/export/platform/ext/target/cypress/psoc64/partition/flash_layout.h",
+                "dst": "targets/TARGET_Cypress/TARGET_PSOC6/TARGET_CY8CKIT_064S2_4343W/partition/flash_layout.h"
+            },
+            {
+                "src": "install/export/platform/ext/target/cypress/psoc64/partition/region_defs.h",
+                "dst": "targets/TARGET_Cypress/TARGET_PSOC6/TARGET_CY8CKIT_064S2_4343W/partition/region_defs.h"
+            },
+            {
+                "src": "install/export/tfm/src/tfm_multi_core_api.c",
+                "dst": "features/FEATURE_PSA/TARGET_TFM/TARGET_TFM_DUALCPU/src/tfm_multi_core_api.c"
+            },
+            {
+                "src": "install/export/tfm/src/platform_ns_mailbox.c",
+                "dst": "features/FEATURE_PSA/TARGET_TFM/TARGET_TFM_DUALCPU/src/platform_ns_mailbox.c"
+            },
+            {
+                "src": "install/export/tfm/src/tfm_multi_core_psa_ns_api.c",
+                "dst": "features/FEATURE_PSA/TARGET_TFM/TARGET_TFM_DUALCPU/src/tfm_multi_core_psa_ns_api.c"
+            },
+            {
+                "src": "install/export/tfm/src/tfm_ns_mailbox.c",
+                "dst": "features/FEATURE_PSA/TARGET_TFM/TARGET_TFM_DUALCPU/src/tfm_ns_mailbox.c"
+            },
+            {
+                "src": "install/export/tfm/src/platform_multicore.c",
+                "dst": "features/FEATURE_PSA/TARGET_TFM/TARGET_TFM_DUALCPU/src/platform_multicore.c"
+            },
+            {
+                "src": "install/export/tfm/include/tfm_multi_core_api.h",
+                "dst": "features/FEATURE_PSA/TARGET_TFM/TARGET_TFM_DUALCPU/include/tfm_multi_core_api.h"
+            },
+            {
+                "src": "install/export/tfm/include/tfm_ns_mailbox.h",
+                "dst": "features/FEATURE_PSA/TARGET_TFM/TARGET_TFM_DUALCPU/include/tfm_ns_mailbox.h"
+            },
+            {
+                "src": "install/export/tfm/include/tfm_mailbox.h",
+                "dst": "features/FEATURE_PSA/TARGET_TFM/TARGET_TFM_DUALCPU/include/tfm_mailbox.h"
+            },
+            {
+                "src": "install/export/tfm/include/ns_ipc_config.h",
+                "dst": "features/FEATURE_PSA/TARGET_TFM/TARGET_TFM_DUALCPU/include/ns_ipc_config.h"
+            },
+            {
+                "src": "install/export/tfm/include/platform_multicore.h",
+                "dst": "features/FEATURE_PSA/TARGET_TFM/TARGET_TFM_DUALCPU/include/platform_multicore.h"
             }
         ]
+    },
+    # Files/folders to be copied to tf-m-regression folder
+    "tf-m-regression": {
+            "common": [
+                {
+                    "src": "platform/include/tfm_plat_defs.h",
+                    "dst": "tfm/platform/include/tfm_plat_defs.h"
+                },
+                {
+                    "src": "platform/include/tfm_plat_ns.h",
+                    "dst": "tfm/platform/include/tfm_plat_ns.h"
+                },
+                {
+                    "src": "install/export/tfm/test/inc",
+                    "dst": "test/inc"
+                },
+                {
+                    "src": "install/export/tfm/test/lib",
+                    "dst": "test/lib"
+                }
+            ],
+            "dualcpu": [
+                {
+                    "src": "platform/ext/target/cypress/psoc64/Device/Source/device_definition.c",
+                    "dst": "tfm/targets/TARGET_Cypress/TARGET_PSOC6/TARGET_CY8CKIT_064S2_4343W/device/COMPONENT_CM4/device_definition.c"
+                },
+                {
+                    "src": "platform/ext/target/cypress/psoc64/Device/Include/device_definition.h",
+                    "dst": "tfm/targets/TARGET_Cypress/TARGET_PSOC6/TARGET_CY8CKIT_064S2_4343W/device/COMPONENT_CM4/device_definition.h"
+                },
+                {
+                    "src": "platform/ext/target/cypress/psoc64/Device/Include/platform_base_address.h",
+                    "dst": "tfm/targets/TARGET_Cypress/TARGET_PSOC6/TARGET_CY8CKIT_064S2_4343W/device/COMPONENT_CM4/platform_base_address.h"
+                },
+                {
+                    "src": "platform/ext/target/cypress/psoc64/tfm_peripherals_def.h",
+                    "dst": "tfm/targets/TARGET_Cypress/TARGET_PSOC6/TARGET_CY8CKIT_064S2_4343W/device/COMPONENT_CM4/tfm_peripherals_def.h"
+                },
+                {
+                    "src": "platform/ext/target/cypress/psoc64/Device/Include/platform_irq.h",
+                    "dst": "tfm/targets/TARGET_Cypress/TARGET_PSOC6/TARGET_CY8CKIT_064S2_4343W/device/COMPONENT_CM4/platform_irq.h"
+                },
+                {
+                    "src": "install/export/tfm/inc",
+                    "dst": "features/FEATURE_PSA/TARGET_TFM/TARGET_TFM_DUALCPU/inc"
+                }
+            ],
+            "v8-m": [
+                {
+                    "src": "platform/ext/target/musca_a/Device/Include/platform_base_address.h",
+                    "dst": "tfm/targets/TARGET_ARM_SSG/TARGET_MUSCA_A1/device/platform_base_address.h"
+                },
+                {
+                    "src": "platform/ext/target/musca_a/tfm_peripherals_def.h",
+                    "dst": "tfm/targets/TARGET_ARM_SSG/TARGET_MUSCA_A1/device/tfm_peripherals_def.h"
+                }
+            ]
     }
 }
