@@ -116,26 +116,6 @@
             {
                 "src": "install/export/tfm/src/platform_multicore.c",
                 "dst": "features/FEATURE_PSA/TARGET_TFM/TARGET_TFM_DUALCPU/src/platform_multicore.c"
-            },
-            {
-                "src": "install/export/tfm/include/tfm_multi_core_api.h",
-                "dst": "features/FEATURE_PSA/TARGET_TFM/TARGET_TFM_DUALCPU/include/tfm_multi_core_api.h"
-            },
-            {
-                "src": "install/export/tfm/include/tfm_ns_mailbox.h",
-                "dst": "features/FEATURE_PSA/TARGET_TFM/TARGET_TFM_DUALCPU/include/tfm_ns_mailbox.h"
-            },
-            {
-                "src": "install/export/tfm/include/tfm_mailbox.h",
-                "dst": "features/FEATURE_PSA/TARGET_TFM/TARGET_TFM_DUALCPU/include/tfm_mailbox.h"
-            },
-            {
-                "src": "install/export/tfm/include/ns_ipc_config.h",
-                "dst": "features/FEATURE_PSA/TARGET_TFM/TARGET_TFM_DUALCPU/include/ns_ipc_config.h"
-            },
-            {
-                "src": "install/export/tfm/include/platform_multicore.h",
-                "dst": "features/FEATURE_PSA/TARGET_TFM/TARGET_TFM_DUALCPU/include/platform_multicore.h"
             }
         ]
     },
@@ -190,14 +170,6 @@
                 "src": "install/export/tfm/test/lib",
                 "dst": "test/lib"
             }
-        ],
-        "dualcpu": [
-            {
-                "src": "install/export/tfm/inc",
-                "dst": "features/FEATURE_PSA/TARGET_TFM/TARGET_TFM_DUALCPU/inc"
-            }
-        ],
-        "v8-m": [
         ]
     }
 }
