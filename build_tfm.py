@@ -366,21 +366,29 @@ def _copy_tfm_ns_files(source, target):
         yaml_data = yaml.safe_load(ns_import)
         logging.info("Copying files/folders from TF-M to Mbed OS")
         mbed_os_data = yaml_data["mbed-os"]
-        _check_and_copy(mbed_os_data[target], mbed_path)
-        _check_and_copy(mbed_os_data["common"], mbed_path)
+        if target in mbed_os_data:
+            _check_and_copy(mbed_os_data[target], mbed_path)
+        if "common" in mbed_os_data:
+            _check_and_copy(mbed_os_data["common"], mbed_path)
         if "TFM_V8M" in TARGET_MAP[target].extra_labels:
-            _check_and_copy(mbed_os_data["v8-m"], mbed_path)
+            if "v8-m" in mbed_os_data:
+                _check_and_copy(mbed_os_data["v8-m"], mbed_path)
         if "TFM_DUALCPU" in TARGET_MAP[target].extra_labels:
-            _check_and_copy(mbed_os_data["dualcpu"], mbed_path)
+            if "dualcpu" in mbed_os_data:
+                _check_and_copy(mbed_os_data["dualcpu"], mbed_path)
 
         logging.info("Copying files/folders from TF-M to regression test")
         tf_regression_data = yaml_data["tf-m-regression"]
-        _check_and_copy(tf_regression_data[target], ROOT)
-        _check_and_copy(tf_regression_data["common"], ROOT)
+        if target in tf_regression_data:
+            _check_and_copy(tf_regression_data[target], ROOT)
+        if "common" in tf_regression_data:
+            _check_and_copy(tf_regression_data["common"], ROOT)
         if "TFM_V8M" in TARGET_MAP[target].extra_labels:
-            _check_and_copy(tf_regression_data["v8-m"], ROOT)
+            if "v8-m" in tf_regression_data:
+                _check_and_copy(tf_regression_data["v8-m"], ROOT)
         if "TFM_DUALCPU" in TARGET_MAP[target].extra_labels:
-            _check_and_copy(tf_regression_data["dualcpu"], ROOT)
+            if "dualcpu" in tf_regression_data:
+                _check_and_copy(tf_regression_data["dualcpu"], ROOT)
 
 def _build_tfm(args):
     """
