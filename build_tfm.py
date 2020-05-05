@@ -366,6 +366,7 @@ def _copy_tfm_ns_files(source, target):
         yaml_data = yaml.safe_load(ns_import)
         logging.info("Copying files/folders from TF-M to Mbed OS")
         mbed_os_data = yaml_data["mbed-os"]
+        _check_and_copy(mbed_os_data[target], mbed_path)
         _check_and_copy(mbed_os_data["common"], mbed_path)
         if "TFM_V8M" in TARGET_MAP[target].extra_labels:
             _check_and_copy(mbed_os_data["v8-m"], mbed_path)
@@ -374,6 +375,7 @@ def _copy_tfm_ns_files(source, target):
 
         logging.info("Copying files/folders from TF-M to regression test")
         tf_regression_data = yaml_data["tf-m-regression"]
+        _check_and_copy(tf_regression_data[target], ROOT)
         _check_and_copy(tf_regression_data["common"], ROOT)
         if "TFM_V8M" in TARGET_MAP[target].extra_labels:
             _check_and_copy(tf_regression_data["v8-m"], ROOT)
