@@ -8,7 +8,8 @@
     "target_overrides": {
         "*": {
              "platform.stdio-convert-newlines": true,
-             "platform.stdio-baud-rate": 115200
+             "platform.stdio-baud-rate": 115200,
+             "target.features_add": ["PSA"]
         },
         "ARM_MUSCA_A1": {
             "app.os-thread-user-stack-size": 8096
