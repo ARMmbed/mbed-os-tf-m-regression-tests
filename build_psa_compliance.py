@@ -18,35 +18,19 @@ limitations under the License.
 """
 
 import os
-from os.path import join, abspath, dirname, isdir, relpath
+from os.path import join, isdir, relpath
 import argparse
 import sys
 import signal
 import shutil
 import logging
-from psa_builder import are_dependencies_installed, check_and_clone_repo, exit_gracefully
-from psa_builder import run_cmd_and_return, run_cmd_output_realtime
-
-ROOT = abspath(dirname(__file__))
-ROOT_TEST_LIB = join(ROOT, "test", "lib")
-mbed_path = join(ROOT, "mbed-os")
-sys.path.insert(0, mbed_path)
+from psa_builder import *
 
 logging.basicConfig(level=logging.INFO,
                     format='[Build-PSA-Compliance-tests] %(asctime)s: %(message)s.',
                     datefmt='%H:%M:%S')
 
-TF_M_BUILD_DIR = join(mbed_path, 'features/FEATURE_PSA/TARGET_TFM/TARGET_IGNORE')
-VERSION_FILE_PATH = join(mbed_path, 'features/FEATURE_PSA/TARGET_TFM')
-
-dependencies = {
-    # If the remote repo is changed, please delete TARGET_IGNORE folder.
-    # Quick switch between remotes is not supported.
-    "psa-arch-tests": ['https://github.com/ARM-software/psa-arch-tests.git',
-                        'master'],
-    "mbed-crypto": ['https://github.com/ARMmbed/mbed-crypto.git',
-                    'mbedcrypto-3.0.1'],
-}
+ROOT_TEST_LIB = join(ROOT, "test", "lib")
 
 PSA_API_TARGETS = {
     "ARM_MUSCA_A": ["armv8m_ml", "tgt_dev_apis_tfm_musca_a"],
@@ -59,11 +43,13 @@ def _clone_psa_compliance_repo(args):
     Clone PSA compliance tests git repos and it's dependencies
     :param args: Command-line arguments
     """
-    check_and_clone_repo('psa-arch-tests', dependencies, TF_M_BUILD_DIR)
+    check_and_clone_repo('psa-arch-tests', dependencies["psa-api-compliance"],
+                            TF_M_BUILD_DIR)
 
     if args.suite == "CRYPTO":
         crypto_dir = join(TF_M_BUILD_DIR, 'psa-arch-tests')
-        check_and_clone_repo('mbed-crypto', dependencies, crypto_dir)
+        check_and_clone_repo('mbed-crypto', dependencies["psa-api-compliance"],
+                                crypto_dir)
 
 def _build_crypto():
     """
@@ -202,10 +188,11 @@ def _get_parser():
                         default=None)
 
     parser.add_argument("-s", "--suite",
-                        help="Test suite name (default : CRYPTO)",
-                        choices=["CRYPTO","INITIAL_ATTESTATION",
-                                 "PROTECTED_STORAGE","INTERNAL_TRUSTED_STORAGE"],
-                        default="CRYPTO")
+                        help="Test suite name",
+                        choices=PSA_SUITE_CHOICES,
+                        default=None,
+                        required=True
+                        )
 
     parser.add_argument("-r", "--range",
                         help="""

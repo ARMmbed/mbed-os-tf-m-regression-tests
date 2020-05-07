@@ -20,9 +20,41 @@ limitations under the License.
 import os
 import sys
 import subprocess
-from os.path import join, isdir
+from os.path import join, dirname, abspath, isdir
 import logging
 
+upstream_tfm = 'https://git.trustedfirmware.org/trusted-firmware-m.git'
+mbed_tfm = 'https://github.com/ARMmbed/trusted-firmware-m.git'
+
+dependencies = {
+    # If the remote repo is changed, please delete TARGET_IGNORE folder.
+    # Quick switch between remotes is not supported.
+    "tf-m": {
+        "trusted-firmware-m": [mbed_tfm, 'dev/feature-dualcore'],
+        "mbed-crypto": ['https://github.com/ARMmbed/mbed-crypto.git',
+                        'mbedcrypto-3.0.1'],
+        "CMSIS_5": ['https://github.com/ARM-software/CMSIS_5.git',
+                        '5.5.0']
+    },
+    "psa-api-compliance": {
+        "psa-arch-tests": ['https://github.com/ARM-software/psa-arch-tests.git',
+                            'master'],
+        "mbed-crypto": ['https://github.com/ARMmbed/mbed-crypto.git',
+                            'mbedcrypto-3.0.1']
+    }
+}
+
+
+PSA_SUITE_CHOICES = [
+    'CRYPTO',
+    'INITIAL_ATTESTATION',
+    'PROTECTED_STORAGE',
+    'INTERNAL_TRUSTED_STORAGE']
+
+ROOT = abspath(dirname(__file__))
+mbed_path = join(ROOT, "mbed-os")
+sys.path.insert(0, mbed_path)
+TF_M_BUILD_DIR = join(mbed_path, 'features/FEATURE_PSA/TARGET_TFM/TARGET_IGNORE')
 POPEN_INSTANCE = None
 
 def are_dependencies_installed():
