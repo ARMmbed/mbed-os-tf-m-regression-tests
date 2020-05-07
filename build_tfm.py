@@ -24,8 +24,7 @@ import sys
 import signal
 import shutil
 import logging
-from psa_builder import are_dependencies_installed, check_and_clone_repo, exit_gracefully
-from psa_builder import run_cmd_and_return, run_cmd_output_realtime
+from psa_builder import *
 
 try:
     import yaml
@@ -34,9 +33,6 @@ except ImportError as e:
     print("python3 -m pip install PyYAML")
     exit(1)
 
-ROOT = abspath(dirname(__file__))
-mbed_path = join(ROOT, "mbed-os")
-sys.path.insert(0, mbed_path)
 from tools.toolchains import TOOLCHAIN_CLASSES, TOOLCHAIN_PATHS
 from tools.targets import Target, TARGET_MAP, TARGET_NAMES
 
@@ -44,30 +40,14 @@ logging.basicConfig(level=logging.INFO,
                     format='[Build-TF-M] %(asctime)s: %(message)s.',
                     datefmt='%H:%M:%S')
 
-TF_M_BUILD_DIR = join(mbed_path, 'features/FEATURE_PSA/TARGET_TFM/TARGET_IGNORE')
 VERSION_FILE_PATH = join(mbed_path, 'features/FEATURE_PSA/TARGET_TFM')
 TC_DICT = {"ARMCLANG": "ARMC6",
            "GNUARM": "GCC_ARM"}
 
-SUITE_CHOICES = ['CRYPTO',
-                 'INITIAL_ATTESTATION',
-                 'PROTECTED_STORAGE',
-                 'INTERNAL_TRUSTED_STORAGE']
 SUPPORTED_TFM_PSA_CONFIGS = ['ConfigPsaApiTestIPC.cmake']
 SUPPORTED_TFM_CONFIGS = ['ConfigCoreIPC.cmake', # Default config
                          'ConfigRegressionIPC.cmake'] + SUPPORTED_TFM_PSA_CONFIGS
 
-upstream_tfm = 'https://git.trustedfirmware.org/trusted-firmware-m.git'
-mbed_tfm = 'https://github.com/ARMmbed/trusted-firmware-m.git'
-
-dependencies = {
-    # If the remote repo is changed, please delete TARGET_IGNORE folder.
-    # Quick switch between remotes is not supported.
-    "trusted-firmware-m": [mbed_tfm, 'dev/feature-dualcore'],
-    "mbed-crypto": ['https://github.com/ARMmbed/mbed-crypto.git',
-                    'mbedcrypto-3.0.1'],
-    "CMSIS_5": ['https://github.com/ARM-software/CMSIS_5.git', '5.5.0'],
-}
 
 def _detect_and_write_tfm_version(tfm_dir, commit):
     """
@@ -96,9 +76,10 @@ def _clone_tfm_repo(commit):
     Clone TF-M git repos and it's dependencies
     :param commit: If True then commit VERSION.txt
     """
-    check_and_clone_repo('trusted-firmware-m', dependencies, TF_M_BUILD_DIR)
-    check_and_clone_repo('mbed-crypto', dependencies, TF_M_BUILD_DIR)
-    check_and_clone_repo('CMSIS_5', dependencies, TF_M_BUILD_DIR)
+    check_and_clone_repo('trusted-firmware-m', dependencies['tf-m'],
+                            TF_M_BUILD_DIR)
+    check_and_clone_repo('mbed-crypto', dependencies['tf-m'], TF_M_BUILD_DIR)
+    check_and_clone_repo('CMSIS_5', dependencies['tf-m'], TF_M_BUILD_DIR)
     _detect_and_write_tfm_version(join(TF_M_BUILD_DIR, 'trusted-firmware-m'),
                                   commit)
 
@@ -483,7 +464,7 @@ def _get_parser():
 
     parser.add_argument("-s", "--suite",
                         help="Suite name for PSA API Tests",
-                        choices=SUITE_CHOICES,
+                        choices=PSA_SUITE_CHOICES,
                         default=None)
 
     return parser
@@ -510,7 +491,7 @@ def _main():
     if args.config in SUPPORTED_TFM_PSA_CONFIGS:
         if not args.suite:
             logging.info("Test suite required for supplied config: {}".format(
-                            ', '.join([t for t in SUITE_CHOICES])))
+                            ', '.join([t for t in PSA_SUITE_CHOICES])))
             return
 
     if not isdir(TF_M_BUILD_DIR):
