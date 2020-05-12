@@ -50,6 +50,11 @@ def _clone_psa_compliance_repo(args):
         crypto_dir = join(TF_M_BUILD_DIR, 'psa-arch-tests')
         check_and_clone_repo('mbed-crypto', dependencies["psa-api-compliance"],
                                 crypto_dir)
+    else:
+        # Applicable for INITIAL_ATTESTATION, INTERNAL_TRUSTED_STORAGE
+        # PROTECTED_STORAGE and STORAGE suites.
+        check_and_clone_repo('trusted-firmware-m', dependencies["tf-m"],
+                                TF_M_BUILD_DIR)
 
 def _build_crypto():
     """
@@ -93,6 +98,12 @@ def _run_cmake_build(cmake_build_dir, args):
             crypto_include = join(  TF_M_BUILD_DIR,
                                     'psa-arch-tests', 'mbed-crypto', 'include')
             cmake_cmd.append('-DPSA_INCLUDE_PATHS=' + crypto_include)
+        else:
+            # Applicable for INITIAL_ATTESTATION, INTERNAL_TRUSTED_STORAGE
+            # PROTECTED_STORAGE and STORAGE suites.
+            suite_include = join(TF_M_BUILD_DIR,
+                                'trusted-firmware-m', 'interface', 'include')
+            cmake_cmd.append('-DPSA_INCLUDE_PATHS=' + suite_include)
 
     if args.range:
         cmake_cmd.append('-DSUITE_TEST_RANGE=' + args.range)
@@ -139,8 +150,14 @@ def _copy_psa_libs(source, destination, args):
                                       relpath(pal_nspe_output, ROOT)))
     shutil.copy2(pal_nspe, pal_nspe_output)
 
-    suite = str(args.suite).lower()
-    test_combine = join(source, 'dev_apis', suite, 'test_combine.a')
+    if args.suite == "INITIAL_ATTESTATION" or args.suite == "CRYPTO":
+        suite_folder = str(args.suite).lower()
+    else:
+        # Applicable for INTERNAL_TRUSTED_STORAGE, PROTECTED_STORAGE
+        # and STORAGE suites.
+        suite_folder = 'storage'
+
+    test_combine = join(source, 'dev_apis', suite_folder, 'test_combine.a')
     test_combine_output = output_dir + 'libtest_combine.a'
     logging.info("Copying %s to %s" % (relpath(test_combine, source),
                                       relpath(test_combine_output, ROOT)))
