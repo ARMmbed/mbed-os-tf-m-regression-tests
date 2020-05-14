@@ -53,9 +53,9 @@ SUITE_CHOICES = ['CRYPTO',
                  'INITIAL_ATTESTATION',
                  'PROTECTED_STORAGE',
                  'INTERNAL_TRUSTED_STORAGE']
-SUPPORTED_TFM_PSA_CONFIGS = ['configs/ConfigPsaApiTestIPC.cmake']
-SUPPORTED_TFM_CONFIGS = ['configs/ConfigCoreIPC.cmake', # Default config
-                         'configs/ConfigRegressionIPC.cmake'] + SUPPORTED_TFM_PSA_CONFIGS
+SUPPORTED_TFM_PSA_CONFIGS = ['ConfigPsaApiTestIPC.cmake']
+SUPPORTED_TFM_CONFIGS = ['ConfigCoreIPC.cmake', # Default config
+                         'ConfigRegressionIPC.cmake'] + SUPPORTED_TFM_PSA_CONFIGS
 
 upstream_tfm = 'https://git.trustedfirmware.org/trusted-firmware-m.git'
 mbed_tfm = 'https://github.com/ARMmbed/trusted-firmware-m.git'
@@ -221,7 +221,7 @@ def _run_cmake_build(cmake_build_dir, args, tgt, tfm_config):
 
     cmake_cmd = ['cmake', '-GUnix Makefiles']
     cmake_cmd.append('-DPROJ_CONFIG=' + (join(TF_M_BUILD_DIR,
-                        'trusted-firmware-m', tfm_config)))
+                        'trusted-firmware-m', 'configs', tfm_config)))
     cmake_cmd.append('-DTARGET_PLATFORM=' + tgt[1])
     cmake_cmd.append('-DCOMPILER=' + tgt[2])
 
@@ -404,8 +404,6 @@ def _build_tfm(args):
 
     os.mkdir(cmake_build_dir)
 
-    tfm_config = args.config
-
     if args.mcu:
         if args.toolchain:
             """
@@ -419,7 +417,7 @@ def _build_tfm(args):
         else:
             tgt = _get_target_info(args.mcu)
 
-        _run_cmake_build(cmake_build_dir, args, tgt, tfm_config)
+        _run_cmake_build(cmake_build_dir, args, tgt, args.config)
 
         source = join(cmake_build_dir, 'install', 'outputs' ,tgt[1])
         _copy_binaries(source, tgt[3], tgt[2], tgt[0])
@@ -437,7 +435,7 @@ def _build_tfm(args):
             2: Toolchain
             3: Delivery directory
             """
-            _run_cmake_build(cmake_build_dir, args, tgt, tfm_config)
+            _run_cmake_build(cmake_build_dir, args, tgt, args.config)
 
             source = join(cmake_build_dir, 'install', 'outputs' ,tgt[1])
             _copy_binaries(source, tgt[3], tgt[2], tgt[0])
