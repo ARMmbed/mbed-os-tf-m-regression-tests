@@ -2,8 +2,8 @@
 
 This is a Mbed-flavored application which enables one to run the following
 with Mbed OS which can be enabled in `main.cpp`:
-* LED Blinky application (default).
-* TF-M regression test suite.
+* LED Blinky application.
+* TF-M regression test suite (default).
 * PSA Compliance test suite.
 
 ## Prerequisite
@@ -22,10 +22,10 @@ python3 build_tfm.py -m CY8CKIT_064S2_4343W -t GNUARM
 ## Building the TF-M Regression Test
 
 Use the `-c` option to specify the config overriding the default
-`configs/ConfigCoreIPC.cmake` config.
+`ConfigCoreIPC.cmake` config.
 
 ```
-python3 build_tfm.py -m CY8CKIT_064S2_4343W -t GNUARM -c configs/ConfigRegressionIPC.cmake
+python3 build_tfm.py -m CY8CKIT_064S2_4343W -t GNUARM -c ConfigRegressionIPC.cmake
 ```
 
 ## Building the PSA Compliance Test
@@ -40,7 +40,7 @@ python3 build_psa_compliance.py -m CY8CKIT_064S2_4343W -s CRYPTO -t GNUARM
 Then run `build_tfm.py` with the PSA API config.
 
 ```
-python3 build_tfm.py -m CY8CKIT_064S2_4343W -t GNUARM -c configs/ConfigPsaApiTestIPC.cmake -s CRYPTO
+python3 build_tfm.py -m CY8CKIT_064S2_4343W -t GNUARM -c ConfigPsaApiTestIPC.cmake -s CRYPTO
 ```
 
 ## Building the Mbed OS application
