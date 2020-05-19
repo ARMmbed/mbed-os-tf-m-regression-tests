@@ -33,8 +33,10 @@ logging.basicConfig(level=logging.INFO,
 ROOT_TEST_LIB = join(ROOT, "test", "lib")
 
 PSA_API_TARGETS = {
-    "ARM_MUSCA_A": ["armv8m_ml", "tgt_dev_apis_tfm_musca_a"],
-    "ARM_MUSCA_B1": ["armv8m_ml", "tgt_dev_apis_tfm_musca_b1"],
+    "ARM_MUSCA_A": ["armv8m_ml", "tgt_dev_apis_tfm_musca_a",
+                    "tgt_ff_tfm_musca_a"],
+    "ARM_MUSCA_B1": ["armv8m_ml", "tgt_dev_apis_tfm_musca_b1",
+                    "tgt_ff_tfm_musca_b1"],
     "CY8CKIT_064S2_4343W": ["armv7m" , "tgt_dev_apis_tfm_psoc64"]
 }
 
@@ -51,10 +53,33 @@ def _clone_psa_compliance_repo(args):
         check_and_clone_repo('mbed-crypto', dependencies["psa-api-compliance"],
                                 crypto_dir)
     else:
-        # Applicable for INITIAL_ATTESTATION, INTERNAL_TRUSTED_STORAGE
+        # Applicable for IPC, INITIAL_ATTESTATION, INTERNAL_TRUSTED_STORAGE
         # PROTECTED_STORAGE and STORAGE suites.
         check_and_clone_repo('trusted-firmware-m', dependencies["tf-m"],
                                 TF_M_BUILD_DIR)
+
+def _run_ff_prerequisites():
+    """
+    Run prerequisites required for Firmware Framework tests.
+    Update the manifests for TF-M in PSA compliance directory, so that
+    TF-M can update TF-M database with PSA test manifests.
+    """
+    manifest_dir = join(TF_M_BUILD_DIR, 'psa-arch-tests', 'api-tests')
+    cmd = ['python', 'tools/scripts/manifest_update.py']
+    retcode = run_cmd_output_realtime(cmd, manifest_dir)
+    if retcode:
+        msg = "Unable to update the manifest for TF-M"
+        logging.critical(msg)
+        sys.exit(1)
+
+    database_dir = join(TF_M_BUILD_DIR, 'trusted-firmware-m', 'tools')
+    cmd = ['python', 'tfm_parse_manifest_list.py', '-m',
+            'tfm_psa_ff_test_manifest_list.yaml', 'append']
+    retcode = run_cmd_output_realtime(cmd, database_dir)
+    if retcode:
+        msg = "Unable to update TF-M database with PSA test manifests"
+        logging.critical(msg)
+        sys.exit(1)
 
 def _build_crypto():
     """
@@ -81,7 +106,13 @@ def _run_cmake_build(cmake_build_dir, args):
     """
 
     cmake_cmd = ['cmake', '../', '-GUnix Makefiles']
-    cmake_cmd.append('-DTARGET=' + PSA_API_TARGETS.get(args.mcu)[1])
+
+    if args.suite == 'IPC':
+        cmake_cmd.append('-DTARGET=' + PSA_API_TARGETS.get(args.mcu)[2])
+        cmake_cmd.append('-DPLATFORM_PSA_ISOLATION_LEVEL=1')
+        cmake_cmd.append('-DSP_HEAP_MEM_SUPP=0')
+    else:
+        cmake_cmd.append('-DTARGET=' + PSA_API_TARGETS.get(args.mcu)[1])
 
     cmake_cmd.append('-DCPU_ARCH=' + PSA_API_TARGETS.get(args.mcu)[0])
 
@@ -94,15 +125,22 @@ def _run_cmake_build(cmake_build_dir, args):
         cmake_cmd.append('-DPSA_INCLUDE_PATHS=' + args.include)
     else:
         # Take in defaults
+        suite_include = join(TF_M_BUILD_DIR,
+                            'trusted-firmware-m', 'interface', 'include')
+
         if args.suite == "CRYPTO":
             crypto_include = join(  TF_M_BUILD_DIR,
                                     'psa-arch-tests', 'mbed-crypto', 'include')
             cmake_cmd.append('-DPSA_INCLUDE_PATHS=' + crypto_include)
+        elif args.suite == "IPC":
+            manifest_include = join(TF_M_BUILD_DIR,
+                                    'psa-arch-tests', 'api-tests',
+                                    'platform', 'manifests')
+            cmake_cmd.append('-DPSA_INCLUDE_PATHS=' + manifest_include +
+                            ';' + suite_include)
         else:
             # Applicable for INITIAL_ATTESTATION, INTERNAL_TRUSTED_STORAGE
             # PROTECTED_STORAGE and STORAGE suites.
-            suite_include = join(TF_M_BUILD_DIR,
-                                'trusted-firmware-m', 'interface', 'include')
             cmake_cmd.append('-DPSA_INCLUDE_PATHS=' + suite_include)
 
     if args.range:
@@ -150,14 +188,19 @@ def _copy_psa_libs(source, destination, args):
                                       relpath(pal_nspe_output, ROOT)))
     shutil.copy2(pal_nspe, pal_nspe_output)
 
-    if args.suite == "INITIAL_ATTESTATION" or args.suite == "CRYPTO":
+    if args.suite == "INITIAL_ATTESTATION" or args.suite == "CRYPTO" or \
+        args.suite == "IPC":
         suite_folder = str(args.suite).lower()
     else:
         # Applicable for INTERNAL_TRUSTED_STORAGE, PROTECTED_STORAGE
         # and STORAGE suites.
         suite_folder = 'storage'
 
-    test_combine = join(source, 'dev_apis', suite_folder, 'test_combine.a')
+    if args.suite == "IPC":
+        test_combine = join(source, 'ff', suite_folder, 'test_combine.a')
+    else:
+        test_combine = join(source, 'dev_apis', suite_folder, 'test_combine.a')
+
     test_combine_output = output_dir + 'libtest_combine.a'
     logging.info("Copying %s to %s" % (relpath(test_combine, source),
                                       relpath(test_combine_output, ROOT)))
@@ -180,6 +223,8 @@ def _build_psa_compliance(args):
 
     if "CRYPTO" == args.suite:
         _build_crypto()
+    elif "IPC" == args.suite:
+        _run_ff_prerequisites()
 
     _run_cmake_build(cmake_build_dir, args)
     _copy_psa_libs(cmake_build_dir, ROOT_TEST_LIB, args)
@@ -235,6 +280,13 @@ def _main():
     signal.signal(signal.SIGINT, exit_gracefully)
     parser = _get_parser()
     args = parser.parse_args()
+
+    # Issue : https://github.com/ARMmbed/mbed-os-tf-m-regression-tests/issues/11
+    # There is no support for this target to run Firmware Framework tests
+    if args.suite == 'IPC' and args.mcu == 'CY8CKIT_064S2_4343W':
+        logging.info("%s config is not supported for %s target" % (args.suite,
+                        args.mcu))
+        return
 
     if not isdir(TF_M_BUILD_DIR):
         os.mkdir(TF_M_BUILD_DIR)
