@@ -50,7 +50,8 @@ PSA_SUITE_CHOICES = [
     'INITIAL_ATTESTATION',
     'PROTECTED_STORAGE',
     'INTERNAL_TRUSTED_STORAGE',
-    'STORAGE']
+    'STORAGE',
+    'IPC']
 
 ROOT = abspath(dirname(__file__))
 mbed_path = join(ROOT, "mbed-os")

@@ -228,7 +228,9 @@ def _run_cmake_build(cmake_build_dir, args, tgt, tfm_config):
         elif args.suite == 'PROTECTED_STORAGE':
             cmake_cmd.append('-DPSA_API_TEST_PROTECTED_STORAGE=ON')
         elif args.suite == 'STORAGE':
-             cmake_cmd.append('-DPSA_API_TEST_STORAGE=ON')
+            cmake_cmd.append('-DPSA_API_TEST_STORAGE=ON')
+        elif args.suite == 'IPC':
+            cmake_cmd.append('-DPSA_API_TEST_IPC=ON')
 
     cmake_cmd.append('..')
 
