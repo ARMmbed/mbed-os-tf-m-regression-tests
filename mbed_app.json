@@ -3,15 +3,15 @@
         "os-mutex-num": 4,
         "os-semaphore-num": 4,
         "os-thread-num": 9,
-        "os-thread-user-stack-size": 16384
+        "os-thread-user-stack-size": 8096
     },
     "target_overrides": {
         "*": {
              "platform.stdio-convert-newlines": true,
              "platform.stdio-baud-rate": 115200
         },
-        "ARM_MUSCA_A1": {
-            "app.os-thread-user-stack-size": 8096
+        "CY8CKIT_064S2_4343W": {
+            "app.os-thread-user-stack-size": 16384
         }
     },
     "macros": [
