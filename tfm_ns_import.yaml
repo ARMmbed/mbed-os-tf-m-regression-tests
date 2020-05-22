@@ -16,6 +16,16 @@
 {
     # Files/folders to be copied to mbed-os folder
     "mbed-os": {
+        "ARM_MUSCA_B1": [
+            {
+                "src": "image_macros_preprocessed_ns.c",
+                "dst": "targets/TARGET_ARM_SSG/TARGET_MUSCA_B1/partition/image_macros_preprocessed_ns.c"
+            },
+            {
+                "src": "image_macros_preprocessed_s.c",
+                "dst": "targets/TARGET_ARM_SSG/TARGET_MUSCA_B1/partition/image_macros_preprocessed_s.c"
+            }
+        ],
         "ARM_MUSCA_A1": [
             {
                 "src": "image_macros_preprocessed.c",
@@ -121,6 +131,16 @@
     },
     # Files/folders to be copied to tf-m-regression folder
     "tf-m-regression": {
+         "ARM_MUSCA_B1": [
+            {
+                "src": "platform/ext/target/musca_b1/Device/Include/platform_base_address.h",
+                "dst": "tfm/targets/TARGET_ARM_SSG/TARGET_MUSCA_B1/device/platform_base_address.h"
+            },
+            {
+                "src": "platform/ext/target/musca_b1/tfm_peripherals_def.h",
+                "dst": "tfm/targets/TARGET_ARM_SSG/TARGET_MUSCA_B1/device/tfm_peripherals_def.h"
+            }
+         ],
          "ARM_MUSCA_A1": [
             {
                 "src": "platform/ext/target/musca_a/Device/Include/platform_base_address.h",
