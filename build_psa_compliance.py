@@ -33,7 +33,7 @@ logging.basicConfig(level=logging.INFO,
 ROOT_TEST_LIB = join(ROOT, "test", "lib")
 
 PSA_API_TARGETS = {
-    "ARM_MUSCA_A": ["armv8m_ml", "tgt_dev_apis_tfm_musca_a",
+    "ARM_MUSCA_A1": ["armv8m_ml", "tgt_dev_apis_tfm_musca_a",
                     "tgt_ff_tfm_musca_a"],
     "ARM_MUSCA_B1": ["armv8m_ml", "tgt_dev_apis_tfm_musca_b1",
                     "tgt_ff_tfm_musca_b1"],
