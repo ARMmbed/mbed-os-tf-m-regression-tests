@@ -84,19 +84,8 @@ def are_dependencies_installed():
         command = ['git', '--version']
         return run_cmd_and_return(command)
 
-    def _is_git_lfs_installed():
-        """
-        Check if git-lfs is installed
-        :return: errorcode
-        """
-        command = ['git', 'config', '--get', 'filter.lfs.required']
-        return run_cmd_and_return(command)
-
     if _is_git_installed() != 0:
         logging.error('"git" is not installed. Exiting...')
-        return -1
-    elif _is_git_lfs_installed() != 0:
-        logging.error('"git-lfs" is not installed. Exiting...')
         return -1
     elif _is_cmake_installed() != 0:
         logging.error('"Cmake" is not installed. Exiting...')
