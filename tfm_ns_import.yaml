@@ -42,6 +42,17 @@
                 "dst": "targets/TARGET_Cypress/TARGET_PSOC6/TARGET_CY8CKIT_064S2_4343W/partition/region_defs.h"
             }
         ],
+        # List of files that should not be copied to Mbed OS even though they are covered by directory rules
+        # in the next sections.
+        # This feature keeps the yaml file small and tidy by allowing folder rules and list of files to be excluded.
+        # Example:
+        #   "excluded_files": [
+        #       "crypto_extra.h"
+        #   ],
+
+        "excluded_files": [
+
+        ],
         "common": [
             {
                 "src": "install/export/tfm/src/tfm_crypto_ipc_api.c",

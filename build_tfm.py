@@ -313,13 +313,23 @@ def _copy_tfm_ns_files(source, target):
     Copy TF-M NS API files into Mbed OS
     :param source: Source directory containing TF-M NS API files
     """
+
+    mbed_os_excluded_files = []
+
+    def _is_excluded(filename):
+        for f in mbed_os_excluded_files:
+            if filename in f:
+                return True
+        return False
+
     def _copy_file(fname, path):
         src_file = join(source, fname["src"])
         dst_file = join(path, fname["dst"])
         if not isdir(dirname(dst_file)):
             os.makedirs(dirname(dst_file))
         try:
-            shutil.copy2(src_file, dst_file)
+            if not _is_excluded(src_file):
+                shutil.copy2(src_file, dst_file)
         except FileNotFoundError:
             # Workaround: TF-M build process exports all NS API files to
             # cmake build folder. The yaml file `tfm_ns_import.yaml` contains
@@ -338,7 +348,8 @@ def _copy_tfm_ns_files(source, target):
             os.makedirs(dst_folder)
         for f in os.listdir(src_folder):
             if os.path.isfile(join(src_folder, f)):
-                shutil.copy2(join(src_folder, f), join(dst_folder, f))
+                if not _is_excluded(f):
+                    shutil.copy2(join(src_folder, f), join(dst_folder, f))
 
     def _check_and_copy(list_of_items, path):
         for item in list_of_items:
@@ -351,6 +362,7 @@ def _copy_tfm_ns_files(source, target):
         yaml_data = yaml.safe_load(ns_import)
         logging.info("Copying files/folders from TF-M to Mbed OS")
         mbed_os_data = yaml_data["mbed-os"]
+        mbed_os_excluded_files = mbed_os_data["excluded_files"]
         if target in mbed_os_data:
             _check_and_copy(mbed_os_data[target], mbed_path)
         if "common" in mbed_os_data:
