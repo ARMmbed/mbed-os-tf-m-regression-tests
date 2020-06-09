@@ -375,6 +375,17 @@ def _copy_tfm_ns_files(source, target):
             if "dualcpu" in tf_regression_data:
                 _check_and_copy(tf_regression_data["dualcpu"], ROOT)
 
+def _copy_library(source, toolchain):
+    dest_lib_name = 'libtfm_non_secure_tests.ar' if toolchain == 'ARMCLANG' \
+                                                 else 'libtfm_non_secure_tests.a'
+    regression_lib_src = join(source, 'install', 'export', 'tfm', 'test', 'lib')
+    global TC_DICT
+    regression_lib_dest = join(ROOT, 'test', 'lib', 'TOOLCHAIN_' + TC_DICT[toolchain])
+    if not isdir(regression_lib_dest):
+        os.makedirs(regression_lib_dest)
+    shutil.copy2(join(regression_lib_src, 'libtfm_non_secure_tests.a'),
+                 join(regression_lib_dest, dest_lib_name))
+
 def _build_tfm(args):
     """
     Build TF-M
@@ -429,6 +440,7 @@ def _build_tfm(args):
         if args.commit:
             _commit_changes(tgt[3], tgt_list)
 
+    _copy_library(cmake_build_dir, tgt[2])
     _copy_tfm_ns_files(cmake_build_dir, tgt[0])
 
 def _get_parser():

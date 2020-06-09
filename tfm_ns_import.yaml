@@ -185,10 +185,6 @@
             {
                 "src": "install/export/tfm/test/inc",
                 "dst": "test/inc"
-            },
-            {
-                "src": "install/export/tfm/test/lib",
-                "dst": "test/lib"
             }
         ]
     }
