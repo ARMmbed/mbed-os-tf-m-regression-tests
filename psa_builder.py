@@ -56,7 +56,8 @@ PSA_SUITE_CHOICES = [
 ROOT = abspath(dirname(__file__))
 mbed_path = join(ROOT, "mbed-os")
 sys.path.insert(0, mbed_path)
-TF_M_BUILD_DIR = join(mbed_path, 'features/FEATURE_PSA/TARGET_TFM/TARGET_IGNORE')
+TF_M_BUILD_DIR = join(mbed_path,
+    'features/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_IGNORE')
 POPEN_INSTANCE = None
 
 def are_dependencies_installed():

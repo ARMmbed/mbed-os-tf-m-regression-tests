@@ -40,7 +40,8 @@ logging.basicConfig(level=logging.INFO,
                     format='[Build-TF-M] %(asctime)s: %(message)s.',
                     datefmt='%H:%M:%S')
 
-VERSION_FILE_PATH = join(mbed_path, 'features/FEATURE_PSA/TARGET_TFM')
+VERSION_FILE_PATH = join(mbed_path,
+                    'features/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM')
 TC_DICT = {"ARMCLANG": "ARMC6",
            "GNUARM": "GCC_ARM"}
 
