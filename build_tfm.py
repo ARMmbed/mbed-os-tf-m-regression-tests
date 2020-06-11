@@ -81,6 +81,12 @@ def _clone_tfm_repo(commit):
                             TF_M_BUILD_DIR)
     check_and_clone_repo('mbed-crypto', dependencies['tf-m'], TF_M_BUILD_DIR)
     check_and_clone_repo('CMSIS_5', dependencies['tf-m'], TF_M_BUILD_DIR)
+    fetch_extract_cmsis_pack(
+        name='CMSIS_5',
+        version=dependencies['tf-m']['CMSIS_5'][1],
+        dir=TF_M_BUILD_DIR,
+        url=dependencies['tf-m']['CMSIS_5'][0][:-4],
+    )
     _detect_and_write_tfm_version(join(TF_M_BUILD_DIR, 'trusted-firmware-m'),
                                   commit)
 
