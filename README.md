@@ -2,7 +2,6 @@
 
 This is a Mbed-flavored application which enables one to run the following
 with Mbed OS which can be enabled in `main.cpp`:
-* LED Blinky application.
 * TF-M regression test suite (default).
 * PSA Compliance test suite.
 
