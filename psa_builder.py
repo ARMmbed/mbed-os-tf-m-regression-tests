@@ -186,7 +186,7 @@ def fetch_extract_cmsis_pack(name, version, dir, url):
     dest_folder = os.path.join(dir, name)
     dest = os.path.join(dest_folder, dest_file)
 
-    r = requests.get(download_url, stream=True)
+    r = requests.get(download_url, stream=True, timeout=2.0)
     with open(dest, 'wb') as f:
         chunk_len = 2 ** 20
         length = r.headers.get('content-length')
