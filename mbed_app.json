@@ -1,4 +1,8 @@
 {
+    "config": {
+        "regression-test": 1,
+        "psa-compliance-test": 0
+    },
     "target_overrides": {
         "*": {
              "platform.stdio-convert-newlines": true,

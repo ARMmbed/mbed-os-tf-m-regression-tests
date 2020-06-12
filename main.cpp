@@ -3,14 +3,10 @@
 * SPDX-License-Identifier: Apache-2.0
 */
 
-// Toggle only one appropriate test.
-#define RUN_REGRESSION_TESTS        1
-#define RUN_PSA_COMPLIANCE_TESTS    0
-
 #include "mbed.h"
 #include "unity.h"
 
-#if RUN_REGRESSION_TESTS
+#if MBED_CONF_APP_REGRESSION_TEST
 
 #include "test_framework_integ_test.h"
 #include "tfm_peripherals_def.h"
@@ -40,9 +36,9 @@ int main(void)
     return 0;
 }
 
-#endif //RUN_REGRESSION_TESTS
+#endif //MBED_CONF_APP_REGRESSION_TEST
 
-#if RUN_PSA_COMPLIANCE_TESTS
+#if MBED_CONF_APP_PSA_COMPLIANCE_TEST
 
 extern "C" int32_t val_entry(void);
 
@@ -61,4 +57,4 @@ int main(void)
     return val_entry();
 }
 
-#endif //RUN_PSA_COMPLIANCE_TESTS
+#endif //MBED_CONF_APP_PSA_COMPLIANCE_TEST
