@@ -46,6 +46,12 @@ dependencies = {
     }
 }
 
+TC_DICT = {"ARMCLANG": "ARMC6",
+           "GNUARM": "GCC_ARM"}
+
+SUPPORTED_TFM_PSA_CONFIGS = ['ConfigPsaApiTestIPC.cmake']
+SUPPORTED_TFM_CONFIGS = ['ConfigCoreIPC.cmake', # Default config
+                         'ConfigRegressionIPC.cmake'] + SUPPORTED_TFM_PSA_CONFIGS
 
 PSA_SUITE_CHOICES = [
     'CRYPTO',
