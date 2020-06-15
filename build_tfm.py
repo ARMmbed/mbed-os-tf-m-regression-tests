@@ -42,12 +42,6 @@ logging.basicConfig(level=logging.INFO,
 
 VERSION_FILE_PATH = join(mbed_path,
                     'features/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM')
-TC_DICT = {"ARMCLANG": "ARMC6",
-           "GNUARM": "GCC_ARM"}
-
-SUPPORTED_TFM_PSA_CONFIGS = ['ConfigPsaApiTestIPC.cmake']
-SUPPORTED_TFM_CONFIGS = ['ConfigCoreIPC.cmake', # Default config
-                         'ConfigRegressionIPC.cmake'] + SUPPORTED_TFM_PSA_CONFIGS
 
 
 def _detect_and_write_tfm_version(tfm_dir, commit):
