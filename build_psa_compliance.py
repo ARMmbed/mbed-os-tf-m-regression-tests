@@ -88,13 +88,11 @@ def _build_crypto():
     folder = join(TF_M_BUILD_DIR, 'psa-arch-tests', 'mbed-crypto')
 
     command = ['make', '-C', folder, 'clean']
-    if run_cmd_and_return(command, True):
-        command = ['make', '-C', folder]
-        if run_cmd_output_realtime(command, folder):
-            logging.critical("Make build failed for crypto")
-            sys.exit(1)
-    else:
-        logging.critical("Make clean failed for crypto")
+    run_cmd_and_return(command)
+
+    command = ['make', '-C', folder]
+    if run_cmd_output_realtime(command, folder):
+        logging.critical("Make build failed for crypto")
         sys.exit(1)
 
 def _run_cmake_build(cmake_build_dir, args):
