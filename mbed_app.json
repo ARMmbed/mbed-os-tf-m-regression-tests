@@ -15,7 +15,7 @@
                  "EXPERIMENTAL_API"
              ]
         },
-        "CY8CKIT_064S2_4343W": {
+        "CY8CKIT_064B0S2_4343W": {
             "rtos.thread-user-stack-size": 16384
         }
     },

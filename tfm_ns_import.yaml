@@ -32,14 +32,14 @@
                 "dst": "targets/TARGET_ARM_SSG/TARGET_MUSCA_A1/partition/image_macros_preprocessed.c"
             }
         ],
-        "CY8CKIT_064S2_4343W": [
+        "CY8CKIT_064B0S2_4343W": [
             {
                 "src": "install/export/platform/ext/target/cypress/psoc64/partition/flash_layout.h",
-                "dst": "targets/TARGET_Cypress/TARGET_PSOC6/TARGET_CY8CKIT_064S2_4343W/partition/flash_layout.h"
+                "dst": "targets/TARGET_Cypress/TARGET_PSOC6/TARGET_CY8CKIT_064B0S2_4343W/partition/flash_layout.h"
             },
             {
                 "src": "install/export/platform/ext/target/cypress/psoc64/partition/region_defs.h",
-                "dst": "targets/TARGET_Cypress/TARGET_PSOC6/TARGET_CY8CKIT_064S2_4343W/partition/region_defs.h"
+                "dst": "targets/TARGET_Cypress/TARGET_PSOC6/TARGET_CY8CKIT_064B0S2_4343W/partition/region_defs.h"
             }
         ],
         # List of files that should not be copied to Mbed OS even though they are covered by directory rules
@@ -162,26 +162,26 @@
                 "dst": "tfm/targets/TARGET_ARM_SSG/TARGET_MUSCA_A1/device/tfm_peripherals_def.h"
             }
          ],
-        "CY8CKIT_064S2_4343W": [
+        "CY8CKIT_064B0S2_4343W": [
             {
                 "src": "platform/ext/target/cypress/psoc64/Device/Source/device_definition.c",
-                "dst": "tfm/targets/TARGET_Cypress/TARGET_PSOC6/TARGET_CY8CKIT_064S2_4343W/device/COMPONENT_CM4/device_definition.c"
+                "dst": "tfm/targets/TARGET_Cypress/TARGET_PSOC6/TARGET_CY8CKIT_064B0S2_4343W/device/COMPONENT_CM4/device_definition.c"
             },
             {
                 "src": "platform/ext/target/cypress/psoc64/Device/Include/device_definition.h",
-                "dst": "tfm/targets/TARGET_Cypress/TARGET_PSOC6/TARGET_CY8CKIT_064S2_4343W/device/COMPONENT_CM4/device_definition.h"
+                "dst": "tfm/targets/TARGET_Cypress/TARGET_PSOC6/TARGET_CY8CKIT_064B0S2_4343W/device/COMPONENT_CM4/device_definition.h"
             },
             {
                 "src": "platform/ext/target/cypress/psoc64/Device/Include/platform_base_address.h",
-                "dst": "tfm/targets/TARGET_Cypress/TARGET_PSOC6/TARGET_CY8CKIT_064S2_4343W/device/COMPONENT_CM4/platform_base_address.h"
+                "dst": "tfm/targets/TARGET_Cypress/TARGET_PSOC6/TARGET_CY8CKIT_064B0S2_4343W/device/COMPONENT_CM4/platform_base_address.h"
             },
             {
                 "src": "platform/ext/target/cypress/psoc64/tfm_peripherals_def.h",
-                "dst": "tfm/targets/TARGET_Cypress/TARGET_PSOC6/TARGET_CY8CKIT_064S2_4343W/device/COMPONENT_CM4/tfm_peripherals_def.h"
+                "dst": "tfm/targets/TARGET_Cypress/TARGET_PSOC6/TARGET_CY8CKIT_064B0S2_4343W/device/COMPONENT_CM4/tfm_peripherals_def.h"
             },
             {
                 "src": "platform/ext/target/cypress/psoc64/Device/Include/platform_irq.h",
-                "dst": "tfm/targets/TARGET_Cypress/TARGET_PSOC6/TARGET_CY8CKIT_064S2_4343W/device/COMPONENT_CM4/platform_irq.h"
+                "dst": "tfm/targets/TARGET_Cypress/TARGET_PSOC6/TARGET_CY8CKIT_064B0S2_4343W/device/COMPONENT_CM4/platform_irq.h"
             }
         ],
         "common": [

@@ -37,7 +37,7 @@ PSA_API_TARGETS = {
                     "tgt_ff_tfm_musca_a"],
     "ARM_MUSCA_B1": ["armv8m_ml", "tgt_dev_apis_tfm_musca_b1",
                     "tgt_ff_tfm_musca_b1"],
-    "CY8CKIT_064S2_4343W": ["armv7m" , "tgt_dev_apis_tfm_psoc64"]
+    "CY8CKIT_064B0S2_4343W": ["armv7m" , "tgt_dev_apis_tfm_psoc64"],
 }
 
 def _clone_psa_compliance_repo(args):
@@ -281,7 +281,7 @@ def _main():
 
     # Issue : https://github.com/ARMmbed/mbed-os-tf-m-regression-tests/issues/11
     # There is no support for this target to run Firmware Framework tests
-    if args.suite == 'IPC' and args.mcu == 'CY8CKIT_064S2_4343W':
+    if args.suite == 'IPC' and args.mcu == 'CY8CKIT_064B0S2_4343W':
         logging.info("%s config is not supported for %s target" % (args.suite,
                         args.mcu))
         return
