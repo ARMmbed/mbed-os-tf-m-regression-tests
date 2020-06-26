@@ -6,6 +6,15 @@ with Mbed OS which can be configured in the `config` section of `mbed_app.json`.
 
 ## Prerequisite
 
+### Development environment
+
+Please refer to `vagrant/bootstrap.sh` and `vagrant/bootstrap-user.sh` for
+details on how to set up a development environment. These scripts can be run
+locally on Linux, or you may use Vagrant to create a VM suitable for
+development (see `vagrant/README.md` for instructions).
+
+### Mbed initialization
+
 Run `mbed deploy` to obtain Mbed OS for this application.
 
 ## Building TF-M
