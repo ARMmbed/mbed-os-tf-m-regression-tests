@@ -6,5 +6,6 @@ apt-get install -y \
 	cmake \
 	gcc-multilib \
 	git \
+	mercurial \
 	python3-pip \
 	unzip \
