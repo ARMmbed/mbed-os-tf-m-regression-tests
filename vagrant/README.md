@@ -15,6 +15,7 @@ The following quickstart instructions will build you the TF-M regression tests
 for MUSCA_B1 on Mbed OS.
 
 ```
+$ cd vagrant
 $ vagrant up
 $ vagrant ssh
 $ cd mbed-os-tf-m-regression-tests
@@ -28,6 +29,7 @@ These quickstart instructions will build you the TF-M regression tests for
 MUSCA_B1 standalone (without Mbed OS).
 
 ```
+$ cd vagrant
 $ vagrant up
 $ vagrant ssh
 $ cd tfm/trusted-firmware-m
