@@ -21,3 +21,6 @@ unzip -o ARM.CMSIS.5.5.0.pack
 cd ~/tfm/trusted-firmware-m
 git remote add ARMmbed https://github.com/ARMmbed/trusted-firmware-m.git
 git fetch --all
+
+# Mbed tools
+python3 -m pip install mbed-cli
