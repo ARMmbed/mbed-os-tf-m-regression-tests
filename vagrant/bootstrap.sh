@@ -4,6 +4,7 @@ apt-get update
 apt-get install -y \
 	build-essential \
 	cmake \
+	gcc-multilib \
 	git \
 	python3-pip \
 	unzip \
