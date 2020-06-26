@@ -4,10 +4,28 @@ This is a fairly minimal Vagrantfile and associated bootstrap scripts for
 setting up a build environment for
 [TrustedFirmware-M](https://www.trustedfirmware.org).
 
+Note that the vagrant virtual machine will contain an independent copy of TF-M
+and the mbed-os-tf-m-regression-tests.
+
 # Howto
 
+### TF-M + Mbed OS Regression Tests
+
 The following quickstart instructions will build you the TF-M regression tests
-for MUSCA_B1.
+for MUSCA_B1 on Mbed OS.
+
+```
+$ vagrant up
+$ vagrant ssh
+$ cd mbed-os-tf-m-regression-tests
+$ mbed deploy
+$ python3 build_tfm.py -m ARM_MUSCA_B1 -t GNUARM -c ConfigRegressionIPC.cmake
+```
+
+### TF-M Standalone Regression Tests
+
+These quickstart instructions will build you the TF-M regression tests for
+MUSCA_B1 standalone (without Mbed OS).
 
 ```
 $ vagrant up
