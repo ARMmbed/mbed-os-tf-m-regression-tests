@@ -65,7 +65,7 @@ def _run_ff_prerequisites():
     TF-M can update TF-M database with PSA test manifests.
     """
     manifest_dir = join(TF_M_BUILD_DIR, 'psa-arch-tests', 'api-tests')
-    cmd = ['python', 'tools/scripts/manifest_update.py']
+    cmd = ['python3', join('tools', 'scripts', 'manifest_update.py')]
     retcode = run_cmd_output_realtime(cmd, manifest_dir)
     if retcode:
         msg = "Unable to update the manifest for TF-M"
@@ -73,7 +73,7 @@ def _run_ff_prerequisites():
         sys.exit(1)
 
     database_dir = join(TF_M_BUILD_DIR, 'trusted-firmware-m', 'tools')
-    cmd = ['python', 'tfm_parse_manifest_list.py', '-m',
+    cmd = ['python3', 'tfm_parse_manifest_list.py', '-m',
             'tfm_psa_ff_test_manifest_list.yaml', 'append']
     retcode = run_cmd_output_realtime(cmd, database_dir)
     if retcode:
