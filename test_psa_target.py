@@ -126,13 +126,15 @@ def _run_regression_test(args):
     Run TF-M regression test for the target
     :param args: Command-line arguments
     """
-    logging.info("Test TF-M regression...")
+    logging.info("Build TF-M regression tests for %s", args.mcu)
 
     _set_json_param(1,0)
     _build_tfm(args, 'ConfigRegressionIPC.cmake')
     _build_mbed_os(args)
 
-    _execute_test(args, 'REGRESSION')
+    if not args.build:
+        logging.info("Test TF-M regression for %s", args.mcu)
+        _execute_test(args, 'REGRESSION')
 
 def _run_compliance_test(args):
     """
@@ -142,13 +144,16 @@ def _run_compliance_test(args):
     _set_json_param(0,1)
 
     for suite in PSA_SUITE_CHOICES:
-        logging.info("Test PSA Compliance - %s suite..." % suite)
+        logging.info("Build PSA Compliance - %s suite for %s", suite, args.mcu)
 
         _build_psa_compliance(args, suite)
         _build_tfm(args, 'ConfigPsaApiTestIPC.cmake', suite)
         _build_mbed_os(args)
 
-        _execute_test(args, suite)
+        if not args.build:
+            logging.info(   "Test PSA Compliance - %s suite for %s",
+                            suite, args.mcu)
+            _execute_test(args, suite)
 
 def _get_parser():
     parser = argparse.ArgumentParser()
@@ -175,6 +180,10 @@ def _get_parser():
                         Target port for connection
                         """,
                         default=None)
+
+    parser.add_argument("-b", "--build",
+                        help="Build the target only",
+                        action="store_true")
 
     return parser
 
@@ -216,14 +225,17 @@ def _main():
     parser = _get_parser()
     args = parser.parse_args()
 
-    logging.info("Testing target - %s" % args.mcu)
+    logging.info("Target - %s", args.mcu)
 
     _init_results_dict()
 
     _run_regression_test(args)
     _run_compliance_test(args)
 
-    _print_results_and_exit()
+    if args.build:
+        logging.info("Target built succesfully - %s", args.mcu)
+    else:
+        _print_results_and_exit()
 
 if __name__ == '__main__':
     if are_dependencies_installed() != 0:
