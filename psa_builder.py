@@ -25,48 +25,58 @@ import logging
 import requests
 from zipfile import ZipFile
 
-upstream_tfm = 'https://git.trustedfirmware.org/trusted-firmware-m.git'
-mbed_tfm = 'https://github.com/ARMmbed/trusted-firmware-m.git'
+upstream_tfm = "https://git.trustedfirmware.org/trusted-firmware-m.git"
+mbed_tfm = "https://github.com/ARMmbed/trusted-firmware-m.git"
 
 dependencies = {
     # If the remote repo is changed, please delete TARGET_IGNORE folder.
     # Quick switch between remotes is not supported.
     "tf-m": {
-        "trusted-firmware-m": [mbed_tfm, 'dev/feature-dualcore'],
-        "mbed-crypto": ['https://github.com/ARMmbed/mbed-crypto.git',
-                        'mbedcrypto-3.0.1'],
-        "CMSIS_5": ['https://github.com/ARM-software/CMSIS_5.git',
-                        '5.5.0']
+        "trusted-firmware-m": [mbed_tfm, "dev/feature-dualcore"],
+        "mbed-crypto": [
+            "https://github.com/ARMmbed/mbed-crypto.git",
+            "mbedcrypto-3.0.1",
+        ],
+        "CMSIS_5": ["https://github.com/ARM-software/CMSIS_5.git", "5.5.0"],
     },
     "psa-api-compliance": {
-        "psa-arch-tests": ['https://github.com/ARM-software/psa-arch-tests.git',
-                            'master'],
-        "mbed-crypto": ['https://github.com/ARMmbed/mbed-crypto.git',
-                            'mbedcrypto-3.0.1']
-    }
+        "psa-arch-tests": [
+            "https://github.com/ARM-software/psa-arch-tests.git",
+            "master",
+        ],
+        "mbed-crypto": [
+            "https://github.com/ARMmbed/mbed-crypto.git",
+            "mbedcrypto-3.0.1",
+        ],
+    },
 }
 
-TC_DICT = {"ARMCLANG": "ARMC6",
-           "GNUARM": "GCC_ARM"}
+TC_DICT = {"ARMCLANG": "ARMC6", "GNUARM": "GCC_ARM"}
 
-SUPPORTED_TFM_PSA_CONFIGS = ['ConfigPsaApiTestIPC.cmake']
-SUPPORTED_TFM_CONFIGS = ['ConfigCoreIPC.cmake', # Default config
-                         'ConfigRegressionIPC.cmake'] + SUPPORTED_TFM_PSA_CONFIGS
+SUPPORTED_TFM_PSA_CONFIGS = ["ConfigPsaApiTestIPC.cmake"]
+SUPPORTED_TFM_CONFIGS = [
+    "ConfigCoreIPC.cmake",  # Default config
+    "ConfigRegressionIPC.cmake",
+] + SUPPORTED_TFM_PSA_CONFIGS
 
 PSA_SUITE_CHOICES = [
-    'CRYPTO',
-    'INITIAL_ATTESTATION',
-    'PROTECTED_STORAGE',
-    'INTERNAL_TRUSTED_STORAGE',
-    'STORAGE',
-    'IPC']
+    "CRYPTO",
+    "INITIAL_ATTESTATION",
+    "PROTECTED_STORAGE",
+    "INTERNAL_TRUSTED_STORAGE",
+    "STORAGE",
+    "IPC",
+]
 
 ROOT = abspath(dirname(__file__))
 mbed_path = join(ROOT, "mbed-os")
 sys.path.insert(0, mbed_path)
-TF_M_BUILD_DIR = join(mbed_path,
-    'features/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_IGNORE')
+TF_M_BUILD_DIR = join(
+    mbed_path,
+    "features/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_IGNORE",
+)
 POPEN_INSTANCE = None
+
 
 def are_dependencies_installed():
     def _is_cmake_installed():
@@ -74,7 +84,7 @@ def are_dependencies_installed():
         Check if Cmake is installed
         :return: errorcode
         """
-        command = ['cmake', '--version']
+        command = ["cmake", "--version"]
         return run_cmd_and_return(command)
 
     def _is_make_installed():
@@ -82,7 +92,7 @@ def are_dependencies_installed():
         Check if GNU Make is installed
         :return: errorcode
         """
-        command = ['make', '--version']
+        command = ["make", "--version"]
         return run_cmd_and_return(command)
 
     def _is_git_installed():
@@ -90,7 +100,7 @@ def are_dependencies_installed():
         Check if git is installed
         :return: errorcode
         """
-        command = ['git', '--version']
+        command = ["git", "--version"]
         return run_cmd_and_return(command)
 
     if _is_git_installed() != 0:
@@ -105,6 +115,7 @@ def are_dependencies_installed():
     else:
         return 0
 
+
 def run_cmd_and_return(command, output=False):
     """
     Run the command in the system and return either error code or output.
@@ -118,9 +129,10 @@ def run_cmd_and_return(command, output=False):
     """
 
     global POPEN_INSTANCE
-    with open(os.devnull, 'w') as fnull:
-        POPEN_INSTANCE = subprocess.Popen(command, stdout=subprocess.PIPE,
-                                stderr=fnull)
+    with open(os.devnull, "w") as fnull:
+        POPEN_INSTANCE = subprocess.Popen(
+            command, stdout=subprocess.PIPE, stderr=fnull
+        )
 
         std_out, __ = POPEN_INSTANCE.communicate()
         retcode = POPEN_INSTANCE.returncode
@@ -130,6 +142,7 @@ def run_cmd_and_return(command, output=False):
             return std_out.decode("utf-8")
         else:
             return retcode
+
 
 def run_cmd_output_realtime(command, cmake_build_dir):
     """
@@ -143,15 +156,20 @@ def run_cmd_output_realtime(command, cmake_build_dir):
     :return: Return the error code from child process
     """
     global POPEN_INSTANCE
-    POPEN_INSTANCE = subprocess.Popen(command, stdout=subprocess.PIPE,
-                                stderr=subprocess.STDOUT, cwd=cmake_build_dir)
-    for line in iter(POPEN_INSTANCE.stdout.readline, b''):
-        logging.info(line.decode("utf-8").strip('\n'))
+    POPEN_INSTANCE = subprocess.Popen(
+        command,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        cwd=cmake_build_dir,
+    )
+    for line in iter(POPEN_INSTANCE.stdout.readline, b""):
+        logging.info(line.decode("utf-8").strip("\n"))
 
     POPEN_INSTANCE.communicate()
     retcode = POPEN_INSTANCE.returncode
     POPEN_INSTANCE = None
     return retcode
+
 
 def check_and_clone_repo(name, deps, dir):
     """
@@ -163,20 +181,20 @@ def check_and_clone_repo(name, deps, dir):
 
     gitref = deps.get(name)[1]
     if not isdir(join(dir, name)):
-        logging.info('Cloning %s repo', name)
-        cmd = ['git', '-C', dir, 'clone', '-b',
-               gitref, deps.get(name)[0]]
+        logging.info("Cloning %s repo", name)
+        cmd = ["git", "-C", dir, "clone", "-b", gitref, deps.get(name)[0]]
         run_cmd_and_return(cmd)
-        logging.info('Cloned %s repo successfully', name)
+        logging.info("Cloned %s repo successfully", name)
     else:
-        logging.info('%s repo exists, fetching latest...', name)
-        cmd = ['git', '-C', join(dir, name), 'fetch']
+        logging.info("%s repo exists, fetching latest...", name)
+        cmd = ["git", "-C", join(dir, name), "fetch"]
         run_cmd_and_return(cmd)
-        logging.info('%s repo exists, checking out %s...', name, gitref)
-        head = 'origin/' + gitref
-        cmd = ['git', '-C', join(dir, name), 'checkout', head]
+        logging.info("%s repo exists, checking out %s...", name, gitref)
+        head = "origin/" + gitref
+        cmd = ["git", "-C", join(dir, name), "checkout", head]
         run_cmd_and_return(cmd)
-        logging.info('Checked out %s successfully', gitref)
+        logging.info("Checked out %s successfully", gitref)
+
 
 def fetch_extract_cmsis_pack(name, version, dir, url):
     """
@@ -186,29 +204,30 @@ def fetch_extract_cmsis_pack(name, version, dir, url):
     :param dir: Directory to download to
     :param url: URL of the GitHub repo to download from
     """
-    dest_file = 'ARM.CMSIS.' + version + '.pack'
-    download_url = url + '/releases/download/' + version + '/' + dest_file
-    logging.info('Downloading %s...', download_url)
+    dest_file = "ARM.CMSIS." + version + ".pack"
+    download_url = url + "/releases/download/" + version + "/" + dest_file
+    logging.info("Downloading %s...", download_url)
     dest_folder = os.path.join(dir, name)
     dest = os.path.join(dest_folder, dest_file)
 
     r = requests.get(download_url, stream=True, timeout=30.0)
-    with open(dest, 'wb') as f:
+    with open(dest, "wb") as f:
         chunk_len = 2 ** 20
-        length = r.headers.get('content-length')
+        length = r.headers.get("content-length")
         if not length:
-            msg = 'No content-length header available at %s' % (download_url)
+            msg = "No content-length header available at %s" % (download_url)
             raise requests.InvalidHeader(msg)
         num_chunks = int(length) / chunk_len + 1
         i = 0
         for chunk in r.iter_content(chunk_size=chunk_len):
             if chunk:
                 i = i + 1
-                logging.info('Downloaded chunk %d/%d', i, num_chunks)
+                logging.info("Downloaded chunk %d/%d", i, num_chunks)
                 f.write(chunk)
-    logging.info('Extracting %s...', dest_file)
-    with ZipFile(dest, 'r') as f:
-      f.extractall(path=dest_folder)
+    logging.info("Extracting %s...", dest_file)
+    with ZipFile(dest, "r") as f:
+        f.extractall(path=dest_folder)
+
 
 def exit_gracefully(signum, frame):
     """

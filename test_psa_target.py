@@ -27,11 +27,14 @@ import json
 import shutil
 from psa_builder import *
 
-logging.basicConfig(level=logging.INFO,
-                    format='[Test-Target] %(asctime)s: %(message)s.',
-                    datefmt='%H:%M:%S')
+logging.basicConfig(
+    level=logging.INFO,
+    format="[Test-Target] %(asctime)s: %(message)s.",
+    datefmt="%H:%M:%S",
+)
 
 test_results = {}
+
 
 def _set_json_param(regression, compliance):
     """
@@ -39,29 +42,37 @@ def _set_json_param(regression, compliance):
     :param regression: set regression build
     :param compliance: set compliance build
     """
-    with open('mbed_app.json', 'r') as json_file:
+    with open("mbed_app.json", "r") as json_file:
         json_object = json.load(json_file)
         json_file.close()
 
-    json_object['config']['regression-test'] = regression
-    json_object['config']['psa-compliance-test'] = compliance
+    json_object["config"]["regression-test"] = regression
+    json_object["config"]["psa-compliance-test"] = compliance
 
-    with open('mbed_app.json', 'w') as json_file:
+    with open("mbed_app.json", "w") as json_file:
         json.dump(json_object, json_file, indent=4)
         json_file.close()
+
 
 def _build_mbed_os(args):
     """
     Build Mbed OS
     :param args: Command-line arguments
     """
-    cmd = [ 'mbed', 'compile', '-m', args.mcu, '-t',
-            TC_DICT.get(args.toolchain)]
+    cmd = [
+        "mbed",
+        "compile",
+        "-m",
+        args.mcu,
+        "-t",
+        TC_DICT.get(args.toolchain),
+    ]
 
     retcode = run_cmd_output_realtime(cmd, ROOT)
     if retcode:
         logging.critical("Unable to build Mbed OS target - %s", args.mcu)
         sys.exit(1)
+
 
 def _build_psa_compliance(args, suite):
     """
@@ -69,13 +80,24 @@ def _build_psa_compliance(args, suite):
     :param args: Command-line arguments
     :param suite: Test suite for PSA compliance
     """
-    cmd = [ 'python3', 'build_psa_compliance.py', '-m', args.mcu, '-t',
-            args.toolchain, '-s', suite]
+    cmd = [
+        "python3",
+        "build_psa_compliance.py",
+        "-m",
+        args.mcu,
+        "-t",
+        args.toolchain,
+        "-s",
+        suite,
+    ]
 
     retcode = run_cmd_output_realtime(cmd, ROOT)
     if retcode:
-        logging.critical("Unable to build PSA compliance tests for target - %s", args.mcu)
+        logging.critical(
+            "Unable to build PSA compliance tests for target - %s", args.mcu
+        )
         sys.exit(1)
+
 
 def _build_tfm(args, config, suite=None):
     """
@@ -84,17 +106,26 @@ def _build_tfm(args, config, suite=None):
     :param config: Config type
     :param suite: Test suite for PSA compliance
     """
-    cmd = [ 'python3', 'build_tfm.py', '-m', args.mcu, '-t', args.toolchain,
-            '-c', config]
+    cmd = [
+        "python3",
+        "build_tfm.py",
+        "-m",
+        args.mcu,
+        "-t",
+        args.toolchain,
+        "-c",
+        config,
+    ]
 
     if config in SUPPORTED_TFM_PSA_CONFIGS:
-        cmd.append('-s')
+        cmd.append("-s")
         cmd.append(suite)
 
     retcode = run_cmd_output_realtime(cmd, ROOT)
     if retcode:
         logging.critical("Unable to build TF-M for target - %s", args.mcu)
         sys.exit(1)
+
 
 def _execute_test(args, suite):
     """
@@ -104,19 +135,34 @@ def _execute_test(args, suite):
     """
     logging.info("Executing tests for - %s suite..." % suite)
 
-    mbed_os_dir = join( ROOT, 'BUILD', args.mcu,
-                        TC_DICT.get(args.toolchain))
-    log_dir = join(ROOT, 'test', 'logs', args.mcu, (suite + '.log'))
+    mbed_os_dir = join(ROOT, "BUILD", args.mcu, TC_DICT.get(args.toolchain))
+    log_dir = join(ROOT, "test", "logs", args.mcu, (suite + ".log"))
 
-    cmd = [ 'mbedhtrun', '--sync=0', '-p', args.port, '--compare-log', log_dir,
-            '--polling-timeout', '300', '-d', args.disk, '-f',
-            'mbed-os-tf-m-regression-tests.bin', '--skip-reset', '-C', '1']
+    cmd = [
+        "mbedhtrun",
+        "--sync=0",
+        "-p",
+        args.port,
+        "--compare-log",
+        log_dir,
+        "--polling-timeout",
+        "300",
+        "-d",
+        args.disk,
+        "-f",
+        "mbed-os-tf-m-regression-tests.bin",
+        "--skip-reset",
+        "-C",
+        "1",
+    ]
 
     retcode = run_cmd_output_realtime(cmd, mbed_os_dir)
     if retcode:
-        logging.critical(   "Test **FAILED** for target %s, suite %s",
-                            args.mcu, suite)
+        logging.critical(
+            "Test **FAILED** for target %s, suite %s", args.mcu, suite
+        )
         test_results[suite] = False
+
 
 def _run_regression_test(args):
     """
@@ -125,64 +171,70 @@ def _run_regression_test(args):
     """
     logging.info("Build TF-M regression tests for %s", args.mcu)
 
-    _set_json_param(1,0)
-    _build_tfm(args, 'ConfigRegressionIPC.cmake')
+    _set_json_param(1, 0)
+    _build_tfm(args, "ConfigRegressionIPC.cmake")
     _build_mbed_os(args)
 
     if not args.build:
         logging.info("Test TF-M regression for %s", args.mcu)
-        _execute_test(args, 'REGRESSION')
+        _execute_test(args, "REGRESSION")
+
 
 def _run_compliance_test(args):
     """
     Run PSA Compliance test for the target
     :param args: Command-line arguments
     """
-    _set_json_param(0,1)
+    _set_json_param(0, 1)
 
     for suite in PSA_SUITE_CHOICES:
         logging.info("Build PSA Compliance - %s suite for %s", suite, args.mcu)
 
         _build_psa_compliance(args, suite)
-        _build_tfm(args, 'ConfigPsaApiTestIPC.cmake', suite)
+        _build_tfm(args, "ConfigPsaApiTestIPC.cmake", suite)
         _build_mbed_os(args)
 
         if not args.build:
-            logging.info(   "Test PSA Compliance - %s suite for %s",
-                            suite, args.mcu)
+            logging.info(
+                "Test PSA Compliance - %s suite for %s", suite, args.mcu
+            )
             _execute_test(args, suite)
+
 
 def _get_parser():
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("-m", "--mcu",
-                        help="Build for the given MCU",
-                        required=True,
-                        choices=["ARM_MUSCA_B1"],
-                        default=None)
+    parser.add_argument(
+        "-m",
+        "--mcu",
+        help="Build for the given MCU",
+        required=True,
+        choices=["ARM_MUSCA_B1"],
+        default=None,
+    )
 
-    parser.add_argument("-t", "--toolchain",
-                        help="Build for the given toolchain (GNUARM)",
-                        default="GNUARM",
-                        choices=["ARMCLANG", "GNUARM"])
+    parser.add_argument(
+        "-t",
+        "--toolchain",
+        help="Build for the given toolchain (GNUARM)",
+        default="GNUARM",
+        choices=["ARMCLANG", "GNUARM"],
+    )
 
-    parser.add_argument("-d", "--disk",
-                        help="""
-                        Target disk (mount point) path
-                        """,
-                        default=None)
+    parser.add_argument(
+        "-d", "--disk", help="Target disk (mount point) path", default=None,
+    )
 
-    parser.add_argument("-p", "--port",
-                        help="""
-                        Target port for connection
-                        """,
-                        default=None)
+    parser.add_argument(
+        "-p", "--port", help="Target port for connection", default=None,
+    )
 
-    parser.add_argument("-b", "--build",
-                        help="Build the target only",
-                        action="store_true")
+    parser.add_argument(
+        "-b", "--build", help="Build the target only", action="store_true",
+    )
 
     return parser
+
 
 def _init_results_dict():
     """
@@ -190,9 +242,10 @@ def _init_results_dict():
     """
     global test_results
     test_results = {}
-    complete_list = ['REGRESSION'] + PSA_SUITE_CHOICES
+    complete_list = ["REGRESSION"] + PSA_SUITE_CHOICES
     for index in complete_list:
         test_results[index] = True
+
 
 def _print_results_and_exit():
     """
@@ -214,6 +267,7 @@ def _print_results_and_exit():
     if err == True:
         sys.exit(1)
 
+
 def _main():
     """
     Build and run Regression, PSA compliance for suported targets
@@ -234,7 +288,8 @@ def _main():
     else:
         _print_results_and_exit()
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     if are_dependencies_installed() != 0:
         sys.exit(1)
     else:
