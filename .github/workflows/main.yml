@@ -21,9 +21,8 @@ jobs:
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
-
-    # Runs a single command using the runners shell
     - name: Black Python Code Formatter
       uses: lgeiger/black-action@v1.0.1
-
+      with:
+        args: ". -l 79 --check"
 
