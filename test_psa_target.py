@@ -60,8 +60,7 @@ def _build_mbed_os(args):
 
     retcode = run_cmd_output_realtime(cmd, ROOT)
     if retcode:
-        msg = "Unable to build Mbed OS target - %s" % args.mcu
-        logging.critical(msg)
+        logging.critical("Unable to build Mbed OS target - %s", args.mcu)
         sys.exit(1)
 
 def _build_psa_compliance(args, suite):
@@ -75,8 +74,7 @@ def _build_psa_compliance(args, suite):
 
     retcode = run_cmd_output_realtime(cmd, ROOT)
     if retcode:
-        msg = "Unable to build PSA compliance tests for target - %s" % args.mcu
-        logging.critical(msg)
+        logging.critical("Unable to build PSA compliance tests for target - %s", args.mcu)
         sys.exit(1)
 
 def _build_tfm(args, config, suite=None):
@@ -95,8 +93,7 @@ def _build_tfm(args, config, suite=None):
 
     retcode = run_cmd_output_realtime(cmd, ROOT)
     if retcode:
-        msg = "Unable to build TF-M for target - %s" % args.mcu
-        logging.critical(msg)
+        logging.critical("Unable to build TF-M for target - %s", args.mcu)
         sys.exit(1)
 
 def _execute_test(args, suite):
@@ -117,8 +114,8 @@ def _execute_test(args, suite):
 
     retcode = run_cmd_output_realtime(cmd, mbed_os_dir)
     if retcode:
-        msg = "Test **FAILED** for target %s, suite %s" % (args.mcu, suite)
-        logging.critical(msg)
+        logging.critical(   "Test **FAILED** for target %s, suite %s",
+                            args.mcu, suite)
         test_results[suite] = False
 
 def _run_regression_test(args):
@@ -202,7 +199,7 @@ def _print_results_and_exit():
     Print results summary for the target and exit if any error
     """
     err = False
-    print("*** Test execution status ***")
+    logging.info("*** Test execution status ***")
 
     for key in test_results:
         if test_results.get(key):
@@ -210,9 +207,9 @@ def _print_results_and_exit():
         else:
             result = "FAILED"
             err = True
-        print (key + " suite : " + result)
+        logging.info(key + " suite : " + result)
 
-    print ("*** End Report ***")
+    logging.info("*** End Report ***")
 
     if err == True:
         sys.exit(1)
