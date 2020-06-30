@@ -7,6 +7,10 @@ setting up a build environment for
 Note that the vagrant virtual machine will contain an independent copy of TF-M
 and the mbed-os-tf-m-regression-tests.
 
+Note that by default vagrant shares `/vagrant` in the virtual machine with the
+host. You can use this directory to copy binaries from inside the vagrant
+machine out to the host for e.g. programming via USB.
+
 # Howto
 
 ### TF-M + Mbed OS Regression Tests
