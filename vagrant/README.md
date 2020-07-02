@@ -1,7 +1,7 @@
 # About
 
 This is a fairly minimal Vagrantfile and associated bootstrap scripts for
-setting up a build environment for
+setting up a GCC-based build environment for
 [TrustedFirmware-M](https://www.trustedfirmware.org).
 
 Note that the vagrant virtual machine will contain an independent copy of TF-M
