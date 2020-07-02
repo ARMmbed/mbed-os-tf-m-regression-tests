@@ -14,6 +14,8 @@ mkdir tfm
 cd ~/tfm
 git clone https://git.trustedfirmware.org/TF-M/trusted-firmware-m.git
 git clone https://github.com/ARMmbed/mbed-crypto.git -b mbedcrypto-3.0.1
+git clone https://git.trustedfirmware.org/TF-M/tf-m-tests.git
+git clone https://github.com/JuulLabs-OSS/mcuboot.git -b v1.6.0
 git clone https://github.com/ARM-software/CMSIS_5.git -b 5.5.0
 cd ~/tfm/CMSIS_5
 wget -q https://github.com/ARM-software/CMSIS_5/releases/download/5.5.0/ARM.CMSIS.5.5.0.pack
