@@ -57,8 +57,8 @@
                 "dst": "features/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/src/tfm_initial_attestation_ipc_api.c"
             },
             {
-                "src": "install/export/tfm/src/tfm_sst_ipc_api.c",
-                "dst": "features/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/src/tfm_sst_ipc_api.c"
+                "src": "install/export/tfm/src/tfm_ps_ipc_api.c",
+                "dst": "features/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/src/tfm_ps_ipc_api.c"
             },
             {
                 "src": "install/export/tfm/src/tfm_its_ipc_api.c",
