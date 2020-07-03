@@ -87,6 +87,8 @@ def _clone_tfm_repo(commit):
         "trusted-firmware-m", dependencies["tf-m"], TF_M_BUILD_DIR
     )
     check_and_clone_repo("mbed-crypto", dependencies["tf-m"], TF_M_BUILD_DIR)
+    check_and_clone_repo("mcuboot", dependencies["tf-m"], TF_M_BUILD_DIR)
+    check_and_clone_repo("tf-m-tests", dependencies["tf-m"], TF_M_BUILD_DIR)
     check_and_clone_repo("CMSIS_5", dependencies["tf-m"], TF_M_BUILD_DIR)
     fetch_extract_cmsis_pack(
         name="CMSIS_5",
