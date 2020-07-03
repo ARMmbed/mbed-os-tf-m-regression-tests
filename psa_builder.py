@@ -37,7 +37,6 @@ dependencies = {
             "https://github.com/ARMmbed/mbed-crypto.git",
             "mbedcrypto-3.0.1",
         ],
-        "CMSIS_5": ["https://github.com/ARM-software/CMSIS_5.git", "5.5.0"],
         "mcuboot": ["https://github.com/JuulLabs-OSS/mcuboot.git", "v1.6.0"],
         "tf-m-tests": [
             "https://git.trustedfirmware.org/TF-M/tf-m-tests.git",
@@ -199,39 +198,6 @@ def check_and_clone_repo(name, deps, dir):
         cmd = ["git", "-C", join(dir, name), "checkout", head]
         run_cmd_and_return(cmd)
         logging.info("Checked out %s successfully", gitref)
-
-
-def fetch_extract_cmsis_pack(name, version, dir, url):
-    """
-    Fetch and extract CMSIS from a CMSIS Pack
-    :param name: Name of the git repository
-    :param version: Version of the component
-    :param dir: Directory to download to
-    :param url: URL of the GitHub repo to download from
-    """
-    dest_file = "ARM.CMSIS." + version + ".pack"
-    download_url = url + "/releases/download/" + version + "/" + dest_file
-    logging.info("Downloading %s...", download_url)
-    dest_folder = os.path.join(dir, name)
-    dest = os.path.join(dest_folder, dest_file)
-
-    r = requests.get(download_url, stream=True, timeout=30.0)
-    with open(dest, "wb") as f:
-        chunk_len = 2 ** 20
-        length = r.headers.get("content-length")
-        if not length:
-            msg = "No content-length header available at %s" % (download_url)
-            raise requests.InvalidHeader(msg)
-        num_chunks = int(length) / chunk_len + 1
-        i = 0
-        for chunk in r.iter_content(chunk_size=chunk_len):
-            if chunk:
-                i = i + 1
-                logging.info("Downloaded chunk %d/%d", i, num_chunks)
-                f.write(chunk)
-    logging.info("Extracting %s...", dest_file)
-    with ZipFile(dest, "r") as f:
-        f.extractall(path=dest_folder)
 
 
 def exit_gracefully(signum, frame):
