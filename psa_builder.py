@@ -25,7 +25,7 @@ import logging
 import requests
 from zipfile import ZipFile
 
-upstream_tfm = "https://git.trustedfirmware.org/trusted-firmware-m.git"
+upstream_tfm = "https://git.trustedfirmware.org/TF-M/trusted-firmware-m.git"
 mbed_tfm = "https://github.com/ARMmbed/trusted-firmware-m.git"
 
 dependencies = {
