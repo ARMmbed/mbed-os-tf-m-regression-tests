@@ -38,6 +38,11 @@ dependencies = {
             "mbedcrypto-3.0.1",
         ],
         "CMSIS_5": ["https://github.com/ARM-software/CMSIS_5.git", "5.5.0"],
+        "mcuboot": ["https://github.com/JuulLabs-OSS/mcuboot.git", "v1.6.0"],
+        "tf-m-tests": [
+            "https://git.trustedfirmware.org/TF-M/tf-m-tests.git",
+            "master",
+        ],
     },
     "psa-api-compliance": {
         "psa-arch-tests": [
