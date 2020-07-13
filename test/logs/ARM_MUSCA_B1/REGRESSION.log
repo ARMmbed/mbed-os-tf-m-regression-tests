@@ -1,5 +1,5 @@
 Non-secure test suites summary
-Test suite 'PSA protected storage NS interface tests \(TFM_SST_TEST_1XXX\)' has .* PASSED
+Test suite 'PSA protected storage NS interface tests \(TFM_PS_TEST_1XXX\)' has .* PASSED
 Test suite 'PSA internal trusted storage NS interface tests \(TFM_ITS_TEST_1XXX\)' has .* PASSED
 Test suite 'Crypto non-secure interface test \(TFM_CRYPTO_TEST_6XXX\)' has .* PASSED
 Test suite 'Initial Attestation Service non-secure interface tests\(TFM_ATTEST_TEST_2XXX\)' has .* PASSED
