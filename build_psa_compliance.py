@@ -53,17 +53,9 @@ def _clone_psa_compliance_repo(args):
         "psa-arch-tests", dependencies["psa-api-compliance"], TF_M_BUILD_DIR
     )
 
-    if args.suite == "CRYPTO":
-        crypto_dir = join(TF_M_BUILD_DIR, "psa-arch-tests")
-        check_and_clone_repo(
-            "mbed-crypto", dependencies["psa-api-compliance"], crypto_dir
-        )
-    else:
-        # Applicable for IPC, INITIAL_ATTESTATION, INTERNAL_TRUSTED_STORAGE
-        # PROTECTED_STORAGE and STORAGE suites.
-        check_and_clone_repo(
-            "trusted-firmware-m", dependencies["tf-m"], TF_M_BUILD_DIR
-        )
+    check_and_clone_repo(
+        "trusted-firmware-m", dependencies["tf-m"], TF_M_BUILD_DIR
+    )
 
 
 def _run_ff_prerequisites():
@@ -92,21 +84,6 @@ def _run_ff_prerequisites():
     if retcode:
         msg = "Unable to update TF-M database with PSA test manifests"
         logging.critical(msg)
-        sys.exit(1)
-
-
-def _build_crypto():
-    """
-    Build crypto library
-    """
-    folder = join(TF_M_BUILD_DIR, "psa-arch-tests", "mbed-crypto")
-
-    command = ["make", "-C", folder, "clean"]
-    run_cmd_and_return(command)
-
-    command = ["make", "-C", folder]
-    if run_cmd_output_realtime(command, folder):
-        logging.critical("Make build failed for crypto")
         sys.exit(1)
 
 
@@ -142,12 +119,7 @@ def _run_cmake_build(cmake_build_dir, args):
             TF_M_BUILD_DIR, "trusted-firmware-m", "interface", "include"
         )
 
-        if args.suite == "CRYPTO":
-            crypto_include = join(
-                TF_M_BUILD_DIR, "psa-arch-tests", "mbed-crypto", "include"
-            )
-            cmake_cmd.append("-DPSA_INCLUDE_PATHS=" + crypto_include)
-        elif args.suite == "IPC":
+        if args.suite == "IPC":
             manifest_include = join(
                 TF_M_BUILD_DIR,
                 "psa-arch-tests",
@@ -159,8 +131,6 @@ def _run_cmake_build(cmake_build_dir, args):
                 "-DPSA_INCLUDE_PATHS=" + manifest_include + ";" + suite_include
             )
         else:
-            # Applicable for INITIAL_ATTESTATION, INTERNAL_TRUSTED_STORAGE
-            # PROTECTED_STORAGE and STORAGE suites.
             cmake_cmd.append("-DPSA_INCLUDE_PATHS=" + suite_include)
 
     if args.range:
@@ -258,9 +228,7 @@ def _build_psa_compliance(args):
 
     os.mkdir(cmake_build_dir)
 
-    if "CRYPTO" == args.suite:
-        _build_crypto()
-    elif "IPC" == args.suite:
+    if "IPC" == args.suite:
         _run_ff_prerequisites()
 
     _run_cmake_build(cmake_build_dir, args)
