@@ -48,10 +48,6 @@ dependencies = {
             "https://github.com/ARM-software/psa-arch-tests.git",
             "master",
         ],
-        "mbed-crypto": [
-            "https://github.com/ARMmbed/mbed-crypto.git",
-            "mbedcrypto-3.0.1",
-        ],
     },
 }
 
