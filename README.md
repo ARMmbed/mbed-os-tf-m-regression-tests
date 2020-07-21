@@ -50,6 +50,9 @@ Then run `build_tfm.py` with the PSA API config.
 python3 build_tfm.py -m CY8CKIT_064S2_4343W -t GNUARM -c ConfigPsaApiTestIPC.cmake -s CRYPTO
 ```
 
+Note: Make sure the TF-M Regression Test suite has PASSED on the board before
+running any PSA Compliance Test suite to avoid unpredictable behavior.
+
 ## Building the Mbed OS application
 
 ```
