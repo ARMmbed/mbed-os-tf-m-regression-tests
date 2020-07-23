@@ -8,4 +8,5 @@ apt-get install -y \
 	git \
 	mercurial \
 	python3-pip \
+	srecord \
 	unzip \

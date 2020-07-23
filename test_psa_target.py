@@ -127,6 +127,41 @@ def _build_tfm(args, config, suite=None):
         sys.exit(1)
 
 
+def _erase_flash_storage(args, suite):
+    """
+    Creates a target specific binary which has its ITS erased
+    :param args: Command-line arguments
+    :param suite: Test suite
+    """
+    mbed_os_dir = join(ROOT, "BUILD", args.mcu, TC_DICT.get(args.toolchain))
+    cmd = []
+
+    if args.mcu == "ARM_MUSCA_B1":
+        cmd = [
+            "srec_cat",
+            "mbed-os-tf-m-regression-tests.bin",
+            "-Binary",
+            "-offset",
+            "0xA000000",
+            "-fill",
+            "0xFF",
+            "0xA1F0000",
+            "0XA1FC000",
+            "-o",
+            "mbed-os-tf-m-regression-tests-reset-flash.hex",
+            "-Intel",
+        ]
+
+    retcode = run_cmd_output_realtime(cmd, mbed_os_dir)
+    if retcode:
+        logging.critical(
+            "Unable to create a binary with ITS erased for target %s, suite %s",
+            args.mcu,
+            suite,
+        )
+        sys.exit(1)
+
+
 def _execute_test(args, suite):
     """
     Execute test by using the mbed host test runner
@@ -134,6 +169,8 @@ def _execute_test(args, suite):
     :param suite: Test suite
     """
     logging.info("Executing tests for - %s suite..." % suite)
+
+    _erase_flash_storage(args, suite)
 
     mbed_os_dir = join(ROOT, "BUILD", args.mcu, TC_DICT.get(args.toolchain))
     log_dir = join(ROOT, "test", "logs", args.mcu, (suite + ".log"))
@@ -150,7 +187,7 @@ def _execute_test(args, suite):
         "-d",
         args.disk,
         "-f",
-        "mbed-os-tf-m-regression-tests.bin",
+        "mbed-os-tf-m-regression-tests-reset-flash.hex",
         "--skip-reset",
         "-C",
         "1",
