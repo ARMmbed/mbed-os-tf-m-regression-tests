@@ -103,6 +103,14 @@ def are_dependencies_installed():
         command = ["git", "--version"]
         return run_cmd_and_return(command)
 
+    def _is_srec_installed():
+        """
+        Check if srec_cat is installed
+        :return: errorcode
+        """
+        command = ["srec_cat", "--version"]
+        return run_cmd_and_return(command)
+
     if _is_git_installed() != 0:
         logging.error('"git" is not installed. Exiting...')
         return -1
@@ -111,6 +119,9 @@ def are_dependencies_installed():
         return -1
     elif _is_make_installed() != 0:
         logging.error('"Make" is not installed. Exiting...')
+        return -1
+    elif _is_srec_installed() != 0:
+        logging.error('"srec_cat" is not installed. Exiting...')
         return -1
     else:
         return 0
