@@ -227,7 +227,10 @@ def _run_cmake_build(cmake_build_dir, args, tgt, tfm_config):
     if args.debug:
         msg = (
             "Building TF-M for target %s using toolchain %s in DEBUG mode"
-            % (tgt[0], tgt[2],)
+            % (
+                tgt[0],
+                tgt[2],
+            )
         )
     else:
         msg = "Building TF-M for target %s using toolchain %s" % (

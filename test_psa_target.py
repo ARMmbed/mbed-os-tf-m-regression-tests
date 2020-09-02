@@ -259,15 +259,24 @@ def _get_parser():
     )
 
     parser.add_argument(
-        "-d", "--disk", help="Target disk (mount point) path", default=None,
+        "-d",
+        "--disk",
+        help="Target disk (mount point) path",
+        default=None,
     )
 
     parser.add_argument(
-        "-p", "--port", help="Target port for connection", default=None,
+        "-p",
+        "--port",
+        help="Target port for connection",
+        default=None,
     )
 
     parser.add_argument(
-        "-b", "--build", help="Build the target only", action="store_true",
+        "-b",
+        "--build",
+        help="Build the target only",
+        action="store_true",
     )
 
     return parser
