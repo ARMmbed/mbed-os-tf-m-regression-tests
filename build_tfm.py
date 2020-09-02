@@ -42,9 +42,7 @@ logging.basicConfig(
     datefmt="%H:%M:%S",
 )
 
-VERSION_FILE_PATH = join(
-    mbed_path, "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_V1_1"
-)
+VERSION_FILE_PATH = join(mbed_path, TF_M_RELATIVE_PATH)
 
 
 def _detect_and_write_tfm_version(tfm_dir, commit):
