@@ -73,7 +73,7 @@ mbed_path = join(ROOT, "mbed-os")
 sys.path.insert(0, mbed_path)
 TF_M_BUILD_DIR = join(
     mbed_path,
-    "features/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_IGNORE",
+    "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_V1_1/TARGET_IGNORE",
 )
 POPEN_INSTANCE = None
 
