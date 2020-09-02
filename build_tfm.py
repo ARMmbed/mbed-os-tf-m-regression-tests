@@ -43,7 +43,7 @@ logging.basicConfig(
 )
 
 VERSION_FILE_PATH = join(
-    mbed_path, "features/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM"
+    mbed_path, "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_V1_1"
 )
 
 
