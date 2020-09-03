@@ -94,11 +94,33 @@ def _clone_tfm_repo(commit):
 
 def _get_tfm_secure_targets():
     """
-    Creates a list of TF-M secure targets.
+    Creates a list of TF-M secure targets from Mbed OS targets.json.
 
     :return: List of TF-M secure targets.
     """
     return [str(t) for t in TARGET_NAMES if Target.get_target(t).is_TFM_target]
+
+
+def _get_tfm_regression_targets():
+    """
+    Creates a list of TF-M regression tests supported targets
+    This parses the yaml file for supported target names and compares them
+    with TF-M targets supported in Mbed OS
+
+    :return: List of supported TF-M regression targets.
+    """
+    with open(join(dirname(__file__), "tfm_ns_import.yaml")) as ns_import:
+        yaml_data = yaml.safe_load(ns_import)
+        mbed_os_data = yaml_data["mbed-os"]
+        tfm_regression_data = yaml_data["tf-m-regression"]
+
+        regression_targets = list(
+            set(_get_tfm_secure_targets())
+            & set(mbed_os_data)
+            & set(tfm_regression_data)
+        )
+
+        return regression_targets
 
 
 def _get_target_info(target, toolchain=None):
@@ -550,7 +572,7 @@ def _get_parser():
         "--mcu",
         help="Build for the given MCU",
         default=None,
-        choices=_get_tfm_secure_targets(),
+        choices=_get_tfm_regression_targets(),
     )
 
     hmsg = "Build for the given toolchain (default is tfm_default_toolchain)"
@@ -610,8 +632,8 @@ def _main():
 
     if args.list:
         logging.info(
-            "Supported TF-M targets are: {}".format(
-                ", ".join([t for t in _get_tfm_secure_targets()])
+            "Supported TF-M regression targets are: {}".format(
+                ", ".join([t for t in _get_tfm_regression_targets()])
             )
         )
         return
