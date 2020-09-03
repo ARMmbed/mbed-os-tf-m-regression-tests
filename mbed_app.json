@@ -14,9 +14,6 @@
              "target.features_add": [
                  "EXPERIMENTAL_API"
              ]
-        },
-        "CY8CKIT_064S2_4343W": {
-            "rtos.thread-user-stack-size": 16384
         }
     },
     "macros": [
