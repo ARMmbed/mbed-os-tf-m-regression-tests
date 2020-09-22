@@ -152,6 +152,22 @@ def _erase_flash_storage(args, suite):
             "-Intel",
         ]
 
+    if args.mcu == "ARM_MUSCA_S1":
+        cmd = [
+            "srec_cat",
+            "mbed-os-tf-m-regression-tests.bin",
+            "-Binary",
+            "-offset",
+            "0xA000000",
+            "-fill",
+            "0xFF",
+            "0xA1E9000",
+            "0xA1ED000",
+            "-o",
+            "mbed-os-tf-m-regression-tests-reset-flash.hex",
+            "-Intel",
+        ]
+
     retcode = run_cmd_output_realtime(cmd, mbed_os_dir)
     if retcode:
         logging.critical(
@@ -198,7 +214,7 @@ def _execute_test(args, suite):
         logging.critical(
             "Test **FAILED** for target %s, suite %s", args.mcu, suite
         )
-        test_results[suite] = False
+        test_results[suite] = "FAILED"
 
 
 def _run_regression_test(args):
@@ -225,6 +241,16 @@ def _run_compliance_test(args):
     _set_json_param(0, 1)
 
     for suite in PSA_SUITE_CHOICES:
+
+        # Issue : https://github.com/ARMmbed/mbed-os-tf-m-regression-tests/issues/49
+        # There is no support for this target to run Firmware Framework tests
+        if suite == "IPC" and args.mcu == "ARM_MUSCA_S1":
+            logging.info(
+                "%s config is not supported for %s target" % (suite, args.mcu)
+            )
+            test_results[suite] = "SKIPPED"
+            continue
+
         logging.info("Build PSA Compliance - %s suite for %s", suite, args.mcu)
 
         _build_psa_compliance(args, suite)
@@ -246,7 +272,7 @@ def _get_parser():
         "--mcu",
         help="Build for the given MCU",
         required=True,
-        choices=["ARM_MUSCA_B1"],
+        choices=["ARM_MUSCA_B1", "ARM_MUSCA_S1"],
         default=None,
     )
 
@@ -290,7 +316,7 @@ def _init_results_dict():
     test_results = {}
     complete_list = ["REGRESSION"] + PSA_SUITE_CHOICES
     for index in complete_list:
-        test_results[index] = True
+        test_results[index] = "PASSED"
 
 
 def _print_results_and_exit():
@@ -301,12 +327,10 @@ def _print_results_and_exit():
     logging.info("*** Test execution status ***")
 
     for key in test_results:
-        if test_results.get(key):
-            result = "PASSED"
-        else:
-            result = "FAILED"
+        if test_results.get(key) == "FAILED":
             err = True
-        logging.info(key + " suite : " + result)
+
+        logging.info(key + " suite : " + test_results.get(key))
 
     logging.info("*** End Report ***")
 

@@ -1,0 +1,10 @@
+Non-secure test suites summary
+Test suite 'PSA protected storage NS interface tests \(TFM_PS_TEST_1XXX\)' has .* PASSED
+Test suite 'PSA internal trusted storage NS interface tests \(TFM_ITS_TEST_1XXX\)' has .* PASSED
+Test suite 'Crypto non-secure interface test \(TFM_CRYPTO_TEST_6XXX\)' has .* PASSED
+Test suite 'Initial Attestation Service non-secure interface tests\(TFM_ATTEST_TEST_2XXX\)' has .* PASSED
+Test suite 'QCBOR regression test\(TFM_QCBOR_TEST_7XXX\)' has .* PASSED
+Test suite 'T_COSE regression test\(TFM_T_COSE_TEST_8XXX\)' has .* PASSED
+Test suite 'Core non-secure positive tests \(TFM_CORE_TEST_1XXX\)' has .* PASSED
+Test suite 'IPC non-secure interface test \(TFM_IPC_TEST_1XXX\)' has .* PASSED
+End of Non-secure test suites
