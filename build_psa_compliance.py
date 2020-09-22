@@ -40,6 +40,10 @@ PSA_API_TARGETS = {
         "tgt_dev_apis_tfm_musca_b1",
         "tgt_ff_tfm_musca_b1",
     ],
+    "ARM_MUSCA_S1": [
+        "armv8m_ml",
+        "tgt_dev_apis_tfm_musca_s1",
+    ],
 }
 
 
@@ -303,6 +307,14 @@ def _main():
     signal.signal(signal.SIGINT, exit_gracefully)
     parser = _get_parser()
     args = parser.parse_args()
+
+    # Issue : https://github.com/ARMmbed/mbed-os-tf-m-regression-tests/issues/49
+    # There is no support for this target to run Firmware Framework tests
+    if args.suite == "IPC" and args.mcu == "ARM_MUSCA_S1":
+        logging.info(
+            "%s config is not supported for %s target" % (args.suite, args.mcu)
+        )
+        return
 
     if not isdir(TF_M_BUILD_DIR):
         os.mkdir(TF_M_BUILD_DIR)
