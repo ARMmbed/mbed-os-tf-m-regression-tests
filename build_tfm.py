@@ -25,14 +25,6 @@ import signal
 import shutil
 import logging
 from psa_builder import *
-
-try:
-    import yaml
-except ImportError as e:
-    print(str(e) + " To install it, type:")
-    print("python3 -m pip install PyYAML")
-    exit(1)
-
 from tools.toolchains import TOOLCHAIN_CLASSES, TOOLCHAIN_PATHS
 from tools.targets import Target, TARGET_MAP, TARGET_NAMES
 
@@ -92,37 +84,6 @@ def _clone_tfm_repo(commit):
     )
 
 
-def _get_tfm_secure_targets():
-    """
-    Creates a list of TF-M secure targets from Mbed OS targets.json.
-
-    :return: List of TF-M secure targets.
-    """
-    return [str(t) for t in TARGET_NAMES if Target.get_target(t).is_TFM_target]
-
-
-def _get_tfm_regression_targets():
-    """
-    Creates a list of TF-M regression tests supported targets
-    This parses the yaml file for supported target names and compares them
-    with TF-M targets supported in Mbed OS
-
-    :return: List of supported TF-M regression targets.
-    """
-    with open(join(dirname(__file__), "tfm_ns_import.yaml")) as ns_import:
-        yaml_data = yaml.safe_load(ns_import)
-        mbed_os_data = yaml_data["mbed-os"]
-        tfm_regression_data = yaml_data["tf-m-regression"]
-
-        regression_targets = list(
-            set(_get_tfm_secure_targets())
-            & set(mbed_os_data)
-            & set(tfm_regression_data)
-        )
-
-        return regression_targets
-
-
 def _get_target_info(target, toolchain=None):
     """
     Creates a TF-M target tuple (target name, TF-M target name, toolchain,
@@ -176,7 +137,7 @@ def _get_mbed_supported_tfm_targets():
     Returns a generator with every element containing a TF-M target tuple
     (target name, TF-M target name, toolchain, delivery directory)
     """
-    tfm_secure_targets = _get_tfm_secure_targets()
+    tfm_secure_targets = get_tfm_secure_targets()
     logging.info(
         "Found the following TF-M targets: {}".format(
             ", ".join(tfm_secure_targets)
@@ -572,7 +533,7 @@ def _get_parser():
         "--mcu",
         help="Build for the given MCU",
         default=None,
-        choices=_get_tfm_regression_targets(),
+        choices=get_tfm_regression_targets(),
     )
 
     hmsg = "Build for the given toolchain (default is tfm_default_toolchain)"
@@ -641,7 +602,7 @@ def _main():
     if args.list:
         logging.info(
             "Supported TF-M regression targets are: {}".format(
-                ", ".join([t for t in _get_tfm_regression_targets()])
+                ", ".join([t for t in get_tfm_regression_targets()])
             )
         )
         return
