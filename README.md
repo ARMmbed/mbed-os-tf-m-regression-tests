@@ -10,8 +10,26 @@ with Mbed OS which can be configured in the `config` section of `mbed_app.json`.
 
 Please refer to `vagrant/bootstrap.sh` and `vagrant/bootstrap-user.sh` for
 details on how to set up a development environment. These scripts can be run
-locally on Linux, or you may use Vagrant to create a VM suitable for
+locally on Linux (or macOS with GNU commands, see below), or you may use Vagrant to create a VM suitable for
 development (see `vagrant/README.md` for instructions).
+
+To build tests on macOS,
+
+Install GNU coreutils and GCC
+```
+brew install coreutils
+brew install gcc
+```
+
+Retarget GNU commands (Note: the `alias` method doesn't work for non-shell)
+```
+mkdir gnucmd
+ln -s $(which greadlink) gnucmd/readlink
+ln -s $(which guname) gnucmd/uname
+ln -s $(which gcc-10) gnucmd/uname
+PATH="$(pwd)/gnucmd:$PATH"
+```
+Note: `gcc-10` is the current version at the time of writing. `gcc` is Apple clang.
 
 ### Mbed initialization
 
