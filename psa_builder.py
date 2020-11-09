@@ -151,9 +151,13 @@ def run_cmd_and_return(command, output=False):
 
     global POPEN_INSTANCE
     with open(os.devnull, "w") as fnull:
-        POPEN_INSTANCE = subprocess.Popen(
-            command, stdout=subprocess.PIPE, stderr=fnull
-        )
+        try:
+            POPEN_INSTANCE = subprocess.Popen(
+                command, stdout=subprocess.PIPE, stderr=fnull
+            )
+        except FileNotFoundError:
+            logging.error("Command not found: " + command[0])
+            return -1
 
         std_out, __ = POPEN_INSTANCE.communicate()
         retcode = POPEN_INSTANCE.returncode
