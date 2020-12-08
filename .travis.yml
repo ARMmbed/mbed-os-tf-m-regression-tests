@@ -1,0 +1,77 @@
+# Copyright (c) 2020 Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+# Licensed under the Apache License, Version 2.0 (the License); you may
+# not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an AS IS BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+language: sh
+os: linux
+dist: focal
+
+addons:
+  apt:
+    packages:
+      - cmake
+      - srecord
+
+cache:
+  pip: true
+  ccache: true
+  directories:
+    # Cache arm-none-eabi compiler
+    - ${HOME}/.cache/deps
+    # It looks like ccache for arm-none-eabi is not yet supported by Travis.
+    # Therefore manually adding ccache directory to cache
+    - ${HOME}/.ccache
+
+matrix:
+  include:
+
+    # ARM_MUSCA_S1
+
+    - &compile-tests
+      stage: "Compile"
+      name: "Compile Regression and Compliance tests - ARM_MUSCA_S1"
+      env: TARGET_NAME=ARM_MUSCA_S1 CACHE_NAME=ARM_MUSCA_S1
+      language: python
+      python: 3.8
+      install:
+        # Install arm-none-eabi-gcc
+        - pushd /home/travis/build && mkdir arm-gcc && cd arm-gcc
+        - curl -L0 "https://developer.arm.com/-/media/Files/downloads/gnu-rm/9-2019q4/gcc-arm-none-eabi-9-2019-q4-major-x86_64-linux.tar.bz2?revision=108bd959-44bd-4619-9c19-26187abf5225&la=en&hash=E788CE92E5DFD64B2A8C246BBA91A249CB8E2D2D" --output gcc-arm-none-eabi-9-2019-q4-major.tar.bz2
+        - tar xf gcc-arm-none-eabi-9-2019-q4-major.tar.bz2
+        - export PATH="$PATH:${PWD}/gcc-arm-none-eabi-9-2019-q4-major/bin"
+        - arm-none-eabi-gcc --version
+        - popd
+        # Setup ccache
+        - ccache -o compiler_check=content
+        - ccache -M 1G
+        - mkdir bin # The TF-M build system requires the compiler commands to be in */bin/*
+        - sudo ln -s $(which ccache) bin/arm-none-eabi-gcc
+        - sudo ln -s $(which ccache) bin/arm-none-eabi-g++
+        - export PATH="$(pwd)/bin:$PATH"
+        # Fetch mbed-os: We use manual clone, with depth=1 and --single-branch to save time.
+        - git clone --depth=1 --single-branch https://github.com/ARMmbed/mbed-os.git
+        # Install Mbed CLI and dependencies
+        - pip install --upgrade mbed-cli
+        - pip install -r mbed-os/requirements.txt
+      script:
+        # Build TF-M and all tests
+        - python3 test_psa_target.py -t GNUARM -m ${TARGET_NAME} --build
+        - ccache -s
+
+    # ARM_MUSCA_B1
+
+    - <<: *compile-tests
+      name: "Compile Regression and Compliance tests - ARM_MUSCA_B1"
+      env: TARGET_NAME=ARM_MUSCA_B1 CACHE_NAME=ARM_MUSCA_B1
