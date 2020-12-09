@@ -24,11 +24,12 @@ cd ~/tfm/trusted-firmware-m
 git remote add ARMmbed https://github.com/ARMmbed/trusted-firmware-m.git
 git fetch --all
 
-# Mbed tools
-python3 -m pip install mbed-cli
-
 # Regression tests
 cd
 git clone https://github.com/ARMmbed/mbed-os-tf-m-regression-tests.git
 cd ~/mbed-os-tf-m-regression-tests
 git clone https://github.com/ARMmbed/mbed-os.git
+
+# Mbed tools
+python3 -m pip install mbed-cli
+python3 -m pip install -r mbed-os/requirements.txt
