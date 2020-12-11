@@ -139,6 +139,9 @@ def _run_cmake_build(cmake_build_dir, args):
     if args.range:
         cmake_cmd.append("-DSUITE_TEST_RANGE=" + args.range)
 
+    if args.toolchain:
+        cmake_cmd.append("-DTOOLCHAIN=" + args.toolchain)
+
     retcode = run_cmd_output_realtime(cmake_cmd, cmake_build_dir)
     if retcode:
         msg = "Cmake configure failed for target %s using toolchain %s" % (
