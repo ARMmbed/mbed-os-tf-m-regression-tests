@@ -177,8 +177,11 @@ def _copy_psa_libs(source, destination, args):
     else:
         output_dir = destination + "/"
 
+    output_dir = output_dir + "TOOLCHAIN_" + TC_DICT[args.toolchain] + "/"
+
+    output_lib_suffix = ".ar" if args.toolchain == "ARMCLANG" else ".a"
     val_nspe = join(source, "val", "val_nspe.a")
-    val_nspe_output = output_dir + "libval_nspe.a"
+    val_nspe_output = output_dir + "libval_nspe" + output_lib_suffix
     logging.info(
         "Copying %s to %s"
         % (relpath(val_nspe, source), relpath(val_nspe_output, ROOT))
@@ -186,7 +189,7 @@ def _copy_psa_libs(source, destination, args):
     shutil.copy2(val_nspe, val_nspe_output)
 
     pal_nspe = join(source, "platform", "pal_nspe.a")
-    pal_nspe_output = output_dir + "libpal_nspe.a"
+    pal_nspe_output = output_dir + "libpal_nspe" + output_lib_suffix
     logging.info(
         "Copying %s to %s"
         % (relpath(pal_nspe, source), relpath(pal_nspe_output, ROOT))
@@ -209,7 +212,7 @@ def _copy_psa_libs(source, destination, args):
     else:
         test_combine = join(source, "dev_apis", suite_folder, "test_combine.a")
 
-    test_combine_output = output_dir + "libtest_combine.a"
+    test_combine_output = output_dir + "libtest_combine" + output_lib_suffix
     logging.info(
         "Copying %s to %s"
         % (relpath(test_combine, source), relpath(test_combine_output, ROOT))
