@@ -204,16 +204,40 @@ def check_and_clone_repo(name, deps, dir):
     if not isdir(join(dir, name)):
         logging.info("Cloning %s repo", name)
         cmd = ["git", "-C", dir, "clone", "-b", gitref, deps.get(name)[0]]
-        run_cmd_and_return(cmd)
+        ret = run_cmd_and_return(cmd)
+        if ret != 0:
+            logging.critical("Failed to clone %s repo, error: %d", name, ret)
+            sys.exit(1)
+
         logging.info("Cloned %s repo successfully", name)
     else:
         logging.info("%s repo exists, fetching latest...", name)
         cmd = ["git", "-C", join(dir, name), "fetch"]
-        run_cmd_and_return(cmd)
-        logging.info("%s repo exists, checking out %s...", name, gitref)
+        ret = run_cmd_and_return(cmd)
+        if ret != 0:
+            logging.critical(
+                "Failed to fetch the latest %s, error: %d", name, ret
+            )
+            sys.exit(1)
+
+        logging.info("Checking out %s...", gitref)
+        # try gitref as a remote branch
         head = "origin/" + gitref
         cmd = ["git", "-C", join(dir, name), "checkout", head]
-        run_cmd_and_return(cmd)
+        ret = run_cmd_and_return(cmd)
+        if ret != 0:
+            logging.info(
+                "%s is not a remote branch, trying %s directly", head, gitref
+            )
+            # gitref might be a tag or SHA1 which we checkout directly
+            cmd = ["git", "-C", join(dir, name), "checkout", gitref]
+            ret = run_cmd_and_return(cmd)
+            if ret != 0:
+                logging.critical(
+                    "Failed to checkout %s, error: %d", gitref, ret
+                )
+                sys.exit(1)
+
         logging.info("Checked out %s successfully", gitref)
 
 
