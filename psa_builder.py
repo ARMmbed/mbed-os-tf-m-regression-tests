@@ -40,7 +40,7 @@ dependencies = {
     # If the remote repo is changed, please delete TARGET_IGNORE folder.
     # Quick switch between remotes is not supported.
     "tf-m": {
-        "trusted-firmware-m": [mbed_tfm, "dev/feature-dualcore"],
+        "trusted-firmware-m": [mbed_tfm, "mbed-tfm-1.1"],
         "mbed-crypto": [
             "https://github.com/ARMmbed/mbed-crypto.git",
             "mbedcrypto-3.0.1",
