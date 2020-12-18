@@ -1,8 +1,11 @@
 # mbed-os-tf-m-regression-tests
 
 This is a Mbed-flavored application which enables the user to run
-**TF-M regression test suite (default)** or **PSA Compliance test suite**,
-with Mbed OS which can be configured in the `config` section of `mbed_app.json`.
+**TF-M regression test suite (default)** or **PSA Compliance test suite**
+with the Mbed OS.
+
+**Note**: This repository supports regression and PSA compliance tests for
+**TF-M v1.1** which is currently integrated by Mbed OS.
 
 ## Prerequisite
 
@@ -21,15 +24,26 @@ Run `mbed deploy` to obtain Mbed OS for this application.
 
 We are building for the ARM Musca B1 (`ARM_MUSCA_B1`) in our example
 below, but other targets can be built for by changing the `-m` option.
+This builds the `ConfigCoreIPC.cmake` config by default.
 
 ```
 python3 build_tfm.py -m ARM_MUSCA_B1 -t GNUARM
 ```
 
+**Note**: This step does not build any test suites, but the files and binaries
+generated are checked into Mbed OS repository at the time of release, which
+further supports the building of [mbed-os-example-psa](https://github.com/ARMmbed/mbed-os-example-psa)
+without the user requiring to go through the complex process.
+
+To display help on supported options and targets:
+
+```
+python3 build_tfm.py -h
+```
+
 ## Building the TF-M Regression Test
 
-Use the `-c` option to specify the config overriding the default
-`ConfigCoreIPC.cmake` config.
+Use the `-c` option to specify the config to override the default.
 
 ```
 python3 build_tfm.py -m ARM_MUSCA_B1 -t GNUARM -c ConfigRegressionIPC.cmake
@@ -50,20 +64,55 @@ Then run `build_tfm.py` with the PSA API config.
 python3 build_tfm.py -m ARM_MUSCA_B1 -t GNUARM -c ConfigPsaApiTestIPC.cmake -s CRYPTO
 ```
 
-Note: Make sure the TF-M Regression Test suite has PASSED on the board before
+**Note**: Make sure the TF-M Regression Test suite has **PASSED** on the board before
 running any PSA Compliance Test suite to avoid unpredictable behavior.
 
+To display help on supported options and targets:
+
+```
+python3 build_psa_compliance.py -h
+```
+
 ## Building the Mbed OS application
+
+After building the [TF-M regression](#Building-the-TF-M-Regression-Test) or
+[PSA compliance tests](#Building-the-PSA-Compliance-Test) for the target, it should be
+followed by building a Mbed OS application. This will execute the test suites previously built.
+
+Configure appropriate test in the `config` section of `mbed_app.json`.
 
 ```
 mbed compile -m ARM_MUSCA_B1 -t GCC_ARM
 ```
 
-## Execute all tests for ARM_MUSCA_B1
+## Running the Mbed OS application
 
-This will build and execute TF-M regression and PSA compliance tests
-for `ARM_MUSCA_B1` target only. Make sure the device is attached to your local
-machine. `-d` option sets the disk and `-p` for the port and baudrate.
+1. Connect your Mbed Enabled device to the computer over USB.
+1. Copy the binary or hex file to the Mbed device. The binary is located at `./BUILD/<TARGET>/<TOOLCHAIN>/mbed-os-tf-m-regression-tests.hex`.
+1. Connect to the Mbed Device using a serial client application of your choice.
+1. Press the reset button on the Mbed device to run the program.
+
+**Note:** The default serial port baud rate is 115200 baud.
+
+## Execute all tests suites
+
+This will build and execute TF-M regression and PSA compliance tests with
+Mbed OS application. Make sure the device is connected to your local machine.
+`-d` option sets the disk and `-p` for the port and baudrate.
+
 ```
 python3 test_psa_target.py -t GNUARM -m ARM_MUSCA_B1 -d D: -p COM8:115200
+```
+
+**Note**: `test_psa_target.py` builds and executes all the tests one by one.
+The binaries are not stored separately for each test suite as they are
+built on top of the previous one. This script cannot be executed in the vagrant
+environment because it does not have access to the USB of the host machine to
+connect the target and therefore cannot run the tests, except it can only be
+used to build all the tests by `-b` option.
+
+To display help on supported options and targets:
+
+```
+python3 test_psa_target.py -h
 ```
