@@ -47,8 +47,8 @@ dependencies = {
         ],
         "mcuboot": ["https://github.com/JuulLabs-OSS/mcuboot.git", "v1.6.0"],
         "tf-m-tests": [
-            "https://git.trustedfirmware.org/TF-M/tf-m-tests.git",
-            "master",
+            "https://github.com/ARMmbed/tf-m-tests.git",
+            "mbed-tfm-1.1",
         ],
     },
     "psa-api-compliance": {
