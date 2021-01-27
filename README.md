@@ -98,15 +98,13 @@ mbed compile -m ARM_MUSCA_B1 -t GCC_ARM
 
 This will build and execute TF-M regression and PSA compliance tests with
 Mbed OS application. Make sure the device is connected to your local machine.
-`-d` option sets the disk and `-p` for the port and baudrate.
+
 
 ```
-python3 test_psa_target.py -t GNUARM -m ARM_MUSCA_B1 -d D: -p COM8:115200
+python3 test_psa_target.py -t GNUARM -m ARM_MUSCA_B1
 ```
 
-**Note**: `test_psa_target.py` builds and executes all the tests one by one.
-The binaries are not stored separately for each test suite as they are
-built on top of the previous one. This script cannot be executed in the vagrant
+**Note**: This script cannot be executed in the vagrant
 environment because it does not have access to the USB of the host machine to
 connect the target and therefore cannot run the tests, except it can only be
 used to build all the tests by `-b` option.
