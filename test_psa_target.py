@@ -18,7 +18,7 @@ limitations under the License.
 """
 
 import os
-from os.path import join, relpath
+from os.path import join, relpath, normpath
 import argparse
 import sys
 import signal
@@ -33,7 +33,16 @@ logging.basicConfig(
     datefmt="%H:%M:%S",
 )
 
-test_results = {}
+
+def _get_baud_rate():
+    """
+    return baud rate from mbed_app.json
+    """
+    with open("mbed_app.json", "r") as json_file:
+        json_object = json.load(json_file)
+        json_file.close()
+
+    return json_object["target_overrides"]["*"]["platform.stdio-baud-rate"]
 
 
 def _set_json_param(regression, compliance):
@@ -132,9 +141,14 @@ def _erase_flash_storage(args, suite):
     Creates a target specific binary which has its ITS erased
     :param args: Command-line arguments
     :param suite: Test suite
+    :return: return binary name generated
     """
     mbed_os_dir = join(ROOT, "BUILD", args.mcu, TC_DICT.get(args.toolchain))
     cmd = []
+
+    binary_name = "mbed-os-tf-m-regression-tests-reset-flash-{}.hex".format(
+        suite
+    )
 
     if args.mcu == "ARM_MUSCA_B1":
         cmd = [
@@ -148,11 +162,13 @@ def _erase_flash_storage(args, suite):
             "0xA1F0000",
             "0XA1FC000",
             "-o",
-            "mbed-os-tf-m-regression-tests-reset-flash.hex",
+            binary_name,
             "-Intel",
         ]
 
     if args.mcu == "ARM_MUSCA_S1":
+        # Note: The erase range is different from https://git.trustedfirmware.org/TF-M/trusted-firmware-m.git/tree/platform/ext/target/musca_s1/partition/flash_layout.h?h=TF-Mv1.2.0#n29
+        # ARM_MUSCA_S1's DAPLink only permits 64K-aligned flashing for compatibility with QSPI even though MRAM (which we use) has a 4K granularity.
         cmd = [
             "srec_cat",
             "mbed-os-tf-m-regression-tests.bin",
@@ -161,10 +177,10 @@ def _erase_flash_storage(args, suite):
             "0xA000000",
             "-fill",
             "0xFF",
-            "0xA1E9000",
-            "0xA1ED000",
+            "0xA1E0000",
+            "0xA1F0000",
             "-o",
-            "mbed-os-tf-m-regression-tests-reset-flash.hex",
+            binary_name,
             "-Intel",
         ]
 
@@ -177,68 +193,108 @@ def _erase_flash_storage(args, suite):
         )
         sys.exit(1)
 
+    return binary_name
 
-def _execute_test(args, suite):
+
+def _execute_test():
     """
-    Execute test by using the mbed host test runner
+    Execute greentea runs test as specified in test_spec.json
+    """
+    cmd = ["mbedgt", "--sync=0", "--polling-timeout", "300"]
+
+    run_cmd_output_realtime(cmd, os.getcwd())
+
+
+def _init_test_spec(args):
+    """
+    initialize test specification
     :param args: Command-line arguments
-    :param suite: Test suite
+    :return: test specification dictionary with initial contents
     """
-    logging.info("Executing tests for - %s suite..." % suite)
+    target = args.mcu
+    toolchain = TC_DICT.get(args.toolchain)
+    test_group = _get_test_group(args)
+    baud_rate = _get_baud_rate()
 
-    _erase_flash_storage(args, suite)
-
-    mbed_os_dir = join(ROOT, "BUILD", args.mcu, TC_DICT.get(args.toolchain))
-    log_dir = join(ROOT, "test", "logs", args.mcu, (suite + ".log"))
-
-    cmd = [
-        "mbedhtrun",
-        "--sync=0",
-        "-p",
-        args.port,
-        "--compare-log",
-        log_dir,
-        "--polling-timeout",
-        "300",
-        "-d",
-        args.disk,
-        "-f",
-        "mbed-os-tf-m-regression-tests-reset-flash.hex",
-        "--skip-reset",
-        "-C",
-        "1",
-    ]
-
-    retcode = run_cmd_output_realtime(cmd, mbed_os_dir)
-    if retcode:
-        logging.critical(
-            "Test **FAILED** for target %s, suite %s", args.mcu, suite
-        )
-        test_results[suite] = "FAILED"
+    return {
+        "builds": {
+            test_group: {
+                "platform": target,
+                "toolchain": toolchain,
+                "base_path": os.getcwd(),
+                "baud_rate": baud_rate,
+                "tests": {},
+            }
+        }
+    }
 
 
-def _run_regression_test(args):
+def _get_test_group(args):
     """
-    Run TF-M regression test for the target
+    make a unique test group name
+    :param args: Command-line arguments
+    :return: return test group name
+    """
+    target = args.mcu
+    toolchain = TC_DICT.get(args.toolchain)
+    baud_rate = _get_baud_rate()
+    return "{}-{}-{}".format(target, toolchain, baud_rate)
+
+
+def _get_test_spec(args, suite, binary_name):
+    """
+    return test specification for the suite name
+    :param args: Command-line arguments
+    :param suite: test suite
+    :param binary_name: name of the binary
+    :return: return test spec dictionary for the suite name
+    """
+    target = args.mcu
+    toolchain = TC_DICT.get(args.toolchain)
+    log_path = join("test", "logs", target, "{}.log".format(suite))
+
+    return {
+        "binaries": [
+            {
+                "binary_type": "bootable",
+                "path": normpath(
+                    join("BUILD/{}/{}".format(target, toolchain), binary_name)
+                ),
+                "compare_log": log_path,
+            }
+        ]
+    }
+
+
+def _build_regression_test(args, test_spec):
+    """
+    Build TF-M regression test for the target
     :param args: Command-line arguments
     """
     logging.info("Build TF-M regression tests for %s", args.mcu)
-
+    suite = "REGRESSION"
     _set_json_param(1, 0)
+
+    # build stuff
     _build_tfm(args, "ConfigRegressionIPC.cmake")
     _build_mbed_os(args)
+    binary_name = _erase_flash_storage(args, suite)
 
-    if not args.build:
-        logging.info("Test TF-M regression for %s", args.mcu)
-        _execute_test(args, "REGRESSION")
+    # update the test_spec
+    test_group = _get_test_group(args)
+    test_spec["builds"][test_group]["tests"][suite] = _get_test_spec(
+        args, suite, binary_name
+    )
 
 
-def _run_compliance_test(args):
+def _build_compliance_test(args, test_spec):
     """
-    Run PSA Compliance test for the target
+    Build PSA Compliance test for the target
     :param args: Command-line arguments
     """
     _set_json_param(0, 1)
+
+    test_group = _get_test_group(args)
 
     for suite in PSA_SUITE_CHOICES:
 
@@ -248,7 +304,6 @@ def _run_compliance_test(args):
             logging.info(
                 "%s config is not supported for %s target" % (suite, args.mcu)
             )
-            test_results[suite] = "SKIPPED"
             continue
 
         logging.info("Build PSA Compliance - %s suite for %s", suite, args.mcu)
@@ -256,12 +311,11 @@ def _run_compliance_test(args):
         _build_psa_compliance(args, suite)
         _build_tfm(args, "ConfigPsaApiTestIPC.cmake", suite)
         _build_mbed_os(args)
+        binary_name = _erase_flash_storage(args, suite)
 
-        if not args.build:
-            logging.info(
-                "Test PSA Compliance - %s suite for %s", suite, args.mcu
-            )
-            _execute_test(args, suite)
+        test_spec["builds"][test_group]["tests"][suite] = _get_test_spec(
+            args, suite, binary_name
+        )
 
 
 def _get_parser():
@@ -285,20 +339,6 @@ def _get_parser():
     )
 
     parser.add_argument(
-        "-d",
-        "--disk",
-        help="Target disk (mount point) path",
-        default=None,
-    )
-
-    parser.add_argument(
-        "-p",
-        "--port",
-        help="Target port for connection",
-        default=None,
-    )
-
-    parser.add_argument(
         "-b",
         "--build",
         help="Build the target only",
@@ -306,36 +346,6 @@ def _get_parser():
     )
 
     return parser
-
-
-def _init_results_dict():
-    """
-    Initialize the results dictionary for target to track ongoing progress
-    """
-    global test_results
-    test_results = {}
-    complete_list = ["REGRESSION"] + PSA_SUITE_CHOICES
-    for index in complete_list:
-        test_results[index] = "PASSED"
-
-
-def _print_results_and_exit():
-    """
-    Print results summary for the target and exit if any error
-    """
-    err = False
-    logging.info("*** Test execution status ***")
-
-    for key in test_results:
-        if test_results.get(key) == "FAILED":
-            err = True
-
-        logging.info(key + " suite : " + test_results.get(key))
-
-    logging.info("*** End Report ***")
-
-    if err == True:
-        sys.exit(1)
 
 
 def _main():
@@ -348,15 +358,17 @@ def _main():
 
     logging.info("Target - %s", args.mcu)
 
-    _init_results_dict()
+    test_spec = _init_test_spec(args)
+    _build_regression_test(args, test_spec)
+    _build_compliance_test(args, test_spec)
 
-    _run_regression_test(args)
-    _run_compliance_test(args)
+    with open("test_spec.json", "w") as f:
+        f.write(json.dumps(test_spec, indent=2))
 
     if args.build:
         logging.info("Target built succesfully - %s", args.mcu)
     else:
-        _print_results_and_exit()
+        _execute_test()
 
 
 if __name__ == "__main__":
