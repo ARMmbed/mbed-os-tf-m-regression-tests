@@ -23,6 +23,7 @@ addons:
     packages:
       - cmake
       - srecord
+      - ninja-build
 
 cache:
   pip: true
@@ -61,13 +62,13 @@ matrix:
         - sudo ln -s $(which ccache) bin/arm-none-eabi-g++
         - export PATH="$(pwd)/bin:$PATH"
         # Fetch mbed-os: We use manual clone, with depth=1 and --single-branch to save time.
-        - git clone --depth=1 --single-branch https://github.com/ARMmbed/mbed-os.git
+        - git clone --depth=1 --single-branch --branch=feature-tf-m-1.2-integration https://github.com/ARMmbed/mbed-os.git
         # Install Mbed CLI and dependencies
         - pip install --upgrade mbed-cli
         - pip install -r mbed-os/requirements.txt
       script:
         # Build TF-M and all tests
-        - python3 test_psa_target.py -t GNUARM -m ${TARGET_NAME} --build
+        - python3 build_tfm.py -t GNUARM -m ${TARGET_NAME}
         - ccache -s
 
     # ARM_MUSCA_B1
