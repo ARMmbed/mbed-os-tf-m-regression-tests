@@ -18,22 +18,22 @@
     "mbed-os": {
         "ARM_MUSCA_S1": [
             {
-                "src": "image_macros_preprocessed_ns.c",
-                "dst": "targets/TARGET_ARM_SSG/TARGET_MUSCA_S1/partition/image_macros_preprocessed_ns.c"
+                "src": "bl2/ext/mcuboot/CMakeFiles/signing_layout_ns.dir/signing_layout_ns.o",
+                "dst": "targets/TARGET_ARM_SSG/TARGET_MUSCA_S1/partition/signing_layout_ns.c"
             },
             {
-                "src": "image_macros_preprocessed_s.c",
-                "dst": "targets/TARGET_ARM_SSG/TARGET_MUSCA_S1/partition/image_macros_preprocessed_s.c"
+                "src": "bl2/ext/mcuboot/CMakeFiles/signing_layout_s.dir/signing_layout_s.o",
+                "dst": "targets/TARGET_ARM_SSG/TARGET_MUSCA_S1/partition/signing_layout_s.c"
             }
         ],
         "ARM_MUSCA_B1": [
             {
-                "src": "image_macros_preprocessed_ns.c",
-                "dst": "targets/TARGET_ARM_SSG/TARGET_MUSCA_B1/partition/image_macros_preprocessed_ns.c"
+                "src": "bl2/ext/mcuboot/CMakeFiles/signing_layout_ns.dir/signing_layout_ns.o",
+                "dst": "targets/TARGET_ARM_SSG/TARGET_MUSCA_B1/partition/signing_layout_ns.c"
             },
             {
-                "src": "image_macros_preprocessed_s.c",
-                "dst": "targets/TARGET_ARM_SSG/TARGET_MUSCA_B1/partition/image_macros_preprocessed_s.c"
+                "src": "bl2/ext/mcuboot/CMakeFiles/signing_layout_s.dir/signing_layout_s.o",
+                "dst": "targets/TARGET_ARM_SSG/TARGET_MUSCA_B1/partition/signing_layout_s.c"
             }
         ],
         # List of files that should not be copied to Mbed OS even though they are covered by directory rules
@@ -50,87 +50,91 @@
         "common": [
             {
                 "src": "install/export/tfm/src/tfm_crypto_ipc_api.c",
-                "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_V1_1/src/tfm_crypto_ipc_api.c"
+                "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_LATEST/src/tfm_crypto_ipc_api.c"
             },
             {
                 "src": "install/export/tfm/src/tfm_initial_attestation_ipc_api.c",
-                "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_V1_1/src/tfm_initial_attestation_ipc_api.c"
+                "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_LATEST/src/tfm_initial_attestation_ipc_api.c"
             },
             {
                 "src": "install/export/tfm/src/tfm_ps_ipc_api.c",
-                "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_V1_1/src/tfm_ps_ipc_api.c"
+                "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_LATEST/src/tfm_ps_ipc_api.c"
             },
             {
                 "src": "install/export/tfm/src/tfm_its_ipc_api.c",
-                "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_V1_1/src/tfm_its_ipc_api.c"
+                "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_LATEST/src/tfm_its_ipc_api.c"
             },
             {
                 "src": "install/export/tfm/src/tfm_platform_ipc_api.c",
-                "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_V1_1/src/tfm_platform_ipc_api.c"
+                "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_LATEST/src/tfm_platform_ipc_api.c"
             },
             {
-                "src": "bl2/ext/mcuboot/scripts/assemble.py",
+                "src": "../bl2/ext/mcuboot/scripts/assemble.py",
                 "dst": "tools/psa/tfm/bin_utils/assemble.py"
             },
             {
-                "src": "bl2/ext/mcuboot/scripts/imgtool.py",
+                "src": "../bl2/ext/mcuboot/scripts/macro_parser.py",
+                "dst": "tools/psa/tfm/bin_utils/macro_parser.py"
+            },
+            {
+                "src": "lib/ext/mcuboot-src/scripts/imgtool.py",
                 "dst": "tools/psa/tfm/bin_utils/imgtool.py"
             },
             {
-                "src": "bl2/ext/mcuboot/scripts/imgtool_lib/__init__.py",
-                "dst": "tools/psa/tfm/bin_utils/imgtool_lib/__init__.py"
+                "src": "lib/ext/mcuboot-src/scripts/imgtool",
+                "dst": "tools/psa/tfm/bin_utils/imgtool"
             },
             {
-                "src": "bl2/ext/mcuboot/scripts/imgtool_lib/image.py",
-                "dst": "tools/psa/tfm/bin_utils/imgtool_lib/image.py"
+                "src": "lib/ext/mcuboot-src/scripts/imgtool/keys",
+                "dst": "tools/psa/tfm/bin_utils/imgtool/keys"
             },
             {
-                "src": "bl2/ext/mcuboot/scripts/imgtool_lib/version.py",
-                "dst": "tools/psa/tfm/bin_utils/imgtool_lib/version.py"
+                "src": "../bl2/ext/mcuboot/scripts/wrapper/wrapper.py",
+                "dst": "tools/psa/tfm/bin_utils/wrapper.py"
             },
             {
                 "src": "install/export/tfm/include",
-                "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_V1_1/include"
+                "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_LATEST/include"
             },
             {
                 "src": "install/export/tfm/include/psa",
-                "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_V1_1/include/psa"
+                "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_LATEST/include/psa"
             },
             {
                 "src": "install/export/tfm/include/psa_manifest",
-                "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_V1_1/include/psa_manifest"
+                "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_LATEST/include/psa_manifest"
             }
         ],
         "v8-m": [
             {
                 "src": "install/export/tfm/src/tfm_psa_ns_api.c",
-                "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_V1_1/TARGET_TFM_V8M/src/tfm_psa_ns_api.c"
+                "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_LATEST/TARGET_TFM_V8M/src/tfm_psa_ns_api.c"
             },
             {
                 "src": "install/export/tfm/src/tfm_ns_interface.c",
-                "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_V1_1/TARGET_TFM_V8M/src/tfm_ns_interface.c"
+                "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_LATEST/TARGET_TFM_V8M/src/tfm_ns_interface.c"
             }
         ],
         "dualcpu": [
             {
                 "src": "install/export/tfm/src/tfm_multi_core_api.c",
-                "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_V1_1TARGET_TFM_DUALCPU/src/tfm_multi_core_api.c"
+                "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_LATEST/TARGET_TFM_DUALCPU/src/tfm_multi_core_api.c"
             },
             {
                 "src": "install/export/tfm/src/platform_ns_mailbox.c",
-                "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_V1_1/TARGET_TFM_DUALCPU/src/platform_ns_mailbox.c"
+                "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_LATEST/TARGET_TFM_DUALCPU/src/platform_ns_mailbox.c"
             },
             {
                 "src": "install/export/tfm/src/tfm_multi_core_psa_ns_api.c",
-                "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_V1_1/ARGET_TFM_DUALCPU/src/tfm_multi_core_psa_ns_api.c"
+                "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_LATEST/ARGET_TFM_DUALCPU/src/tfm_multi_core_psa_ns_api.c"
             },
             {
                 "src": "install/export/tfm/src/tfm_ns_mailbox.c",
-                "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_V1_1/TARGET_TFM_DUALCPU/src/tfm_ns_mailbox.c"
+                "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_LATEST/TARGET_TFM_DUALCPU/src/tfm_ns_mailbox.c"
             },
             {
                 "src": "install/export/tfm/src/platform_multicore.c",
-                "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_V1_1/TARGET_TFM_DUALCPU/src/platform_multicore.c"
+                "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_LATEST/TARGET_TFM_DUALCPU/src/platform_multicore.c"
             }
         ]
     },
@@ -166,7 +170,15 @@
                 "dst": "tfm/platform/include/tfm_plat_ns.h"
             },
             {
-                "src": "install/export/tfm/test/inc",
+                "src": "../../tf-m-tests/test/test_services/tfm_secure_client_service/tfm_secure_client_service_api.h",
+                "dst": "test/inc"
+            },
+            {
+                "src": "../../tf-m-tests/test/framework/test_framework_error_codes.h",
+                "dst": "test/inc"
+            },
+            {
+                "src": "../../tf-m-tests/test/framework/test_framework_integ_test.h",
                 "dst": "test/inc"
             }
         ]
