@@ -76,8 +76,6 @@ def _clone_tfm_repo(commit):
     check_and_clone_repo(
         "trusted-firmware-m", dependencies["tf-m"], TF_M_BUILD_DIR
     )
-    check_and_clone_repo("mbed-crypto", dependencies["tf-m"], TF_M_BUILD_DIR)
-    check_and_clone_repo("mcuboot", dependencies["tf-m"], TF_M_BUILD_DIR)
     check_and_clone_repo("tf-m-tests", dependencies["tf-m"], TF_M_BUILD_DIR)
     _detect_and_write_tfm_version(
         join(TF_M_BUILD_DIR, "trusted-firmware-m"), commit
@@ -139,7 +137,7 @@ def _get_mbed_supported_tfm_targets():
     """
     tfm_secure_targets = get_tfm_secure_targets()
     logging.info(
-        "Found the following TF-M targets: {}".format(
+        "Found the following TF-M targets in targets.json: {}".format(
             ", ".join(tfm_secure_targets)
         )
     )
@@ -222,13 +220,13 @@ def _run_cmake_build(cmake_build_dir, args, tgt, tfm_config):
         )
     logging.info(msg)
 
-    cmake_cmd = ["cmake", "-GUnix Makefiles"]
-    cmake_cmd.append(
-        "-DPROJ_CONFIG="
-        + (join(TF_M_BUILD_DIR, "trusted-firmware-m", "configs", tfm_config))
-    )
-    cmake_cmd.append("-DTARGET_PLATFORM=" + tgt[1])
-    cmake_cmd.append("-DCOMPILER=" + tgt[2])
+    cmake_cmd = ["cmake", "../" ,"-GNinja", "-DTFM_PSA_API=ON"]
+    cmake_cmd.append("-DTFM_PLATFORM=" + tgt[1])
+    cmake_cmd.append("-DTFM_TOOLCHAIN_FILE=../toolchain_" + tgt[2] + ".cmake")
+    cmake_cmd.append("-DTFM_TEST_REPO_PATH=../../tf-m-tests")
+
+    if args.config == SUPPORTED_TFM_CONFIGS[1]:
+        cmake_cmd.append("-DTEST_NS=ON -DTEST_S=ON")
 
     if args.debug:
         cmake_cmd.append("-DCMAKE_BUILD_TYPE=Debug")
@@ -240,23 +238,11 @@ def _run_cmake_build(cmake_build_dir, args, tgt, tfm_config):
     else:
         cmake_cmd.append("-DBL2=True")
 
-    cmake_cmd.append("-DENABLE_PLATFORM_SERVICE_TESTS=FALSE")
-
     if args.config in SUPPORTED_TFM_PSA_CONFIGS:
-        if args.suite == "CRYPTO":
-            cmake_cmd.append("-DPSA_API_TEST_CRYPTO=ON")
-        elif args.suite == "INITIAL_ATTESTATION":
-            cmake_cmd.append("-DPSA_API_TEST_INITIAL_ATTESTATION=ON")
-        elif args.suite == "INTERNAL_TRUSTED_STORAGE":
-            cmake_cmd.append("-DPSA_API_TEST_INTERNAL_TRUSTED_STORAGE=ON")
-        elif args.suite == "PROTECTED_STORAGE":
-            cmake_cmd.append("-DPSA_API_TEST_PROTECTED_STORAGE=ON")
-        elif args.suite == "STORAGE":
-            cmake_cmd.append("-DPSA_API_TEST_STORAGE=ON")
-        elif args.suite == "IPC":
-            cmake_cmd.append("-DPSA_API_TEST_IPC=ON")
+        if args.suite in PSA_SUITE_CHOICES:
+            cmake_cmd.append("-DTEST_PSA_API=" + args.suite)
 
-    cmake_cmd.append("..")
+    logging.info(cmake_cmd)
 
     retcode = run_cmd_output_realtime(cmake_cmd, cmake_build_dir)
     if retcode:
@@ -347,13 +333,13 @@ def _copy_binaries(source, destination, toolchain, target):
             shutil.copy2(tfm_secure_bin, output_dir)
 
     if TARGET_MAP[target].tfm_bootloader_supported:
-        mcu_bin = join(source, "mcuboot.bin")
+        mcu_bin = join(source, "bl2.bin")
         shutil.copy2(mcu_bin, output_dir)
 
     if "TFM_V8M" in TARGET_MAP[target].extra_labels:
         install_dir = abspath(join(source, os.pardir, os.pardir))
         tfm_veneer = join(
-            install_dir, "export", "tfm", "veneers", "s_veneers.o"
+            install_dir, "export", "tfm", "lib", "s_veneers.o"
         )
         shutil.copy2(tfm_veneer, output_dir)
 
@@ -375,6 +361,7 @@ def _copy_tfm_ns_files(source, target):
     def _copy_file(fname, path):
         src_file = join(source, fname["src"])
         dst_file = join(path, fname["dst"])
+        logging.info("Copying file: " + src_file + " - to - " + dst_file)
         if not isdir(dirname(dst_file)):
             os.makedirs(dirname(dst_file))
         try:
@@ -394,6 +381,7 @@ def _copy_tfm_ns_files(source, target):
     def _copy_folder(folder, path):
         src_folder = join(source, folder["src"])
         dst_folder = join(path, folder["dst"])
+        logging.info("Copying folder: " + src_folder + " - to - " + dst_folder)
         if not isdir(dst_folder):
             os.makedirs(dst_folder)
         for f in os.listdir(src_folder):
@@ -459,6 +447,36 @@ def _copy_library(source, toolchain):
     )
 
 
+def _build_target(tgt, cmake_build_dir, args):
+    """
+    :param tgt: is a tuple:
+    0: Target name
+    1: TF-M target name
+    2: Toolchain
+    3: Delivery directory
+    :param cmake_build_dir: Cmake build directory
+    :param args: Command-line arguments
+    """
+    tgt_list = []
+    logging.info(
+    "Building target - %s using %s toolchain" % (tgt[0], tgt[2])
+    )
+
+    _run_cmake_build(cmake_build_dir, args, tgt, args.config)
+
+    source = join(cmake_build_dir, "install", "outputs", tgt[1].upper())
+    _copy_binaries(source, tgt[3], tgt[2], tgt[0])
+    tgt_list.append((tgt[0], tgt[2]))
+
+    if args.commit:
+        _commit_changes(tgt[3], tgt_list)
+
+    if args.config != SUPPORTED_TFM_CONFIGS[0]:
+        _copy_library(cmake_build_dir, tgt[2])
+
+    _copy_tfm_ns_files(cmake_build_dir, tgt[0])
+
+
 def _build_tfm(args):
     """
     Build TF-M
@@ -486,15 +504,9 @@ def _build_tfm(args):
         else:
             tgt = _get_target_info(args.mcu)
 
-        _run_cmake_build(cmake_build_dir, args, tgt, args.config)
+        _build_target(tgt, cmake_build_dir, args)
 
-        source = join(cmake_build_dir, "install", "outputs", tgt[1])
-        _copy_binaries(source, tgt[3], tgt[2], tgt[0])
-
-        if args.commit:
-            _commit_changes(tgt[3], [(tgt[0], tgt[2])])
     else:
-        tgt_list = []
         for tgt in _get_mbed_supported_tfm_targets():
             """
             _get_mbed_supported_tfm_targets() returns a generator and each
@@ -504,17 +516,12 @@ def _build_tfm(args):
             2: Toolchain
             3: Delivery directory
             """
-            _run_cmake_build(cmake_build_dir, args, tgt, args.config)
+            # Build only for supported TF-M targets
+            if tgt[0] in get_tfm_regression_targets():
+                if args.toolchain:
+                    tgt = _get_target_info(tgt[0], args.toolchain)
 
-            source = join(cmake_build_dir, "install", "outputs", tgt[1])
-            _copy_binaries(source, tgt[3], tgt[2], tgt[0])
-            tgt_list.append((tgt[0], tgt[2]))
-
-        if args.commit:
-            _commit_changes(tgt[3], tgt_list)
-
-    _copy_library(cmake_build_dir, tgt[2])
-    _copy_tfm_ns_files(cmake_build_dir, tgt[0])
+                _build_target(tgt, cmake_build_dir, args)
 
 
 def _get_parser():
