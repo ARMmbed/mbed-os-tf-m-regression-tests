@@ -40,15 +40,10 @@ dependencies = {
     # If the remote repo is changed, please delete TARGET_IGNORE folder.
     # Quick switch between remotes is not supported.
     "tf-m": {
-        "trusted-firmware-m": [mbed_tfm, "mbed-tfm-1.1"],
-        "mbed-crypto": [
-            "https://github.com/ARMmbed/mbed-crypto.git",
-            "mbedcrypto-3.0.1",
-        ],
-        "mcuboot": ["https://github.com/JuulLabs-OSS/mcuboot.git", "v1.6.0"],
+        "trusted-firmware-m": ["https://github.com/ARMmbed/trusted-firmware-m.git", "mbed-tfm-1.2"],
         "tf-m-tests": [
             "https://github.com/ARMmbed/tf-m-tests.git",
-            "mbed-tfm-1.1",
+            "mbed-tfm-1.2",
         ],
     },
     "psa-api-compliance": {
@@ -79,7 +74,7 @@ PSA_SUITE_CHOICES = [
 ROOT = abspath(dirname(__file__))
 mbed_path = join(ROOT, "mbed-os")
 TF_M_RELATIVE_PATH = (
-    "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_V1_1"
+    "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_LATEST"
 )
 sys.path.insert(0, mbed_path)
 TF_M_BUILD_DIR = join(mbed_path, TF_M_RELATIVE_PATH, "TARGET_IGNORE")
@@ -129,20 +124,31 @@ def are_dependencies_installed():
         command = ["mbedgt", "--version"]
         return run_cmd_and_return(command)
 
+    def _is_ninja_installed():
+        """
+        Check if Ninja is installed
+        :return: errorcode
+        """
+        command = ["ninja", "--version"]
+        return run_cmd_and_return(command)
+
     if _is_git_installed() != 0:
-        logging.error('"git" is not installed. Exiting...')
+        logging.error('"git" is not installed. Exiting..')
         return -1
     elif _is_cmake_installed() != 0:
-        logging.error('"Cmake" is not installed. Exiting...')
+        logging.error('"Cmake" is not installed. Exiting..')
         return -1
     elif _is_make_installed() != 0:
-        logging.error('"Make" is not installed. Exiting...')
+        logging.error('"Make" is not installed. Exiting..')
         return -1
     elif _is_srec_installed() != 0:
-        logging.error('"srec_cat" is not installed. Exiting...')
+        logging.error('"srec_cat" is not installed. Exiting..')
+        return -1
+    elif _is_ninja_installed() != 0:
+        logging.error('"Ninja" is not installed. Exiting..')
         return -1
     elif _is_mbedgt_installed() != 0:
-        logging.error('"mbedgt" is not installed. Exiting...')
+        logging.error('"mbedgt" is not installed. Exiting..')
         return -1
     else:
         return 0
@@ -226,7 +232,7 @@ def check_and_clone_repo(name, deps, dir):
 
         logging.info("Cloned %s repo successfully", name)
     else:
-        logging.info("%s repo exists, fetching latest...", name)
+        logging.info("%s repo exists, fetching latest..", name)
         cmd = ["git", "-C", join(dir, name), "fetch"]
         ret = run_cmd_and_return(cmd)
         if ret != 0:
@@ -235,7 +241,7 @@ def check_and_clone_repo(name, deps, dir):
             )
             sys.exit(1)
 
-        logging.info("Checking out %s...", gitref)
+        logging.info("Checking out %s..", gitref)
         # try gitref as a remote branch
         head = "origin/" + gitref
         cmd = ["git", "-C", join(dir, name), "checkout", head]
@@ -262,7 +268,7 @@ def exit_gracefully(signum, frame):
     :param signum: Signal number
     :param frame:  Current stack frame object
     """
-    logging.info("Received signal %s, exiting..." % signum)
+    logging.info("Received signal %s, exiting.." % signum)
     global POPEN_INSTANCE
     try:
         if POPEN_INSTANCE:
