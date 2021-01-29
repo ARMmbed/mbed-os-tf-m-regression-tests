@@ -181,6 +181,72 @@
                 "src": "../../tf-m-tests/test/framework/test_framework_integ_test.h",
                 "dst": "test/inc"
             }
+        ],
+        "regression_libs": [
+            {
+                "src": "app/libtfm_ns_integration_test.a",
+                "dst": "test/lib"
+            },
+            {
+                "src": "interface/libpsa_api_ns.a",
+                "dst": "test/lib"
+            },
+            {
+                "src": "lib/ext/qcbor/libtfm_qcbor.a",
+                "dst": "test/lib"
+            },
+            {
+                "src": "lib/ext/qcbor/libtfm_qcbor_test.a",
+                "dst": "test/lib"
+            },
+            {
+                "src": "lib/ext/t_cose/libtfm_t_cose.a",
+                "dst": "test/lib"
+            },
+            {
+                "src": "lib/ext/t_cose/libtfm_t_cose_test.a",
+                "dst": "test/lib"
+            },
+            {
+                "src": "platform/libplatform_ns.a",
+                "dst": "test/lib"
+            },
+            {
+                "src": "test/suites/attestation/libtfm_test_suite_attestation_ns.a",
+                "dst": "test/lib"
+            },
+            {
+                "src": "test/suites/core/libtfm_test_suite_core_ns.a",
+                "dst": "test/lib"
+            },
+            {
+                "src": "test/suites/crypto/libtfm_test_suite_crypto_ns.a",
+                "dst": "test/lib"
+            },
+            {
+                "src": "test/suites/ipc/libtfm_test_suite_ipc_ns.a",
+                "dst": "test/lib"
+            },
+            {
+                "src": "test/suites/its/libtfm_test_suite_its_ns.a",
+                "dst": "test/lib"
+            },
+            {
+                "src": "test/suites/platform/libtfm_test_suite_platform_ns.a",
+                "dst": "test/lib"
+            },
+            {
+                "src": "test/suites/ps/libtfm_test_suite_ps_ns.a",
+                "dst": "test/lib"
+            },
+            {
+                "src": "test/suites/qcbor/libtfm_test_suite_qcbor_ns.a",
+                "dst": "test/lib"
+            },
+            {
+                "src": "test/suites/t_cose/libtfm_test_suite_t_cose_ns.a",
+                "dst": "test/lib"
+            }
         ]
     }
 }

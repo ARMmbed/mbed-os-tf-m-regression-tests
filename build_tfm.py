@@ -226,7 +226,7 @@ def _run_cmake_build(cmake_build_dir, args, tgt, tfm_config):
     cmake_cmd.append("-DTFM_TEST_REPO_PATH=../../tf-m-tests")
 
     if args.config == SUPPORTED_TFM_CONFIGS[1]:
-        cmake_cmd.append("-DTEST_NS=ON -DTEST_S=ON")
+        cmake_cmd.extend(["-DTEST_NS=ON", "-DTEST_S=ON", "-DTFM_IRQ_TEST=ON", "-DTFM_PERIPH_ACCESS_TEST=ON"])
 
     if args.debug:
         cmake_cmd.append("-DCMAKE_BUILD_TYPE=Debug")
@@ -427,24 +427,26 @@ def _copy_tfm_ns_files(source, target):
 
 
 def _copy_library(source, toolchain):
-    dest_lib_name = (
-        "libtfm_non_secure_tests.ar"
-        if toolchain == "ARMCLANG"
-        else "libtfm_non_secure_tests.a"
-    )
-    regression_lib_src = join(
-        source, "install", "export", "tfm", "test", "lib"
-    )
-    global TC_DICT
-    regression_lib_dest = join(
-        ROOT, "test", "lib", "TOOLCHAIN_" + TC_DICT[toolchain]
-    )
-    if not isdir(regression_lib_dest):
-        os.makedirs(regression_lib_dest)
-    shutil.copy2(
-        join(regression_lib_src, "libtfm_non_secure_tests.a"),
-        join(regression_lib_dest, dest_lib_name),
-    )
+
+    with open(join(dirname(__file__), "tfm_ns_import.yaml")) as ns_import:
+        logging.info("Copying regression test libraries from TF-M to regression test")
+        yaml_data = yaml.safe_load(ns_import)
+        tf_regression_data = yaml_data["tf-m-regression"]
+
+        if "regression_libs" in tf_regression_data:
+            for item in tf_regression_data["regression_libs"]:
+                src_file = join(source, item["src"])
+                dst_base = os.path.basename(src_file)
+
+                if toolchain == "ARMCLANG":
+                    dst_base = os.path.splitext(dst_base)[0] + ".ar"
+
+                dst_file = join(ROOT, item["dst"], "TOOLCHAIN_" + TC_DICT[toolchain], dst_base)
+                logging.info("Copying file: " + src_file + " - to - " + dst_file)
+                if not isdir(dirname(dst_file)):
+                    os.makedirs(dirname(dst_file))
+
+                shutil.copy2(src_file, dst_file)
 
 
 def _build_target(tgt, cmake_build_dir, args):
