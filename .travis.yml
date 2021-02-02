@@ -69,6 +69,8 @@ matrix:
       script:
         # Build TF-M and all tests
         - python3 build_tfm.py -t GNUARM -m ${TARGET_NAME}
+        - python3 build_tfm.py -t GNUARM -m ${TARGET_NAME} -c ConfigRegressionIPC.cmake
+        - mbed compile -t GCC_ARM -m ${TARGET_NAME}
         - ccache -s
 
     # ARM_MUSCA_B1
