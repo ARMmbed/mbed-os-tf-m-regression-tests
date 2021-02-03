@@ -74,31 +74,6 @@ def _build_mbed_os(args):
         sys.exit(1)
 
 
-def _build_psa_compliance(args, suite):
-    """
-    Build PSA compliance test
-    :param args: Command-line arguments
-    :param suite: Test suite for PSA compliance
-    """
-    cmd = [
-        "python3",
-        "build_psa_compliance.py",
-        "-m",
-        args.mcu,
-        "-t",
-        args.toolchain,
-        "-s",
-        suite,
-    ]
-
-    retcode = run_cmd_output_realtime(cmd, ROOT)
-    if retcode:
-        logging.critical(
-            "Unable to build PSA compliance tests for target - %s", args.mcu
-        )
-        sys.exit(1)
-
-
 def _build_tfm(args, config, suite=None):
     """
     Build TF-M regression test
@@ -253,7 +228,6 @@ def _run_compliance_test(args):
 
         logging.info("Build PSA Compliance - %s suite for %s", suite, args.mcu)
 
-        _build_psa_compliance(args, suite)
         _build_tfm(args, "ConfigPsaApiTestIPC.cmake", suite)
         _build_mbed_os(args)
 

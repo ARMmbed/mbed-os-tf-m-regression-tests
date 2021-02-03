@@ -77,6 +77,10 @@ def _clone_tfm_repo(commit):
         "trusted-firmware-m", dependencies["tf-m"], TF_M_BUILD_DIR
     )
     check_and_clone_repo("tf-m-tests", dependencies["tf-m"], TF_M_BUILD_DIR)
+    check_and_clone_repo(
+        "psa-arch-tests", dependencies["psa-api-compliance"], TF_M_BUILD_DIR
+    )
+
     _detect_and_write_tfm_version(
         join(TF_M_BUILD_DIR, "trusted-firmware-m"), commit
     )
@@ -239,6 +243,8 @@ def _run_cmake_build(cmake_build_dir, args, tgt, tfm_config):
         cmake_cmd.append("-DBL2=True")
 
     if args.config in SUPPORTED_TFM_PSA_CONFIGS:
+        cmake_cmd.append("-DPSA_ARCH_TESTS_PATH=../../psa-arch-tests")
+
         if args.suite in PSA_SUITE_CHOICES:
             cmake_cmd.append("-DTEST_PSA_API=" + args.suite)
 
@@ -426,6 +432,62 @@ def _copy_tfm_ns_files(source, target):
                 _check_and_copy(tf_regression_data["dualcpu"], ROOT)
 
 
+def _copy_psa_libs(source, destination, args):
+    """
+    Copy PSA Compliance libraries from source to destination
+
+    :param source: directory where libraries are available
+    :param destination: directory to which libraries are copied to
+    :param args: Command-line arguments
+    """
+
+    output_dir = join(destination, "test", "lib", "TOOLCHAIN_" + TC_DICT[args.toolchain])
+    if not isdir(output_dir):
+        os.makedirs(output_dir)
+
+    source = join(source, "app", "psa_api_tests")
+    output_lib_suffix = ".ar" if args.toolchain == "ARMCLANG" else ".a"
+
+    val_nspe = join(source, "val", "val_nspe.a")
+    val_nspe_output = join(output_dir, "libval_nspe" + output_lib_suffix)
+    logging.info(
+        "Copying file: %s - to - %s"
+        % (val_nspe, val_nspe_output)
+    )
+    shutil.copy2(val_nspe, val_nspe_output)
+
+    pal_nspe = join(source, "platform", "pal_nspe.a")
+    pal_nspe_output = join(output_dir, "libpal_nspe" + output_lib_suffix)
+    logging.info(
+        "Copying file: %s - to - %s"
+        % (pal_nspe, pal_nspe_output)
+    )
+    shutil.copy2(pal_nspe, pal_nspe_output)
+
+    if (
+        args.suite == "INITIAL_ATTESTATION"
+        or args.suite == "CRYPTO"
+        or args.suite == "IPC"
+    ):
+        suite_folder = str(args.suite).lower()
+    else:
+        # Applicable for INTERNAL_TRUSTED_STORAGE, PROTECTED_STORAGE
+        # and STORAGE suites.
+        suite_folder = "storage"
+
+    if args.suite == "IPC":
+        test_combine = join(source, "ff", suite_folder, "test_combine.a")
+    else:
+        test_combine = join(source, "dev_apis", suite_folder, "test_combine.a")
+
+    test_combine_output = join(output_dir, "libtest_combine" + output_lib_suffix)
+    logging.info(
+        "Copying file: %s - to - %s"
+        % (test_combine, test_combine_output)
+    )
+    shutil.copy2(test_combine, test_combine_output)
+
+
 def _copy_library(source, toolchain):
 
     with open(join(dirname(__file__), "tfm_ns_import.yaml")) as ns_import:
@@ -473,8 +535,10 @@ def _build_target(tgt, cmake_build_dir, args):
     if args.commit:
         _commit_changes(tgt[3], tgt_list)
 
-    if args.config != SUPPORTED_TFM_CONFIGS[0]:
+    if args.config == SUPPORTED_TFM_CONFIGS[1]:
         _copy_library(cmake_build_dir, tgt[2])
+    elif args.config in SUPPORTED_TFM_PSA_CONFIGS:
+        _copy_psa_libs(cmake_build_dir, ROOT, args)
 
     _copy_tfm_ns_files(cmake_build_dir, tgt[0])
 
