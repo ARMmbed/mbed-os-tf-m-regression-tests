@@ -40,7 +40,10 @@ dependencies = {
     # If the remote repo is changed, please delete TARGET_IGNORE folder.
     # Quick switch between remotes is not supported.
     "tf-m": {
-        "trusted-firmware-m": ["https://github.com/ARMmbed/trusted-firmware-m.git", "mbed-tfm-1.2"],
+        "trusted-firmware-m": [
+            "https://github.com/ARMmbed/trusted-firmware-m.git",
+            "mbed-tfm-1.2",
+        ],
         "tf-m-tests": [
             "https://github.com/ARMmbed/tf-m-tests.git",
             "mbed-tfm-1.2",
@@ -73,9 +76,7 @@ PSA_SUITE_CHOICES = [
 
 ROOT = abspath(dirname(__file__))
 mbed_path = join(ROOT, "mbed-os")
-TF_M_RELATIVE_PATH = (
-    "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_LATEST"
-)
+TF_M_RELATIVE_PATH = "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_LATEST"
 sys.path.insert(0, mbed_path)
 TF_M_BUILD_DIR = join(mbed_path, TF_M_RELATIVE_PATH, "TARGET_IGNORE")
 POPEN_INSTANCE = None
