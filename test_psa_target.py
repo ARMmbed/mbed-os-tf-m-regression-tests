@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Copyright (c) 2020 ARM Limited. All rights reserved.
+Copyright (c) 2020-2021 ARM Limited. All rights reserved.
 
 SPDX-License-Identifier: Apache-2.0
 
