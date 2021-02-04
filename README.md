@@ -51,14 +51,13 @@ python3 build_tfm.py -m ARM_MUSCA_B1 -t GNUARM -c ConfigRegressionIPC.cmake
 
 ## Building the PSA Compliance Test
 
-First, run `build_psa_compliance.py` to build for a target. Different suites can
-be built using the `-s` option.
-
+**Note**: If you build on macOS, run:
 ```
-python3 build_psa_compliance.py -m ARM_MUSCA_B1 -s CRYPTO -t GNUARM
+export SDKROOT=$(xcrun --sdk macosx --show-sdk-path)
 ```
 
-Then run `build_tfm.py` with the PSA API config.
+Run `build_tfm.py` with the PSA API config to build for a target.
+Different suites can be built using the `-s` option.
 
 ```
 python3 build_tfm.py -m ARM_MUSCA_B1 -t GNUARM -c ConfigPsaApiTestIPC.cmake -s CRYPTO
@@ -66,12 +65,6 @@ python3 build_tfm.py -m ARM_MUSCA_B1 -t GNUARM -c ConfigPsaApiTestIPC.cmake -s C
 
 **Note**: Make sure the TF-M Regression Test suite has **PASSED** on the board before
 running any PSA Compliance Test suite to avoid unpredictable behavior.
-
-To display help on supported options and targets:
-
-```
-python3 build_psa_compliance.py -h
-```
 
 ## Building the Mbed OS application
 
