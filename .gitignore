@@ -1,0 +1,5 @@
+# Mbed OS directory
+mbed-os/
+
+# Test libraries directory
+test/lib
