@@ -1,0 +1,8 @@
+# Mbed OS directory
+mbed-os/
+
+# Test libraries directory
+test/lib
+
+# Test spec
+test_spec.json
