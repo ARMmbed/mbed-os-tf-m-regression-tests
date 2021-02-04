@@ -68,9 +68,7 @@ matrix:
         - pip install -r mbed-os/requirements.txt
       script:
         # Build TF-M and all tests
-        - python3 build_tfm.py -t GNUARM -m ${TARGET_NAME}
-        - python3 build_tfm.py -t GNUARM -m ${TARGET_NAME} -c ConfigRegressionIPC.cmake
-        - mbed compile -t GCC_ARM -m ${TARGET_NAME}
+        - python3 test_psa_target.py -t GNUARM -m ${TARGET_NAME} -b
         - ccache -s
 
     # ARM_MUSCA_B1
