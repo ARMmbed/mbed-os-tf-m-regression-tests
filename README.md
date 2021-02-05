@@ -79,7 +79,9 @@ After building the [TF-M regression](#Building-the-TF-M-Regression-Test) or
 [PSA compliance tests](#Building-the-PSA-Compliance-Test) for the target, it should be
 followed by building a Mbed OS application. This will execute the test suites previously built.
 
-Configure appropriate test in the `config` section of `mbed_app.json`.
+Configure an appropriate test in the `config` section of `mbed_app.json`. If you want to
+flash and run tests manually, please set `wait-for-sync` to 0 so that tests start without
+waiting.
 
 ```
 mbed compile -m ARM_MUSCA_B1 -t GCC_ARM
@@ -108,6 +110,8 @@ python3 test_psa_target.py -t GNUARM -m ARM_MUSCA_B1
 environment because it does not have access to the USB of the host machine to
 connect the target and therefore cannot run the tests, except it can only be
 used to build all the tests by `-b` option.
+If you want to flash and run tests manually instead of automating them with Greentea,
+you need to pass `--no_sync` so that tests start without waiting.
 
 To display help on supported options and targets:
 

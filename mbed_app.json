@@ -1,7 +1,8 @@
 {
     "config": {
         "regression-test": 1,
-        "psa-compliance-test": 0
+        "psa-compliance-test": 0,
+        "wait-for-sync": 1
     },
     "target_overrides": {
         "*": {

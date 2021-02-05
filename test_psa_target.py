@@ -45,11 +45,12 @@ def _get_baud_rate():
     return json_object["target_overrides"]["*"]["platform.stdio-baud-rate"]
 
 
-def _set_json_param(regression, compliance):
+def _set_json_param(regression, compliance, sync):
     """
     Set json parameter required for Mbed OS build
     :param regression: set regression build
     :param compliance: set compliance build
+    :param sync: set waiting for sync from Greentea host
     """
     with open("mbed_app.json", "r") as json_file:
         json_object = json.load(json_file)
@@ -57,6 +58,7 @@ def _set_json_param(regression, compliance):
 
     json_object["config"]["regression-test"] = regression
     json_object["config"]["psa-compliance-test"] = compliance
+    json_object["config"]["wait-for-sync"] = sync
 
     with open("mbed_app.json", "w") as json_file:
         json.dump(json_object, json_file, indent=4)
@@ -200,7 +202,7 @@ def _execute_test():
     """
     Execute greentea runs test as specified in test_spec.json
     """
-    cmd = ["mbedgt", "--sync=0", "--polling-timeout", "300"]
+    cmd = ["mbedgt", "--polling-timeout", "300", "-V"]
 
     run_cmd_output_realtime(cmd, os.getcwd())
 
@@ -273,7 +275,7 @@ def _build_regression_test(args, test_spec):
     """
     logging.info("Build TF-M regression tests for %s", args.mcu)
     suite = "REGRESSION"
-    _set_json_param(1, 0)
+    _set_json_param(1, 0, 0 if args.no_sync else 1)
 
     # build stuff
     _build_tfm(args, "ConfigRegressionIPC.cmake")
@@ -292,7 +294,7 @@ def _build_compliance_test(args, test_spec):
     Build PSA Compliance test for the target
     :param args: Command-line arguments
     """
-    _set_json_param(0, 1)
+    _set_json_param(0, 1, 0 if args.no_sync else 1)
 
     test_group = _get_test_group(args)
 
@@ -342,6 +344,12 @@ def _get_parser():
         "-b",
         "--build",
         help="Build the target only",
+        action="store_true",
+    )
+
+    parser.add_argument(
+        "--no_sync",
+        help="Tests start without waiting for sync from Greentea host",
         action="store_true",
     )
 
