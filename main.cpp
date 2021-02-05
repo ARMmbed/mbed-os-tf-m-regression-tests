@@ -5,6 +5,7 @@
 
 #include "mbed.h"
 #include "unity.h"
+#include "greentea-client/test_env.h"
 
 #if MBED_CONF_APP_REGRESSION_TEST
 
@@ -20,6 +21,11 @@ extern "C" void TIMER1_Handler(void);
 
 int main(void)
 {
+#if MBED_CONF_APP_WAIT_FOR_SYNC
+    tfm_log_printf("Waiting for Greentea host\n");
+    GREENTEA_SETUP(60, "default_auto");
+#endif
+
     // Use TF-M regression test TIMER1 IRQ handler for the TIMER1 IRQ. The TF-M
     // IRQ test requires its own handler to be installed.
     NVIC_SetVector(TFM_TIMER1_IRQ, (uint32_t)TIMER1_Handler);
@@ -49,6 +55,11 @@ extern "C" int tfm_log_printf(const char *fmt, ...)
 
 int main(void)
 {
+#if MBED_CONF_APP_WAIT_FOR_SYNC
+    tfm_log_printf("Waiting for Greentea host\n");
+    GREENTEA_SETUP(60, "default_auto");
+#endif
+
     // Disable deep sleep
     sleep_manager_lock_deep_sleep();
 
