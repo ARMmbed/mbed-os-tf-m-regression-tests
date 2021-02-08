@@ -200,7 +200,7 @@ def _run_regression_test(args):
     logging.info("Build TF-M regression tests for %s", args.mcu)
 
     _set_json_param(1, 0)
-    _build_tfm(args, "ConfigRegressionIPC.cmake")
+    _build_tfm(args, "RegressionIPC")
     _build_mbed_os(args)
 
     if not args.build:
@@ -228,7 +228,7 @@ def _run_compliance_test(args):
 
         logging.info("Build PSA Compliance - %s suite for %s", suite, args.mcu)
 
-        _build_tfm(args, "ConfigPsaApiTestIPC.cmake", suite)
+        _build_tfm(args, "PsaApiTestIPC", suite)
         _build_mbed_os(args)
 
         if not args.build:
