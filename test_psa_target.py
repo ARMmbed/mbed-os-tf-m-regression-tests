@@ -259,7 +259,7 @@ def _build_regression_test(args, test_spec):
     _set_json_param(1, 0, 0 if args.no_sync else 1)
 
     # build stuff
-    _build_tfm(args, "ConfigRegressionIPC.cmake")
+    _build_tfm(args, "RegressionIPC")
     _build_mbed_os(args)
     binary_name = _erase_flash_storage(args, suite)
 
@@ -291,7 +291,7 @@ def _build_compliance_test(args, test_spec):
 
         logging.info("Build PSA Compliance - %s suite for %s", suite, args.mcu)
 
-        _build_tfm(args, "ConfigPsaApiTestIPC.cmake", suite)
+        _build_tfm(args, "PsaApiTestIPC", suite)
         _build_mbed_os(args)
         binary_name = _erase_flash_storage(args, suite)
 

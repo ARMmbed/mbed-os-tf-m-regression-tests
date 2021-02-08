@@ -24,7 +24,7 @@ Run `mbed deploy` to obtain Mbed OS for this application.
 
 We are building for the ARM Musca B1 (`ARM_MUSCA_B1`) in our example
 below, but other targets can be built for by changing the `-m` option.
-This builds the `ConfigCoreIPC.cmake` config by default.
+This builds the `CoreIPC` config by default.
 
 ```
 python3 build_tfm.py -m ARM_MUSCA_B1 -t GNUARM
@@ -46,7 +46,7 @@ python3 build_tfm.py -h
 Use the `-c` option to specify the config to override the default.
 
 ```
-python3 build_tfm.py -m ARM_MUSCA_B1 -t GNUARM -c ConfigRegressionIPC.cmake
+python3 build_tfm.py -m ARM_MUSCA_B1 -t GNUARM -c RegressionIPC
 ```
 
 ## Building the PSA Compliance Test
@@ -60,7 +60,7 @@ Run `build_tfm.py` with the PSA API config to build for a target.
 Different suites can be built using the `-s` option.
 
 ```
-python3 build_tfm.py -m ARM_MUSCA_B1 -t GNUARM -c ConfigPsaApiTestIPC.cmake -s CRYPTO
+python3 build_tfm.py -m ARM_MUSCA_B1 -t GNUARM -c PsaApiTestIPC -s CRYPTO
 ```
 
 **Note**: Make sure the TF-M Regression Test suite has **PASSED** on the board before
