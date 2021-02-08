@@ -2,7 +2,11 @@
     "config": {
         "regression-test": 1,
         "psa-compliance-test": 0,
-        "wait-for-sync": 1
+        "wait-for-sync": 1,
+        "psa-test-ram": {
+            "help": "Start of the memory used by the PSA test framework, see api-tests/platform/targets/<target>/target.cfg in psa-arch-tests",
+            "required": true
+        }
     },
     "target_overrides": {
         "*": {
@@ -15,6 +19,12 @@
              "target.features_add": [
                  "EXPERIMENTAL_API"
              ]
+        },
+        "ARM_MUSCA_B1": {
+            "psa-test-ram": "0x20060000"
+        },
+        "ARM_MUSCA_S1": {
+            "psa-test-ram": "0x20060000"
         }
     },
     "macros": [

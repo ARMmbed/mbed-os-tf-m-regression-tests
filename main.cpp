@@ -56,8 +56,19 @@ extern "C" int tfm_log_printf(const char *fmt, ...)
 int main(void)
 {
 #if MBED_CONF_APP_WAIT_FOR_SYNC
-    tfm_log_printf("Waiting for Greentea host\n");
-    GREENTEA_SETUP(60, "default_auto");
+    // On Musca B1 and S1, the PSA test framework uses a predefined
+    // range of RAM to keep track of the test progress. The target
+    // may soft reset during a test run, in which case the test suite
+    // will continue where it left off and we should not wait for a
+    // sync signal.
+    const static uint32_t zeros = 0;
+    if (0 != memcmp(&zeros, (void *)MBED_CONF_APP_PSA_TEST_RAM, sizeof(zeros))) {
+        tfm_log_printf("Continuing tests\n");
+    } else {
+        // No test in progress yet
+        tfm_log_printf("Waiting for Greentea host\n");
+        GREENTEA_SETUP(60, "default_auto");
+    }
 #endif
 
     // Disable deep sleep
