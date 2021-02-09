@@ -356,6 +356,13 @@ def _get_parser():
     )
 
     parser.add_argument(
+        "-r",
+        "--run",
+        help="Run on the target only",
+        action="store_true",
+    )
+
+    parser.add_argument(
         "--no_sync",
         help="Tests start without waiting for sync from Greentea host",
         action="store_true",
@@ -374,16 +381,22 @@ def _main():
 
     logging.info("Target - %s", args.mcu)
 
-    test_spec = _init_test_spec(args)
-    _build_regression_test(args, test_spec)
-    _build_compliance_test(args, test_spec)
+    if args.build and args.run:
+        logging.error(
+            "-b/--build (build only) and -r/--run (run only) can't be used together"
+        )
 
-    with open("test_spec.json", "w") as f:
-        f.write(json.dumps(test_spec, indent=2))
+    if not args.run:
+        test_spec = _init_test_spec(args)
+        _build_regression_test(args, test_spec)
+        _build_compliance_test(args, test_spec)
 
-    if args.build:
+        with open("test_spec.json", "w") as f:
+            f.write(json.dumps(test_spec, indent=2))
+
         logging.info("Target built succesfully - %s", args.mcu)
-    else:
+
+    if not args.build:
         _execute_test()
 
 
