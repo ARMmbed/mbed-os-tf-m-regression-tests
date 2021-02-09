@@ -111,7 +111,7 @@ environment because it does not have access to the USB of the host machine to
 connect the target and therefore cannot run the tests, except it can only be
 used to build all the tests by `-b` option.
 If you want to flash and run tests manually instead of automating them with Greentea,
-you need to pass `--no_sync` so that tests start without waiting.
+you need to pass `--no-sync` so that tests start without waiting.
 
 To display help on supported options and targets:
 

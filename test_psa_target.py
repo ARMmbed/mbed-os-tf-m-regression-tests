@@ -202,6 +202,12 @@ def _execute_test():
     """
     Execute greentea runs test as specified in test_spec.json
     """
+    if not os.path.isfile("test_spec.json"):
+        logging.critical(
+            "test_spec.json is not found, please build the tests first"
+        )
+        sys.exit(1)
+
     cmd = ["mbedgt", "--polling-timeout", "300", "-V"]
 
     run_cmd_output_realtime(cmd, os.getcwd())
@@ -348,7 +354,14 @@ def _get_parser():
     )
 
     parser.add_argument(
-        "--no_sync",
+        "-r",
+        "--run",
+        help="Run on the target only",
+        action="store_true",
+    )
+
+    parser.add_argument(
+        "--no-sync",
         help="Tests start without waiting for sync from Greentea host",
         action="store_true",
     )
@@ -366,16 +379,25 @@ def _main():
 
     logging.info("Target - %s", args.mcu)
 
-    test_spec = _init_test_spec(args)
-    _build_regression_test(args, test_spec)
-    _build_compliance_test(args, test_spec)
+    build = args.build
+    run = args.run
 
-    with open("test_spec.json", "w") as f:
-        f.write(json.dumps(test_spec, indent=2))
+    # Default to build and run
+    if not args.build and not args.run:
+        build = True
+        run = True
 
-    if args.build:
+    if build:
+        test_spec = _init_test_spec(args)
+        _build_regression_test(args, test_spec)
+        _build_compliance_test(args, test_spec)
+
+        with open("test_spec.json", "w") as f:
+            f.write(json.dumps(test_spec, indent=2))
+
         logging.info("Target built succesfully - %s", args.mcu)
-    else:
+
+    if run:
         _execute_test()
 
 
