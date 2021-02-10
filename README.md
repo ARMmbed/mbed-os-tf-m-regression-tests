@@ -101,17 +101,25 @@ mbed compile -m ARM_MUSCA_B1 -t GCC_ARM
 This will build and execute TF-M regression and PSA compliance tests with
 Mbed OS application. Make sure the device is connected to your local machine.
 
-
 ```
 python3 test_psa_target.py -t GNUARM -m ARM_MUSCA_B1
 ```
 
-**Note**: This script cannot be executed in the vagrant
+**Notes**:
+* This script cannot be executed in the vagrant
 environment because it does not have access to the USB of the host machine to
 connect the target and therefore cannot run the tests, except it can only be
 used to build all the tests by `-b` option.
-If you want to flash and run tests manually instead of automating them with Greentea,
+* If you want to flash and run tests manually instead of automating them with Greentea,
 you need to pass `--no-sync` so that tests start without waiting.
+* The PSA Crypto test suite is currently excluded from the automated run of all
+tests, because some Crypto tests are known to crash and reboot the target. This
+causes the Greentea test framework to lose synchronization, and messes up the memory
+and prevents subsequent suites from running.
+You can flash and run the Crypto suite standalone. Make sure to either pass `--no-sync`
+to `test_psa_target.py` when building tests, or build the Crypto suite manually with
+`wait-for-sync` set to 0 in `mbed_app.json`. And power cycle the target before and after
+the run to clear the memory.
 
 To display help on supported options and targets:
 
