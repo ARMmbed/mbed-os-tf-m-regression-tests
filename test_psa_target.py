@@ -208,7 +208,7 @@ def _execute_test():
         )
         sys.exit(1)
 
-    cmd = ["mbedgt", "--polling-timeout", "300", "-V"]
+    cmd = ["mbedgt", "--polling-timeout", "600", "-V"]
 
     run_cmd_output_realtime(cmd, os.getcwd())
 
