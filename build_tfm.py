@@ -73,12 +73,10 @@ def _clone_tfm_repo(commit):
     Clone TF-M git repos and it's dependencies
     :param commit: If True then commit VERSION.txt
     """
+    check_and_clone_repo("trusted-firmware-m", "mbed-tfm", TF_M_BUILD_DIR)
+    check_and_clone_repo("tf-m-tests", "mbed-tfm", TF_M_BUILD_DIR)
     check_and_clone_repo(
-        "trusted-firmware-m", dependencies["tf-m"], TF_M_BUILD_DIR
-    )
-    check_and_clone_repo("tf-m-tests", dependencies["tf-m"], TF_M_BUILD_DIR)
-    check_and_clone_repo(
-        "psa-arch-tests", dependencies["psa-api-compliance"], TF_M_BUILD_DIR
+        "psa-arch-tests", "psa-api-compliance", TF_M_BUILD_DIR
     )
 
     _detect_and_write_tfm_version(
