@@ -32,14 +32,10 @@ except ImportError as e:
     print("python3 -m pip install PyYAML")
     exit(1)
 
-
-upstream_tfm = "https://git.trustedfirmware.org/TF-M/trusted-firmware-m.git"
-mbed_tfm = "https://github.com/ARMmbed/trusted-firmware-m.git"
-
 dependencies = {
     # If the remote repo is changed, please delete TARGET_IGNORE folder.
     # Quick switch between remotes is not supported.
-    "tf-m": {
+    "mbed-tfm": {
         "trusted-firmware-m": [
             "https://github.com/ARMmbed/trusted-firmware-m.git",
             "mbed-tfm-1.2",
@@ -47,6 +43,16 @@ dependencies = {
         "tf-m-tests": [
             "https://github.com/ARMmbed/tf-m-tests.git",
             "mbed-tfm-1.2",
+        ],
+    },
+    "upstream-tfm": {
+        "trusted-firmware-m": [
+            "https://git.trustedfirmware.org/TF-M/trusted-firmware-m.git",
+            "master",
+        ],
+        "tf-m-tests": [
+            "https://git.trustedfirmware.org/TF-M/tf-m-tests.git",
+            "master",
         ],
     },
     "psa-api-compliance": {
@@ -222,10 +228,20 @@ def check_and_clone_repo(name, deps, dir):
     :param dir: Directory to perform cloning
     """
 
-    gitref = deps.get(name)[1]
+    gitref = dependencies[deps].get(name)[1]
     if not isdir(join(dir, name)):
         logging.info("Cloning %s repo", name)
-        cmd = ["git", "-C", dir, "clone", "-b", gitref, deps.get(name)[0]]
+        cmd = [
+            "git",
+            "-C",
+            dir,
+            "clone",
+            "-o",
+            deps,
+            "-b",
+            gitref,
+            dependencies[deps].get(name)[0],
+        ]
         ret = run_cmd_and_return(cmd)
         if ret != 0:
             logging.critical("Failed to clone %s repo, error: %d", name, ret)
@@ -233,8 +249,10 @@ def check_and_clone_repo(name, deps, dir):
 
         logging.info("Cloned %s repo successfully", name)
     else:
-        logging.info("%s repo exists, fetching latest..", name)
-        cmd = ["git", "-C", join(dir, name), "fetch"]
+        logging.info(
+            "%s repo exists, fetching latest from remote %s", name, deps
+        )
+        cmd = ["git", "-C", join(dir, name), "fetch", deps]
         ret = run_cmd_and_return(cmd)
         if ret != 0:
             logging.critical(
@@ -244,8 +262,8 @@ def check_and_clone_repo(name, deps, dir):
 
         logging.info("Checking out %s..", gitref)
         # try gitref as a remote branch
-        head = "origin/" + gitref
-        cmd = ["git", "-C", join(dir, name), "checkout", head]
+        head = deps + "/" + gitref
+        cmd = ["git", "-C", join(dir, name), "checkout", "-B", gitref, head]
         ret = run_cmd_and_return(cmd)
         if ret != 0:
             logging.info(
