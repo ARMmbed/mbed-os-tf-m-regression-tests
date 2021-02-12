@@ -10,3 +10,4 @@ apt-get install -y \
 	python3-pip \
 	srecord \
 	unzip \
+	ninja-build \
