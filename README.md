@@ -11,14 +11,20 @@ with the Mbed OS.
 
 ### Development environment
 
-Please refer to `vagrant/bootstrap.sh` and `vagrant/bootstrap-user.sh` for
-details on how to set up a development environment. These scripts can be run
-locally on Linux, or you may use Vagrant to create a VM suitable for
-development (see `vagrant/README.md` for instructions).
+We have provided a ready-to-use Vagrant virtual machine for building
+TF-M tests, see [`vagrant/README.md`](vagrant/README.md) for instructions.
+
+If you prefer to build and run the tests directly on your host machine,
+take a look at `vagrant/bootstrap.sh` and `vagrant/bootstrap-user.sh` for
+details on how to set up a development environment.
 
 ### Mbed initialization
 
-Run `mbed deploy` to obtain Mbed OS for this application.
+Run `mbed deploy` to obtain Mbed OS for this application. Then run
+```
+python3 -m pip install -r mbed-os/requirements.txt
+```
+to install dependencies for the Mbed tools.
 
 ## Building TF-M
 

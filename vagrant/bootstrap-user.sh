@@ -7,29 +7,4 @@ mkdir -p ~/.local
 mv gcc-arm-none-eabi-9-2019-q4-major/* ~/.local/
 
 # Python environment
-python3 -m pip install --user cryptography pyasn1 pyyaml jinja2 cbor
-
-# TrustedFirmware-M and dependencies
-mkdir tfm
-cd ~/tfm
-git clone https://git.trustedfirmware.org/TF-M/trusted-firmware-m.git -b TF-Mv1.1
-git clone https://github.com/ARMmbed/mbed-crypto.git -b mbedcrypto-3.0.1
-git clone https://git.trustedfirmware.org/TF-M/tf-m-tests.git
-git clone https://github.com/JuulLabs-OSS/mcuboot.git -b v1.6.0
-git clone https://github.com/ARM-software/CMSIS_5.git -b 5.5.0
-cd ~/tfm/CMSIS_5
-wget -q https://github.com/ARM-software/CMSIS_5/releases/download/5.5.0/ARM.CMSIS.5.5.0.pack
-unzip -o ARM.CMSIS.5.5.0.pack
-cd ~/tfm/trusted-firmware-m
-git remote add ARMmbed https://github.com/ARMmbed/trusted-firmware-m.git
-git fetch --all
-
-# Regression tests
-cd
-git clone https://github.com/ARMmbed/mbed-os-tf-m-regression-tests.git
-cd ~/mbed-os-tf-m-regression-tests
-git clone https://github.com/ARMmbed/mbed-os.git
-
-# Mbed tools
-python3 -m pip install mbed-cli
-python3 -m pip install -r mbed-os/requirements.txt
+python3 -m pip install --user cryptography pyasn1 pyyaml jinja2 cbor mbed-cli
