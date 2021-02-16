@@ -1,13 +1,10 @@
 # mbed-os-tf-m-regression-tests
 
-This is a Mbed-flavored application which enables the user to run
-**TF-M regression test suite (default)** or **PSA Compliance test suite**
-with the Mbed OS.
+This is an Mbed-flavored application which enables the user to run the
+**TF-M regression test suite (default)** or the **PSA Compliance test suite**
+for **TF-M v1.2** integrated with the **Mbed OS**.
 
-**Note**: This repository supports regression and PSA compliance tests for
-**TF-M v1.1** which is currently integrated by Mbed OS.
-
-## Prerequisite
+## Prerequisites
 
 ### Development environment
 
@@ -15,8 +12,13 @@ We have provided a ready-to-use Vagrant virtual machine for building
 TF-M tests, see [`vagrant/README.md`](vagrant/README.md) for instructions.
 
 If you prefer to build and run the tests directly on your host machine,
-take a look at `vagrant/bootstrap.sh` and `vagrant/bootstrap-user.sh` for
-details on how to set up a development environment.
+ensure you have the following installed:
+* Commands: see [`vagrant/bootstrap.sh`](./vagrant/bootstrap.sh) for Linux,
+or install equivalent packages for your operating system.
+* Python environment: see [`vagrant/bootstrap-user.sh`](./vagrant/bootstrap-user.sh).
+* One of the supported compilers: see "Compiler versions" on
+[Arm Mbed tools](https://os.mbed.com/docs/mbed-os/v6.7/build-tools/index.html).
+Make sure the compiler has been added to the `PATH` of your environment.
 
 ### Mbed initialization
 
@@ -47,7 +49,7 @@ To display help on supported options and targets:
 python3 build_tfm.py -h
 ```
 
-## Building the TF-M Regression Test
+## Building the TF-M Regression Test suite
 
 Use the `-c` option to specify the config to override the default.
 
@@ -55,7 +57,10 @@ Use the `-c` option to specify the config to override the default.
 python3 build_tfm.py -m ARM_MUSCA_B1 -t GNUARM -c RegressionIPC
 ```
 
-## Building the PSA Compliance Test
+Then follow [Building the Mbed OS application](#Building-the-Mbed-OS-application)
+to build an application that runs the test suite.
+
+## Building the PSA Compliance Test suites
 
 **Note**: If you build on macOS, run:
 ```
@@ -69,7 +74,12 @@ Different suites can be built using the `-s` option.
 python3 build_tfm.py -m ARM_MUSCA_B1 -t GNUARM -c PsaApiTestIPC -s CRYPTO
 ```
 
-**Note**: Make sure the TF-M Regression Test suite has **PASSED** on the board before
+Then follow [Building the Mbed OS application](#Building-the-Mbed-OS-application)
+to build an application that runs the test suite.
+
+**Notes**:
+* To see all available suites, run `python3 build_tfm.py -h`.
+* Make sure the TF-M Regression Test suite has **PASSED** on the board before
 running any PSA Compliance Test suite to avoid unpredictable behavior.
 
 ## Building the Mbed OS application
@@ -79,49 +89,57 @@ After building the [TF-M regression](#Building-the-TF-M-Regression-Test) or
 followed by building a Mbed OS application. This will execute the test suites previously built.
 
 Configure an appropriate test in the `config` section of `mbed_app.json`. If you want to
-flash and run tests manually, please set `wait-for-sync` to 0 so that tests start without
+*flash and run tests manually*, please set `wait-for-sync` to 0 so that tests start without
 waiting.
 
 ```
 mbed compile -m ARM_MUSCA_B1 -t GCC_ARM
 ```
 
-## Running the Mbed OS application
+## Running the Mbed OS application manually
 
 1. Connect your Mbed Enabled device to the computer over USB.
-1. Copy the binary or hex file to the Mbed device. The binary is located at `./BUILD/<TARGET>/<TOOLCHAIN>/mbed-os-tf-m-regression-tests.hex`.
+1. Copy the binary or hex file to the Mbed device. The binary is located at `./BUILD/<TARGET>/<TOOLCHAIN>/mbed-os-tf-m-regression-tests.[bin|hex]`.
 1. Connect to the Mbed Device using a serial client application of your choice.
 1. Press the reset button on the Mbed device to run the program.
 
 **Note:** The default serial port baud rate is 115200 baud.
 
-## Execute all tests suites
+## Automating all test suites
 
 This will build and execute TF-M regression and PSA compliance tests with
-Mbed OS application. Make sure the device is connected to your local machine.
+Mbed OS application, using the [Greentea](https://os.mbed.com/docs/mbed-os/v6.7/debug-test/greentea-for-testing-applications.html) test tool. Make sure the device is connected to your local machine.
 
 ```
 python3 test_psa_target.py -t GNUARM -m ARM_MUSCA_B1
 ```
 
 **Notes**:
-* This script cannot be executed in the vagrant
-environment because it does not have access to the USB of the host machine to
-connect the target and therefore cannot run the tests, except it can only be
-used to build all the tests by `-b` option.
+* The tests cannot be run in the Vagrant
+environment, which does not have access to the USB of the host machine to
+connect the target. You can use it to build all the tests by running `test_psa_target.py`
+with `-b` then copying `BUILD/` and `test_spec.json` to the host.
+* To run all tests from an existing build, run `test_psa_target.py` with `-r`.
 * If you want to flash and run tests manually instead of automating them with Greentea,
 you need to pass `--no-sync` so that tests start without waiting.
-* The PSA Crypto test suite is currently excluded from the automated run of all
-tests, because some Crypto tests are known to crash and reboot the target. This
-causes the Greentea test framework to lose synchronization, and messes up the memory
-and prevents subsequent suites from running.
-You can flash and run the Crypto suite standalone. Make sure to either pass `--no-sync`
-to `test_psa_target.py` when building tests, or build the Crypto suite manually with
-`wait-for-sync` set to 0 in `mbed_app.json`. And power cycle the target before and after
-the run to clear the memory.
 
 To display help on supported options and targets:
 
 ```
 python3 test_psa_target.py -h
 ```
+
+## Expected test results
+
+When you automate all tests, the Greentea test tool compares the test results with the logs in [`test/logs`](./test/logs) and prints a test report. *All test suites should pass*, except for the following suites that are currently **excluded** from the run:
+
+* PSA IPC suite on Musca S1: Not currently supported.
+* PSA Crypto suite: Some test cases are known to crash and reboot the target. This
+causes the Greentea test framework to lose synchronization, and the residual data in the
+memory prevents subsequent suites from running.
+
+    **Tip**: You can flash and run the PSA Crypto suite separately. Make sure
+    to build the Crypto suite manually with `wait-for-sync` set to 0 in
+    `mbed_app.json`, and power cycle the target before and after
+    the run to clear the memory. The total number of failures should match
+    `CRYPTO.log` in [`test/logs`](./test/logs)`/<your-target>`.
