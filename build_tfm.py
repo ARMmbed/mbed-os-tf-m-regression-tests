@@ -535,19 +535,21 @@ def _build_target(tgt, cmake_build_dir, args):
 
     _run_cmake_build(cmake_build_dir, args, tgt, args.config)
 
-    source = join(cmake_build_dir, "install", "outputs", tgt[1].upper())
-    _copy_binaries(source, tgt[3], tgt[2], tgt[0])
-    tgt_list.append((tgt[0], tgt[2]))
+    if not args.skip_copy:
+        source = join(cmake_build_dir, "install", "outputs", tgt[1].upper())
+        _copy_binaries(source, tgt[3], tgt[2], tgt[0])
+        tgt_list.append((tgt[0], tgt[2]))
 
     if args.commit:
         _commit_changes(tgt[3], tgt_list)
 
-    if args.config == SUPPORTED_TFM_CONFIGS[1]:
-        _copy_library(cmake_build_dir, tgt[2])
-    elif args.config in SUPPORTED_TFM_PSA_CONFIGS:
-        _copy_psa_libs(cmake_build_dir, ROOT, args)
+    if not args.skip_copy:
+        if args.config == SUPPORTED_TFM_CONFIGS[1]:
+            _copy_library(cmake_build_dir, tgt[2])
+        elif args.config in SUPPORTED_TFM_PSA_CONFIGS:
+            _copy_psa_libs(cmake_build_dir, ROOT, args)
 
-    _copy_tfm_ns_files(cmake_build_dir, tgt[0])
+        _copy_tfm_ns_files(cmake_build_dir, tgt[0])
 
 
 def _build_tfm(args):
@@ -670,6 +672,13 @@ def _get_parser():
     parser.add_argument(
         "--skip-clone",
         help="Skip cloning/checkout of TF-M dependencies",
+        action="store_true",
+        default=False,
+    )
+
+    parser.add_argument(
+        "--skip-copy",
+        help="Skip copying TF-M dependencies to Mbed OS",
         action="store_true",
         default=False,
     )
