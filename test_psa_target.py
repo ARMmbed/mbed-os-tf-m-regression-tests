@@ -94,7 +94,8 @@ def _build_tfm(args, config, suite=None):
     :param suite: Test suite for PSA compliance
     """
     cmd = [
-        "python3",
+        # On Windows, python3 interpreter can be python.exe instead of python3.exe.
+        "python3" if shutil.which("python3") is not None else "python",
         "build_tfm.py",
         "-m",
         args.mcu,
@@ -175,6 +176,20 @@ def _erase_flash_storage(args, suite):
             "0xFF",
             "0xA1E0000",
             "0xA1F0000",
+            "-o",
+            binary_name,
+            "-Intel",
+        ]
+
+    if args.mcu == "NU_M2354":
+        #  Note: Dummy the script for erasing flash storage because drag-n-drop flash
+        #  invokes Mass Erase which will erase the whole flash.
+        cmd = [
+            "srec_cat",
+            "mbed-os-tf-m-regression-tests.bin",
+            "-Binary",
+            "-offset",
+            "0x0",
             "-o",
             binary_name,
             "-Intel",
@@ -423,7 +438,9 @@ def _main():
     if build:
         test_spec = _init_test_spec(args)
         _build_regression_test(args, test_spec)
-        _build_compliance_test(args, test_spec)
+        # M2354 hasn't supported PSA compliance test yet.
+        if args.mcu != "NU_M2354":
+            _build_compliance_test(args, test_spec)
 
         with open("test_spec.json", "w") as f:
             f.write(json.dumps(test_spec, indent=2))

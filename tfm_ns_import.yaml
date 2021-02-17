@@ -40,6 +40,32 @@
                 "dst": "targets/TARGET_ARM_SSG/TARGET_MUSCA_B1/partition/signing_layout_s.c"
             }
         ],
+        "NU_M2354": [
+            {
+                "src": "../platform/ext/target/nuvoton/m2354/partition/flash_layout.h",
+                "dst": "targets/TARGET_NUVOTON/TARGET_M2354/TARGET_TFM/TARGET_NU_M2354/COMPONENT_TFM_S_FW/partition/flash_layout.h"
+            },
+            {
+                "src": "../platform/ext/target/nuvoton/m2354/partition/region_defs.h",
+                "dst": "targets/TARGET_NUVOTON/TARGET_M2354/TARGET_TFM/TARGET_NU_M2354/COMPONENT_TFM_S_FW/partition/region_defs.h"
+            },
+            {
+                "src": "install/image_signing/layout_files/signing_layout_s.o",
+                "dst": "targets/TARGET_NUVOTON/TARGET_M2354/TARGET_TFM/TARGET_NU_M2354/COMPONENT_TFM_S_FW/partition/signing_layout_s_preprocessed.h"
+            },
+            {
+                "src": "install/image_signing/layout_files/signing_layout_ns.o",
+                "dst": "targets/TARGET_NUVOTON/TARGET_M2354/TARGET_TFM/TARGET_NU_M2354/COMPONENT_TFM_S_FW/partition/signing_layout_ns_preprocessed.h"
+            },
+            {
+                "src": "../bl2/ext/mcuboot/root-RSA-3072.pem",
+                "dst": "targets/TARGET_NUVOTON/TARGET_M2354/TARGET_TFM/TARGET_NU_M2354/COMPONENT_TFM_S_FW/signing_key/nuvoton_m2354-root-rsa-3072.pem"
+            },
+            {
+                "src": "install/image_signing/keys/root-RSA-3072_1.pem",
+                "dst": "targets/TARGET_NUVOTON/TARGET_M2354/TARGET_TFM/TARGET_NU_M2354/COMPONENT_TFM_S_FW/signing_key/nuvoton_m2354-root-rsa-3072_1.pem"
+            }
+        ],
         # List of files that should not be copied to Mbed OS even though they are covered by directory rules
         # in the next sections.
         # This feature keeps the yaml file small and tidy by allowing folder rules and list of files to be excluded.
