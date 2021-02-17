@@ -110,6 +110,9 @@ def _build_tfm(args, config, suite=None):
     if args.clean:
         cmd.append("--clean")
 
+    if args.skip_clone:
+        cmd.append("--skip-clone")
+
     retcode = run_cmd_output_realtime(cmd, ROOT)
     if retcode:
         logging.critical("Unable to build TF-M for target - %s", args.mcu)
@@ -359,6 +362,13 @@ def _get_parser():
     parser.add_argument(
         "--clean",
         help="Clean the cloned dependencies",
+        action="store_true",
+        default=False,
+    )
+
+    parser.add_argument(
+        "--skip-clone",
+        help="Skip cloning/checkout of TF-M dependencies",
         action="store_true",
         default=False,
     )

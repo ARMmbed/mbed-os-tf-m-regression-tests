@@ -556,7 +556,8 @@ def _build_tfm(args):
     :param args: Command-line arguments
     """
 
-    _clone_tfm_repo(args.commit)
+    if not args.skip_clone:
+        _clone_tfm_repo(args.commit)
 
     cmake_build_dir = join(TF_M_BUILD_DIR, "trusted-firmware-m", "cmake_build")
     if isdir(cmake_build_dir):
@@ -666,6 +667,13 @@ def _get_parser():
         default=False,
     )
 
+    parser.add_argument(
+        "--skip-clone",
+        help="Skip cloning/checkout of TF-M dependencies",
+        action="store_true",
+        default=False,
+    )
+
     return parser
 
 
@@ -712,6 +720,12 @@ def _main():
             return
 
     if args.clean:
+        if args.skip_clone:
+            args.skip_clone = False
+            logging.info(
+                "Cannot force to skip cloning/checkout when clean option is specified"
+            )
+
         if isdir(TF_M_BUILD_DIR):
             logging.info("Removing folder %s" % TF_M_BUILD_DIR)
             shutil.rmtree(TF_M_BUILD_DIR)
