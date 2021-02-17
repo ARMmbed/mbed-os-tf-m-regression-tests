@@ -27,7 +27,7 @@ from psa_builder import *
 
 logging.basicConfig(
     level=logging.INFO,
-    format="[Rebase-Check] %(asctime)s: %(message)s.",
+    format="[Check-Rebase] %(asctime)s: %(message)s.",
     datefmt="%H:%M:%S",
 )
 
@@ -93,7 +93,7 @@ def _perform_rebase(repo, remote_1, remote_2, dir):
     :param dir: Directory to perform operation
     """
 
-    gitbranch_1 = dependencies[remote_1].get(repo)[1] + "-rebase"
+    gitbranch_1 = dependencies[remote_1].get(repo)[1] + "-trial"
     gitbranch_2 = dependencies[remote_2].get(repo)[1]
 
     check_and_clone_repo(repo, remote_1, TF_M_BUILD_DIR)
@@ -122,14 +122,20 @@ def _setup_and_rebase_tfm_repositories():
     Setup TF-M git repo and its dependencies while performing a rebase
     """
     check_and_clone_repo("trusted-firmware-m", "upstream-tfm", TF_M_BUILD_DIR)
-    _add_remote_repo("trusted-firmware-m", "mbed-tfm", TF_M_BUILD_DIR)
+    _add_remote_repo("trusted-firmware-m", "mbed-tfm-rebase", TF_M_BUILD_DIR)
     _perform_rebase(
-        "trusted-firmware-m", "mbed-tfm", "upstream-tfm", TF_M_BUILD_DIR
+        "trusted-firmware-m", "mbed-tfm-rebase", "upstream-tfm", TF_M_BUILD_DIR
     )
 
     check_and_clone_repo("tf-m-tests", "upstream-tfm", TF_M_BUILD_DIR)
-    _add_remote_repo("tf-m-tests", "mbed-tfm", TF_M_BUILD_DIR)
-    _perform_rebase("tf-m-tests", "mbed-tfm", "upstream-tfm", TF_M_BUILD_DIR)
+    _add_remote_repo("tf-m-tests", "mbed-tfm-rebase", TF_M_BUILD_DIR)
+    _perform_rebase(
+        "tf-m-tests", "mbed-tfm-rebase", "upstream-tfm", TF_M_BUILD_DIR
+    )
+
+    check_and_clone_repo(
+        "psa-arch-tests", "psa-api-compliance", TF_M_BUILD_DIR
+    )
 
 
 def _main():

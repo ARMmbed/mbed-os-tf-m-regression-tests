@@ -45,6 +45,16 @@ dependencies = {
             "mbed-tfm-1.2",
         ],
     },
+    "mbed-tfm-rebase": {
+        "trusted-firmware-m": [
+            "https://github.com/ARMmbed/trusted-firmware-m.git",
+            "mbed-tfm-rebase-check",
+        ],
+        "tf-m-tests": [
+            "https://github.com/ARMmbed/tf-m-tests.git",
+            "mbed-tfm-rebase-check",
+        ],
+    },
     "upstream-tfm": {
         "trusted-firmware-m": [
             "https://git.trustedfirmware.org/TF-M/trusted-firmware-m.git",
