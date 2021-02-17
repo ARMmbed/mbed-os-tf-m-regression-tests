@@ -6,3 +6,6 @@ test/lib
 
 # Test spec
 test_spec.json
+
+# Vagrant machine files
+vagrant/.vagrant/
