@@ -27,3 +27,5 @@ jobs:
           target: "ARM_MUSCA_S1"
       - compile:
           target: "ARM_MUSCA_B1"
+      - compile:
+          target: "NU_M2354"

@@ -43,6 +43,12 @@ dependencies = {
             "master",
         ],
     },
+    "nuvoton-tfm": {
+        "trusted-firmware-m": [
+            "https://github.com/OpenNuvoton/trusted-firmware-m",
+            "nuvoton_mbed_m2354_tfm-1.3",
+        ],
+    },
 }
 
 TC_DICT = {"ARMCLANG": "ARM", "GNUARM": "GCC_ARM"}

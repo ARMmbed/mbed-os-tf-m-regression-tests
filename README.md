@@ -102,6 +102,7 @@ to build an application that runs the test suite.
 * To see all available suites, run `python3 build_tfm.py -h`.
 * Make sure the TF-M Regression Test suite has **PASSED** on the board before
 running any PSA Compliance Test suite to avoid unpredictable behavior.
+* M2354 hasn't supported PSA compliance test yet.
 
 ## Building the Mbed OS application
 
@@ -185,6 +186,8 @@ memory prevents subsequent suites from running.
     `mbed_app.json`, and power cycle the target before and after
     the run to clear the memory. The total number of failures should match
     `CRYPTO.log` in [`test/logs`](./test/logs)`/<your-target>`.
+
+* M2354 hasn't supported PSA compliance test yet.
 
 ## Troubleshooting
 

@@ -28,6 +28,8 @@ if(${MBED_TARGET} STREQUAL "ARM_MUSCA_B1")
     set(TFM_TARGET_INCLUDE tfm/targets/TARGET_ARM_SSG/TARGET_MUSCA_B1/device)
 elseif(${MBED_TARGET} STREQUAL "ARM_MUSCA_S1")
     set(TFM_TARGET_INCLUDE tfm/targets/TARGET_ARM_SSG/TARGET_MUSCA_S1/device)
+elseif(${MBED_TARGET} STREQUAL "NU_M2354")
+    set(TFM_TARGET_INCLUDE tfm/targets/TARGET_NUVOTON/TARGET_NU_M2354/device)
 else()
     message(FATAL_ERROR "Unsupported target ${MBED_TARGET}")
 endif()
@@ -69,8 +71,8 @@ if ("${MBED_CONFIG_DEFINITIONS}" MATCHES "MBED_CONF_APP_REGRESSION_TEST=1")
         tfm_qcbor
         tfm_t_cose
     )
-    # Firmware Update test supports Musca B1 only
-    if(${MBED_TARGET} STREQUAL ARM_MUSCA_B1)
+    # Firmware Update test supports Musca B1/M2354 only
+    if((${MBED_TARGET} STREQUAL ARM_MUSCA_B1) OR (${MBED_TARGET} STREQUAL NU_M2354))
         list(APPEND TEST_LIBS
             tfm_test_suite_fwu_ns
             tfm_api_ns

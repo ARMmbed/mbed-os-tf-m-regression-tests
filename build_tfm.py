@@ -65,12 +65,20 @@ def _detect_and_write_tfm_version(tfm_dir, commit):
         _commit_changes(MBED_TF_M_PATH)
 
 
-def _clone_tfm_repo(commit):
+def _clone_tfm_repo(target, commit):
     """
     Clone TF-M git repos and it's dependencies
+    :param target: Target name
     :param commit: If True then commit VERSION.txt
     """
-    check_and_clone_repo("trusted-firmware-m", "released-tfm", TF_M_BUILD_DIR)
+    if target == "NU_M2354":
+        check_and_clone_repo(
+            "trusted-firmware-m", "nuvoton-tfm", TF_M_BUILD_DIR
+        )
+    else:
+        check_and_clone_repo(
+            "trusted-firmware-m", "released-tfm", TF_M_BUILD_DIR
+        )
 
     _detect_and_write_tfm_version(
         os.path.join(TF_M_BUILD_DIR, "trusted-firmware-m"), commit
@@ -612,7 +620,7 @@ def _build_tfm(args):
     """
 
     if not args.skip_clone:
-        _clone_tfm_repo(args.commit)
+        _clone_tfm_repo(args.mcu, args.commit)
 
     cmake_build_dir = os.path.join(
         TF_M_BUILD_DIR, "trusted-firmware-m", "cmake_build"

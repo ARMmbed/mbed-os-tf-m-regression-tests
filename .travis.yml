@@ -86,3 +86,9 @@ matrix:
     - <<: *compile-tests
       name: "Compile Regression and Compliance tests - ARM_MUSCA_B1"
       env: TARGET_NAME=ARM_MUSCA_B1 CACHE_NAME=ARM_MUSCA_B1
+
+    # NU_M2354
+
+    - <<: *compile-tests
+      name: "Compile Regression tests - NU_M2354"
+      env: TARGET_NAME=NU_M2354 CACHE_NAME=NU_M2354
