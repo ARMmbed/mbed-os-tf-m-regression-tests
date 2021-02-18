@@ -62,7 +62,6 @@ if ("${MBED_CONFIG_DEFINITIONS}" MATCHES "MBED_CONF_APP_REGRESSION_TEST=1")
         tfm_qcbor_test
         tfm_t_cose_test
         platform_ns
-        psa_api_ns
         tfm_ns_integration_test
         tfm_qcbor
         tfm_t_cose

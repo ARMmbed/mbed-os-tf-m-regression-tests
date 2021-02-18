@@ -350,7 +350,7 @@ def _copy_binaries(source, destination, toolchain, target):
             install_dir = join(install_dir, os.pardir)
             head_tail = split(head_tail[0])
 
-        tfm_veneer = join(install_dir, "export", "tfm", "lib", "s_veneers.o")
+        tfm_veneer = join(install_dir, "interface", "lib", "s_veneers.o")
         shutil.copy2(tfm_veneer, output_dir)
 
 
