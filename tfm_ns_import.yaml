@@ -18,21 +18,21 @@
     "mbed-os": {
         "ARM_MUSCA_S1": [
             {
-                "src": "bl2/ext/mcuboot/CMakeFiles/signing_layout_ns.dir/signing_layout_ns.o",
+                "src": "install/image_signing/layout_files/signing_layout_ns.o",
                 "dst": "targets/TARGET_ARM_SSG/TARGET_MUSCA_S1/partition/signing_layout_ns.c"
             },
             {
-                "src": "bl2/ext/mcuboot/CMakeFiles/signing_layout_s.dir/signing_layout_s.o",
+                "src": "install/image_signing/layout_files/signing_layout_s.o",
                 "dst": "targets/TARGET_ARM_SSG/TARGET_MUSCA_S1/partition/signing_layout_s.c"
             }
         ],
         "ARM_MUSCA_B1": [
             {
-                "src": "bl2/ext/mcuboot/CMakeFiles/signing_layout_ns.dir/signing_layout_ns.o",
+                "src": "install/image_signing/layout_files/signing_layout_ns.o",
                 "dst": "targets/TARGET_ARM_SSG/TARGET_MUSCA_B1/partition/signing_layout_ns.c"
             },
             {
-                "src": "bl2/ext/mcuboot/CMakeFiles/signing_layout_s.dir/signing_layout_s.o",
+                "src": "install/image_signing/layout_files/signing_layout_s.o",
                 "dst": "targets/TARGET_ARM_SSG/TARGET_MUSCA_B1/partition/signing_layout_s.c"
             }
         ],
@@ -49,32 +49,36 @@
         ],
         "common": [
             {
-                "src": "install/export/tfm/src/tfm_crypto_ipc_api.c",
+                "src": "install/interface/src/tfm_crypto_ipc_api.c",
                 "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_LATEST/src/tfm_crypto_ipc_api.c"
             },
             {
-                "src": "install/export/tfm/src/tfm_initial_attestation_ipc_api.c",
+                "src": "install/interface/src/tfm_initial_attestation_ipc_api.c",
                 "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_LATEST/src/tfm_initial_attestation_ipc_api.c"
             },
             {
-                "src": "install/export/tfm/src/tfm_ps_ipc_api.c",
-                "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_LATEST/src/tfm_ps_ipc_api.c"
-            },
-            {
-                "src": "install/export/tfm/src/tfm_its_ipc_api.c",
+                "src": "install/interface/src/tfm_its_ipc_api.c",
                 "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_LATEST/src/tfm_its_ipc_api.c"
             },
             {
-                "src": "install/export/tfm/src/tfm_platform_ipc_api.c",
+                "src": "install/interface/src/tfm_ps_ipc_api.c",
+                "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_LATEST/src/tfm_ps_ipc_api.c"
+            },
+            {
+                "src": "install/interface/src/tfm_platform_ipc_api.c",
                 "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_LATEST/src/tfm_platform_ipc_api.c"
             },
             {
-                "src": "../bl2/ext/mcuboot/scripts/assemble.py",
+                "src": "install/image_signing/scripts/assemble.py",
                 "dst": "tools/psa/tfm/bin_utils/assemble.py"
             },
             {
-                "src": "../bl2/ext/mcuboot/scripts/macro_parser.py",
+                "src": "install/image_signing/scripts/macro_parser.py",
                 "dst": "tools/psa/tfm/bin_utils/macro_parser.py"
+            },
+            {
+                "src": "install/image_signing/scripts/wrapper/wrapper.py",
+                "dst": "tools/psa/tfm/bin_utils/wrapper.py"
             },
             {
                 "src": "lib/ext/mcuboot-src/scripts/imgtool.py",
@@ -89,11 +93,7 @@
                 "dst": "tools/psa/tfm/bin_utils/imgtool/keys"
             },
             {
-                "src": "../bl2/ext/mcuboot/scripts/wrapper/wrapper.py",
-                "dst": "tools/psa/tfm/bin_utils/wrapper.py"
-            },
-            {
-                "src": "install/export/tfm/include",
+                "src": "install/interface/include",
                 "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_LATEST/include"
             },
             {
@@ -101,48 +101,60 @@
                 "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_LATEST/include/os_wrapper"
             },
             {
-                "src": "install/export/tfm/include/psa",
+                "src": "install/interface/include/psa",
                 "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_LATEST/include/psa"
             },
             {
-                "src": "install/export/tfm/include/psa_manifest",
+                "src": "install/interface/include/psa_manifest",
                 "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_LATEST/include/psa_manifest"
             },
             {
-                "src": "../../tf-m-tests/app/os_wrapper_cmsis_rtos_v2.c",
+                "src": "lib/ext/tfm_test_repo-src/app/os_wrapper_cmsis_rtos_v2.c",
                 "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_LATEST/src/os_wrapper_cmsis_rtos_v2.c"
             }
         ],
         "v8-m": [
             {
-                "src": "install/export/tfm/src/tfm_psa_ns_api.c",
+                "src": "install/interface/src/tfm_psa_ns_api.c",
                 "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_LATEST/TARGET_TFM_V8M/src/tfm_psa_ns_api.c"
             },
             {
-                "src": "install/export/tfm/src/tfm_ns_interface.c",
+                "src": "install/interface/src/tfm_ns_interface.c",
                 "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_LATEST/TARGET_TFM_V8M/src/tfm_ns_interface.c"
             }
         ],
         "dualcpu": [
             {
-                "src": "install/export/tfm/src/tfm_multi_core_api.c",
-                "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_LATEST/TARGET_TFM_DUALCPU/src/tfm_multi_core_api.c"
+                "src": "install/interface/src/platform_multicore.c",
+                "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_LATEST/TARGET_TFM_DUALCPU/src/platform_multicore.c"
             },
             {
-                "src": "install/export/tfm/src/platform_ns_mailbox.c",
+                "src": "install/interface/src/platform_ns_mailbox.c",
                 "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_LATEST/TARGET_TFM_DUALCPU/src/platform_ns_mailbox.c"
             },
             {
-                "src": "install/export/tfm/src/tfm_multi_core_psa_ns_api.c",
+                "src": "install/interface/src/tfm_multi_core_ns_api.c",
+                "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_LATEST/TARGET_TFM_DUALCPU/src/tfm_multi_core_ns_api.c"
+            },
+            {
+                "src": "install/interface/src/tfm_multi_core_psa_ns_api.c",
                 "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_LATEST/ARGET_TFM_DUALCPU/src/tfm_multi_core_psa_ns_api.c"
             },
             {
-                "src": "install/export/tfm/src/tfm_ns_mailbox.c",
+                "src": "install/interface/src/tfm_ns_mailbox.c",
                 "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_LATEST/TARGET_TFM_DUALCPU/src/tfm_ns_mailbox.c"
             },
             {
-                "src": "install/export/tfm/src/platform_multicore.c",
-                "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_LATEST/TARGET_TFM_DUALCPU/src/platform_multicore.c"
+                "src": "install/interface/src/tfm_ns_mailbox_rtos_api.c",
+                "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_LATEST/TARGET_TFM_DUALCPU/src/tfm_ns_mailbox_rtos_api.c"
+            },
+            {
+                "src": "install/interface/src/tfm_ns_mailbox_test.c",
+                "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_LATEST/TARGET_TFM_DUALCPU/src/tfm_ns_mailbox_test.c"
+            },
+            {
+                "src": "install/interface/src/tfm_ns_mailbox_thread.c",
+                "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_LATEST/TARGET_TFM_DUALCPU/src/tfm_ns_mailbox_thread.c"
             }
         ]
     },
@@ -160,11 +172,11 @@
          ],
          "ARM_MUSCA_B1": [
             {
-                "src": "platform/ext/target/musca_b1/Device/Include/platform_base_address.h",
+                "src": "platform/ext/target/musca_b1/sse_200/Device/Include/platform_base_address.h",
                 "dst": "tfm/targets/TARGET_ARM_SSG/TARGET_MUSCA_B1/device/platform_base_address.h"
             },
             {
-                "src": "platform/ext/target/musca_b1/tfm_peripherals_def.h",
+                "src": "platform/ext/target/musca_b1/sse_200/tfm_peripherals_def.h",
                 "dst": "tfm/targets/TARGET_ARM_SSG/TARGET_MUSCA_B1/device/tfm_peripherals_def.h"
             }
          ],
@@ -178,25 +190,25 @@
                 "dst": "tfm/platform/include/tfm_plat_ns.h"
             },
             {
-                "src": "../../tf-m-tests/test/test_services/tfm_secure_client_service/tfm_secure_client_service_api.h",
+                "src": "cmake_build/lib/ext/tfm_test_repo-src/test/test_services/tfm_secure_client_service/tfm_secure_client_service_api.h",
                 "dst": "test/inc"
             },
             {
-                "src": "../../tf-m-tests/test/framework/test_framework_error_codes.h",
+                "src": "cmake_build/lib/ext/tfm_test_repo-src/test/framework/test_framework_error_codes.h",
                 "dst": "test/inc"
             },
             {
-                "src": "../../tf-m-tests/test/framework/test_framework_integ_test.h",
+                "src": "cmake_build/lib/ext/tfm_test_repo-src/test/framework/test_framework_integ_test.h",
                 "dst": "test/inc"
             }
         ],
         "regression_libs": [
             {
-                "src": "app/libtfm_ns_integration_test.a",
+                "src": "app/libtfm_api_ns.a",
                 "dst": "test/lib"
             },
             {
-                "src": "interface/libpsa_api_ns.a",
+                "src": "app/libtfm_ns_integration_test.a",
                 "dst": "test/lib"
             },
             {
@@ -229,6 +241,10 @@
             },
             {
                 "src": "test/suites/crypto/libtfm_test_suite_crypto_ns.a",
+                "dst": "test/lib"
+            },
+            {
+                "src": "test/suites/fwu/libtfm_test_suite_fwu_ns.a",
                 "dst": "test/lib"
             },
             {

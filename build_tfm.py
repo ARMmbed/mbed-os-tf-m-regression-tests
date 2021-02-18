@@ -355,7 +355,7 @@ def _copy_binaries(source, destination, toolchain, target):
             head_tail = os.path.split(head_tail[0])
 
         tfm_veneer = os.path.join(
-            install_dir, "export", "tfm", "lib", "s_veneers.o"
+            install_dir, "interface", "lib", "s_veneers.o"
         )
         shutil.copy2(tfm_veneer, output_dir)
 
@@ -539,7 +539,14 @@ def _copy_library(source, toolchain):
                 if not os.path.isdir(os.path.dirname(dst_file)):
                     os.makedirs(os.path.dirname(dst_file))
 
-                shutil.copy2(src_file, dst_file)
+                # TODO:
+                # https://github.com/ARMmbed/mbed-os-tf-m-regression-tests/issues/103
+                # libtfm_test_suite_fwu_ns.a exists for Musca B1 only.
+                # This is to avoid failure on Musca S1.
+                if os.path.exists(src_file):
+                    shutil.copy2(src_file, dst_file)
+                else:
+                    logging.info("Skipping " + src_file)
 
 
 def _build_target(tgt, cmake_build_dir, args):
