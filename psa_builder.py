@@ -72,7 +72,7 @@ dependencies = {
     },
 }
 
-TC_DICT = {"ARMCLANG": "ARMC6", "GNUARM": "GCC_ARM"}
+TC_DICT = {"ARMCLANG": "ARM", "GNUARM": "GCC_ARM"}
 
 SUPPORTED_TFM_PSA_CONFIGS = ["PsaApiTestIPC"]
 SUPPORTED_TFM_CONFIGS = [
