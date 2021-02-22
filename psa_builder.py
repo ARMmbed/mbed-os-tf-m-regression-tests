@@ -22,8 +22,7 @@ import sys
 import subprocess
 from os.path import join, dirname, abspath, isdir
 import logging
-import requests
-from zipfile import ZipFile
+import stat
 
 try:
     import yaml
@@ -329,3 +328,13 @@ def get_tfm_regression_targets():
         )
 
         return regression_targets
+
+
+def handle_read_permission_error(func, path, exc_info):
+    """
+    Handle read permission error when deleting a directory
+    It will try to change file permission and call the calling function again.
+    """
+    if not os.access(path, os.W_OK):
+       os.chmod(path, stat.S_IWUSR)
+       func(path)

@@ -141,7 +141,7 @@ def _main():
     logging.info("Using folder %s" % TF_M_BUILD_DIR)
 
     if isdir(TF_M_BUILD_DIR):
-        shutil.rmtree(TF_M_BUILD_DIR)
+        shutil.rmtree(TF_M_BUILD_DIR, onerror=handle_read_permission_error)
 
     os.mkdir(TF_M_BUILD_DIR)
 
