@@ -107,6 +107,9 @@ def _build_tfm(args, config, suite=None):
         cmd.append("-s")
         cmd.append(suite)
 
+    if args.clean:
+        cmd.append("--clean")
+
     retcode = run_cmd_output_realtime(cmd, ROOT)
     if retcode:
         logging.critical("Unable to build TF-M for target - %s", args.mcu)
@@ -351,6 +354,13 @@ def _get_parser():
         "--list",
         help="Print supported TF-M secure targets",
         action="store_true",
+    )
+
+    parser.add_argument(
+        "--clean",
+        help="Clean the cloned dependencies",
+        action="store_true",
+        default=False,
     )
 
     return parser
