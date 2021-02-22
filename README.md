@@ -6,19 +6,37 @@ for **TF-M v1.2** integrated with the **Mbed OS**.
 
 ## Prerequisites
 
-### Development environment
-
 We have provided a ready-to-use Vagrant virtual machine for building
 TF-M tests, see [`vagrant/README.md`](vagrant/README.md) for instructions.
 
 If you prefer to build and run the tests directly on your host machine,
-ensure you have the following installed:
+please have the following set up.
+
+### TF-M build environment
+
+The following tools are needed for building TF-M:
 * Commands: see [`vagrant/bootstrap.sh`](./vagrant/bootstrap.sh) for Linux,
 or install equivalent packages for your operating system.
 * Python environment: see [`vagrant/bootstrap-user.sh`](./vagrant/bootstrap-user.sh).
 * One of the supported compilers: see "Compiler versions" on
 [Arm Mbed tools](https://os.mbed.com/docs/mbed-os/v6.7/build-tools/index.html).
 Make sure the compiler has been added to the `PATH` of your environment.
+
+### Mbed OS build tools
+
+#### Mbed CLI 2
+Starting with version 6.5, Mbed OS uses Mbed CLI 2. It uses Ninja as a build system,
+and CMake to generate the build environment and manage the build process in a
+compiler-independent manner. If you are working with Mbed OS version prior to 6.5
+then check the section [Mbed CLI 1](#mbed-cli-1).
+1. [Install Mbed CLI 2](https://os.mbed.com/docs/mbed-os/latest/build-tools/install-or-upgrade.html).
+1. From the command-line, import the example: `mbed-tools import mbed-os-tf-m-regression-tests`
+1. Change the current directory to where the project was imported.
+
+#### Mbed CLI 1
+1. [Install Mbed CLI 1](https://os.mbed.com/docs/mbed-os/latest/quick-start/offline-with-mbed-cli.html).
+1. From the command-line, import the example: `mbed import mbed-os-tf-m-regression-tests`
+1. Change the current directory to where the project was imported.
 
 ### Mbed initialization
 
@@ -92,14 +110,28 @@ Configure an appropriate test in the `config` section of `mbed_app.json`. If you
 *flash and run tests manually*, please set `wait-for-sync` to 0 so that tests start without
 waiting.
 
-```
-mbed compile -m ARM_MUSCA_B1 -t GCC_ARM
-```
+Run one of the following commands to build the application
+
+* Mbed CLI 2
+
+    ```
+    $ mbed-tools compile -m <TARGET> -t <TOOLCHAIN>
+    ```
+
+* Mbed CLI 1
+
+    ```bash
+    $ mbed compile -m <TARGET> -t <TOOLCHAIN>
+    ```
+
+The binary is located at:
+* **Mbed CLI 2** - `./cmake_build/<TARGET>/<PROFILE>/<TOOLCHAIN>/mbed-os-tf-m-regression-tests.bin`</br>
+* **Mbed CLI 1** - `./BUILD/<TARGET>/<TOOLCHAIN>/mbed-os-tf-m-regression-tests.bin`
 
 ## Running the Mbed OS application manually
 
 1. Connect your Mbed Enabled device to the computer over USB.
-1. Copy the binary or hex file to the Mbed device. The binary is located at `./BUILD/<TARGET>/<TOOLCHAIN>/mbed-os-tf-m-regression-tests.[bin|hex]`.
+1. Copy the binary or hex file to the Mbed device.
 1. Connect to the Mbed Device using a serial client application of your choice.
 1. Press the reset button on the Mbed device to run the program.
 
@@ -110,9 +142,17 @@ mbed compile -m ARM_MUSCA_B1 -t GCC_ARM
 This will build and execute TF-M regression and PSA compliance tests with
 Mbed OS application, using the [Greentea](https://os.mbed.com/docs/mbed-os/v6.7/debug-test/greentea-for-testing-applications.html) test tool. Make sure the device is connected to your local machine.
 
-```
-python3 test_psa_target.py -t GNUARM -m ARM_MUSCA_B1
-```
+* Mbed CLI 2 (default)
+
+    ```
+    python3 test_psa_target.py -t GNUARM -m ARM_MUSCA_B1
+    ```
+
+* Mbed CLI 1
+
+    ```
+    python3 test_psa_target.py -t GNUARM -m ARM_MUSCA_B1 --cli=1
+    ```
 
 **Notes**:
 * The tests cannot be run in the Vagrant

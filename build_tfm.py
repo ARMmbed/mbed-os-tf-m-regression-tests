@@ -25,8 +25,8 @@ import signal
 import shutil
 import logging
 from psa_builder import *
-from tools.toolchains import TOOLCHAIN_CLASSES, TOOLCHAIN_PATHS
-from tools.targets import Target, TARGET_MAP, TARGET_NAMES
+from tools.toolchains import TOOLCHAIN_PATHS
+from tools.targets import TARGET_MAP
 
 logging.basicConfig(
     level=logging.INFO,
@@ -108,11 +108,6 @@ def _get_target_info(target, toolchain=None):
         tc = toolchain
     else:
         tc = TARGET_MAP[target].tfm_default_toolchain
-
-    global TC_DICT
-    if not TOOLCHAIN_CLASSES[TC_DICT.get(tc)].check_executable():
-        msg = "Toolchain %s was not found in PATH" % tc
-        raise Exception(msg)
 
     delivery_dir = join(
         mbed_path, "targets", TARGET_MAP[target].tfm_delivery_dir

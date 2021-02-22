@@ -70,8 +70,9 @@ def _build_mbed_os(args):
     Build Mbed OS
     :param args: Command-line arguments
     """
+    build_tool = "mbed" if args.cli == 1 else "mbedtools"
     cmd = [
-        "mbed",
+        build_tool,
         "compile",
         "-m",
         args.mcu,
@@ -126,7 +127,19 @@ def _erase_flash_storage(args, suite):
     :param suite: Test suite
     :return: return binary name generated
     """
-    mbed_os_dir = join(ROOT, "BUILD", args.mcu, TC_DICT.get(args.toolchain))
+    if args.cli == 1:
+        mbed_os_dir = join(
+            ROOT, "BUILD", args.mcu, TC_DICT.get(args.toolchain)
+        )
+    else:
+        mbed_os_dir = join(
+            ROOT,
+            "cmake_build",
+            args.mcu,
+            "develop",
+            TC_DICT.get(args.toolchain),
+        )
+
     cmd = []
 
     binary_name = "mbed-os-tf-m-regression-tests-reset-flash-{}.hex".format(
@@ -242,13 +255,18 @@ def _get_test_spec(args, suite, binary_name):
     toolchain = TC_DICT.get(args.toolchain)
     log_path = join("test", "logs", target, "{}.log".format(suite))
 
+    if args.cli == 1:
+        image_path = join("BUILD", target, toolchain, binary_name)
+    else:
+        image_path = join(
+            "cmake_build", target, "develop", toolchain, binary_name
+        )
+
     return {
         "binaries": [
             {
                 "binary_type": "bootable",
-                "path": normpath(
-                    join("BUILD/{}/{}".format(target, toolchain), binary_name)
-                ),
+                "path": normpath(image_path),
                 "compare_log": log_path,
             }
         ]
@@ -371,6 +389,14 @@ def _get_parser():
         help="Skip cloning/checkout of TF-M dependencies",
         action="store_true",
         default=False,
+    )
+
+    parser.add_argument(
+        "--cli",
+        help="Build with the specified version of Mbed CLI",
+        type=int,
+        default=2,
+        choices=[1, 2],
     )
 
     return parser
