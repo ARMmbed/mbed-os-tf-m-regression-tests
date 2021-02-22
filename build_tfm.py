@@ -659,6 +659,13 @@ def _get_parser():
         default=None,
     )
 
+    parser.add_argument(
+        "--clean",
+        help="Clean the cloned dependencies",
+        action="store_true",
+        default=False,
+    )
+
     return parser
 
 
@@ -703,6 +710,11 @@ def _main():
                 )
             )
             return
+
+    if args.clean:
+        if isdir(TF_M_BUILD_DIR):
+            logging.info("Removing folder %s" % TF_M_BUILD_DIR)
+            shutil.rmtree(TF_M_BUILD_DIR)
 
     if not isdir(TF_M_BUILD_DIR):
         os.mkdir(TF_M_BUILD_DIR)
