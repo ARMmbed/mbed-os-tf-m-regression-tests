@@ -560,7 +560,7 @@ def _build_tfm(args):
 
     cmake_build_dir = join(TF_M_BUILD_DIR, "trusted-firmware-m", "cmake_build")
     if isdir(cmake_build_dir):
-        shutil.rmtree(cmake_build_dir)
+        shutil.rmtree(cmake_build_dir, onerror=handle_read_permission_error)
 
     os.mkdir(cmake_build_dir)
 
