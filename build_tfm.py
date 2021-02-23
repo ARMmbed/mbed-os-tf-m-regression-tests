@@ -737,7 +737,7 @@ def _main():
 
         if isdir(TF_M_BUILD_DIR):
             logging.info("Removing folder %s" % TF_M_BUILD_DIR)
-            shutil.rmtree(TF_M_BUILD_DIR)
+            shutil.rmtree(TF_M_BUILD_DIR, onerror=handle_read_permission_error)
 
     if not isdir(TF_M_BUILD_DIR):
         os.mkdir(TF_M_BUILD_DIR)
