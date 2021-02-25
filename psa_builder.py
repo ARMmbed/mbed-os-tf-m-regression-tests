@@ -346,5 +346,5 @@ def handle_read_permission_error(func, path, exc_info):
     It will try to change file permission and call the calling function again.
     """
     if not os.access(path, os.W_OK):
-       os.chmod(path, stat.S_IWUSR)
-       func(path)
+        os.chmod(path, stat.S_IWUSR)
+        func(path)
