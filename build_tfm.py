@@ -171,7 +171,9 @@ def _commit_changes(directory, target_toolchain=None):
                 relpath(directory, mbed_path),
             ]
             run_cmd_and_return(cmd)
-            msg = '--message="Updated directory %s"' % relpath(directory, mbed_path)
+            msg = '--message="Updated directory %s"' % relpath(
+                directory, mbed_path
+            )
             cmd = ["git", "-C", mbed_path, "commit", msg]
             run_cmd_and_return(cmd)
         else:
