@@ -18,7 +18,7 @@ limitations under the License.
 """
 
 import os
-from os.path import join, abspath, dirname, isdir, relpath
+from os.path import join, abspath, dirname, isdir, relpath, split
 import argparse
 import sys
 import signal
@@ -351,6 +351,13 @@ def _copy_binaries(source, destination, toolchain, target):
 
     if "TFM_V8M" in TARGET_MAP[target].extra_labels:
         install_dir = abspath(join(source, os.pardir, os.pardir))
+
+        # Support multi-level TF-M target name.
+        head_tail = split(TARGET_MAP[target].tfm_target_name)
+        while head_tail[0]:
+            install_dir = join(install_dir, os.pardir)
+            head_tail = split(head_tail[0])
+
         tfm_veneer = join(install_dir, "export", "tfm", "lib", "s_veneers.o")
         shutil.copy2(tfm_veneer, output_dir)
 
