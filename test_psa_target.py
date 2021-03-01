@@ -210,7 +210,7 @@ def _init_test_spec(args):
             test_group: {
                 "platform": target,
                 "toolchain": toolchain,
-                "base_path": os.getcwd(),
+                "base_path": ".",
                 "baud_rate": baud_rate,
                 "tests": {},
             }
