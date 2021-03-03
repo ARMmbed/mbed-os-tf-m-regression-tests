@@ -1,0 +1,29 @@
+# CircleCI 2.1 configuration file
+#
+version: 2.1
+commands:
+  compile:
+    parameters:
+      target:
+        type: string
+    steps:
+      - run: |
+          cd mbed-os-tf-m-regression-tests
+          python3 test_psa_target.py -t GNUARM -m <<parameters.target>> --cli=1 -b
+jobs:
+  build:
+    docker:
+      - image: mbedos/mbed-os-env:stable
+    working_directory: ~
+    steps:
+      - checkout:
+          path: mbed-os-tf-m-regression-tests
+      - run: |
+          apt-get update -y
+          apt-get install -y cmake srecord ninja-build # TF-M dependencies
+          cd mbed-os-tf-m-regression-tests
+          git clone --depth=1 --single-branch https://github.com/ARMmbed/mbed-os.git
+      - compile:
+          target: "ARM_MUSCA_S1"
+      - compile:
+          target: "ARM_MUSCA_B1"
