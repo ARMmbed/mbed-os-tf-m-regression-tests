@@ -7,4 +7,4 @@ mkdir -p ~/.local
 mv gcc-arm-none-eabi-9-2019-q4-major/* ~/.local/
 
 # Python environment
-python3 -m pip install --user cryptography pyasn1 pyyaml jinja2 cbor mbed-cli
+python3 -m pip install --user cryptography pyasn1 pyyaml jinja2 cbor mbed-cli mbed-tools
