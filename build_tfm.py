@@ -548,6 +548,26 @@ def _copy_library(source, toolchain):
                 else:
                     logging.info("Skipping " + src_file)
 
+                if dst_base == "libplatform_ns.ar":
+                    # TF-M redirects output to serial by declaring its own `FILE __stdout`
+                    # and disables the toolchain's default version of this symbol using
+                    # the flag `-nostdlib`. But stdlib is enabled and required by Mbed OS,
+                    # so we need to disable the one from TF-M's libplatform_ns to avoid
+                    # symbol duplication.
+                    cmd = [
+                        "fromelf",
+                        "--elf",
+                        "--localize",
+                        "__stdout",
+                        dst_file,
+                        "-o",
+                        dst_file,
+                    ]
+                    ret = run_cmd_and_return(cmd)
+                    if ret:
+                        msg = "Unable to strip __stdout from %s" % (dst_base,)
+                        raise Exception(msg)
+
 
 def _build_target(tgt, cmake_build_dir, args):
     """
