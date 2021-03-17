@@ -519,6 +519,23 @@ def _copy_library(source, toolchain):
 
                 shutil.copy2(src_file, dst_file)
 
+                if dst_base == "libplatform_ns.ar":
+                    # TF-M redirects output to serial by declaring its own `FILE __stdout`
+                    # and disables the toolchain's default version of this symbol using
+                    # the flag `-nostdlib`. But stdlib is enabled and required by Mbed OS,
+                    # so we need to disable the one from TF-M's libplatform_ns to avoid
+                    # symbol duplication.
+                    cmd = [
+                        "fromelf",
+                        "--elf",
+                        "--localize",
+                        "__stdout",
+                        dst_file,
+                        "-o",
+                        dst_file,
+                    ]
+                    run_cmd_and_return(cmd)
+
 
 def _build_target(tgt, cmake_build_dir, args):
     """
