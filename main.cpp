@@ -54,7 +54,10 @@ int main(void)
 
     tfm_log_printf("Starting TF-M PSA API tests\r\n");
 
-    return val_entry();
+    uint32_t retval = val_entry();
+    TEST_ASSERT_EQUAL_UINT32(0, retval);
+
+    return 0;
 }
 
 #endif //MBED_CONF_APP_PSA_COMPLIANCE_TEST
