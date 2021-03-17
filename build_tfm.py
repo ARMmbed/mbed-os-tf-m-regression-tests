@@ -19,6 +19,7 @@ limitations under the License.
 
 import os
 import argparse
+import glob
 import sys
 import signal
 import shutil
@@ -69,11 +70,7 @@ def _clone_tfm_repo(commit):
     Clone TF-M git repos and it's dependencies
     :param commit: If True then commit VERSION.txt
     """
-    check_and_clone_repo("trusted-firmware-m", "mbed-tfm", TF_M_BUILD_DIR)
-    check_and_clone_repo("tf-m-tests", "mbed-tfm", TF_M_BUILD_DIR)
-    check_and_clone_repo(
-        "psa-arch-tests", "psa-api-compliance", TF_M_BUILD_DIR
-    )
+    check_and_clone_repo("trusted-firmware-m", "upstream-tfm", TF_M_BUILD_DIR)
 
     _detect_and_write_tfm_version(
         os.path.join(TF_M_BUILD_DIR, "trusted-firmware-m"), commit
@@ -224,7 +221,6 @@ def _run_cmake_build(cmake_build_dir, args, tgt, tfm_config):
     cmake_cmd = ["cmake", "../", "-GNinja", "-DTFM_PSA_API=ON"]
     cmake_cmd.append("-DTFM_PLATFORM=" + tgt[1])
     cmake_cmd.append("-DTFM_TOOLCHAIN_FILE=../toolchain_" + tgt[2] + ".cmake")
-    cmake_cmd.append("-DTFM_TEST_REPO_PATH=../../tf-m-tests")
 
     if args.config == SUPPORTED_TFM_CONFIGS[1]:
         cmake_cmd.extend(
@@ -247,8 +243,6 @@ def _run_cmake_build(cmake_build_dir, args, tgt, tfm_config):
         cmake_cmd.append("-DBL2=True")
 
     if args.config in SUPPORTED_TFM_PSA_CONFIGS:
-        cmake_cmd.append("-DPSA_ARCH_TESTS_PATH=../../psa-arch-tests")
-
         if args.suite in PSA_SUITE_CHOICES:
             cmake_cmd.append("-DTEST_PSA_API=" + args.suite)
 
