@@ -227,7 +227,6 @@ def _run_cmake_build(cmake_build_dir, args, tgt, tfm_config):
             [
                 "-DTEST_NS=ON",
                 "-DTEST_S=ON",
-                "-DTFM_IRQ_TEST=ON",
                 "-DTFM_PERIPH_ACCESS_TEST=ON",
             ]
         )

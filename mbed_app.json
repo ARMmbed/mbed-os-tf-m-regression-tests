@@ -18,7 +18,6 @@
         }
     },
     "macros": [
-        "TFM_ENABLE_IRQ_TEST=1",
         "TFM_MULTI_CORE_TEST=1",
         "TFM_MULTI_CORE_MULTI_CLIENT_CALL=1",
         "NUM_MAILBOX_QUEUE_SLOT=4",
