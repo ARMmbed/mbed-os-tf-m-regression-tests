@@ -26,10 +26,6 @@ int main(void)
     GREENTEA_SETUP(90, "default_auto");
 #endif
 
-    // Use TF-M regression test TIMER1 IRQ handler for the TIMER1 IRQ. The TF-M
-    // IRQ test requires its own handler to be installed.
-    NVIC_SetVector(TFM_TIMER1_IRQ, (uint32_t)TIMER1_Handler);
-
     tfm_log_printf("Starting TF-M regression tests\n");
 
     // Disable deep sleep to avoid the TF-M IRQ test causing a hang, as the
