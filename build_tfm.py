@@ -60,9 +60,6 @@ def _detect_and_write_tfm_version(tfm_dir, commit):
     # Write the version to Mbed OS
     with open(join(VERSION_FILE_PATH, "VERSION.txt"), "w") as f:
         f.write(tfm_version)
-    # Write the version to the current directory
-    with open("VERSION.txt", "w") as f:
-        f.write(tfm_version)
 
     if commit:
         _commit_changes(VERSION_FILE_PATH)
