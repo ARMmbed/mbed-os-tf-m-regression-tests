@@ -93,7 +93,7 @@ ROOT = abspath(dirname(__file__))
 mbed_path = join(ROOT, "mbed-os")
 TF_M_RELATIVE_PATH = "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_LATEST"
 sys.path.insert(0, mbed_path)
-TF_M_BUILD_DIR = join(mbed_path, TF_M_RELATIVE_PATH, "TARGET_IGNORE")
+TF_M_BUILD_DIR = join(ROOT, "tfm", "repos")
 POPEN_INSTANCE = None
 
 from tools.targets import Target, TARGET_MAP, TARGET_NAMES

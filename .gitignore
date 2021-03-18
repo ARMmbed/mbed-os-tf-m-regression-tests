@@ -4,6 +4,9 @@ mbed-os/
 # Test libraries directory
 test/lib
 
+# TF-M and tests repositories
+tfm/repos
+
 # Test spec
 test_spec.json
 
