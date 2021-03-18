@@ -289,7 +289,7 @@ def _build_regression_test(args, test_spec):
 
     # update the test_spec
     test_group = _get_test_group(args)
-    test_spec["builds"][test_group]["tests"][suite] = _get_test_spec(
+    test_spec["builds"][test_group]["tests"][suite.lower()] = _get_test_spec(
         args, suite, binary_name
     )
 
@@ -326,9 +326,9 @@ def _build_compliance_test(args, test_spec):
         # The PSA tests currently provide no option to skip known failures.
         # Users can still run the Crypto suite manually without automation.
         if suite != "CRYPTO":
-            test_spec["builds"][test_group]["tests"][suite] = _get_test_spec(
-                args, suite, binary_name
-            )
+            test_spec["builds"][test_group]["tests"][
+                suite.lower()
+            ] = _get_test_spec(args, suite, binary_name)
 
 
 def _get_parser():
