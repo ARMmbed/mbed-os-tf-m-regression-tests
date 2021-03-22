@@ -25,5 +25,6 @@ jobs:
           git clone --depth=1 --single-branch https://github.com/ARMmbed/mbed-os.git
       - compile:
           target: "ARM_MUSCA_S1"
-      - compile:
-          target: "ARM_MUSCA_B1"
+      # Temporarily disabled due to target rename in TF-M
+      # - compile:
+      #     target: "ARM_MUSCA_B1"
