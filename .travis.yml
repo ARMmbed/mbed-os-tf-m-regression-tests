@@ -84,6 +84,7 @@ matrix:
 
     # ARM_MUSCA_B1
 
-    - <<: *compile-tests
-      name: "Compile Regression and Compliance tests - ARM_MUSCA_B1"
-      env: TARGET_NAME=ARM_MUSCA_B1 CACHE_NAME=ARM_MUSCA_B1
+    # Temporarily disabled due to target rename in TF-M
+    # - <<: *compile-tests
+    #   name: "Compile Regression and Compliance tests - ARM_MUSCA_B1"
+    #   env: TARGET_NAME=ARM_MUSCA_B1 CACHE_NAME=ARM_MUSCA_B1
