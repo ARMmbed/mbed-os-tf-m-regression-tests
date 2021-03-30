@@ -20,6 +20,7 @@ limitations under the License.
 import os
 from os.path import join, abspath, dirname, isdir, relpath, split
 import argparse
+import glob
 import sys
 import signal
 import shutil
@@ -65,6 +66,23 @@ def _detect_and_write_tfm_version(tfm_dir, commit):
         _commit_changes(VERSION_FILE_PATH)
 
 
+def _patch_psa_arch_tests(psa_arch_tests_dir, tfm_dir):
+    """
+    Apply patches to psa-arch-tests required by trusted-firmware-m
+    """
+    patches = glob.glob(
+        join(tfm_dir, "lib", "ext", "psa_arch_tests", "*.patch")
+    )
+    if patches:
+        cmd = [
+            "git",
+            "-C",
+            psa_arch_tests_dir,
+            "apply",
+        ] + patches
+        run_cmd_and_return(cmd)
+
+
 def _clone_tfm_repo(commit):
     """
     Clone TF-M git repos and it's dependencies
@@ -74,6 +92,11 @@ def _clone_tfm_repo(commit):
     check_and_clone_repo("tf-m-tests", "upstream-tfm", TF_M_BUILD_DIR)
     check_and_clone_repo(
         "psa-arch-tests", "psa-api-compliance", TF_M_BUILD_DIR
+    )
+
+    _patch_psa_arch_tests(
+        join(TF_M_BUILD_DIR, "psa-arch-tests"),
+        join(TF_M_BUILD_DIR, "trusted-firmware-m"),
     )
 
     _detect_and_write_tfm_version(
