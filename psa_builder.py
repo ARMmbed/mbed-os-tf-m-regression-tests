@@ -67,7 +67,7 @@ dependencies = {
     "psa-api-compliance": {
         "psa-arch-tests": [
             "https://github.com/ARM-software/psa-arch-tests.git",
-            "Before_Crypto_1.0",
+            "master",
         ],
     },
 }
