@@ -173,7 +173,6 @@ python3 test_psa_target.py -h
 
 When you automate all tests, the Greentea test tool compares the test results with the logs in [`test/logs`](./test/logs) and prints a test report. *All test suites should pass*, except for the following suites that are currently **excluded** from the run:
 
-* PSA IPC suite on Musca S1: Not currently supported.
 * PSA Crypto suite: Some test cases are known to crash and reboot the target. This
 causes the Greentea test framework to lose synchronization, and the residual data in the
 memory prevents subsequent suites from running.

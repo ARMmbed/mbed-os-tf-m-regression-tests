@@ -305,14 +305,6 @@ def _build_compliance_test(args, test_spec):
 
     for suite in PSA_SUITE_CHOICES:
 
-        # Issue : https://github.com/ARMmbed/mbed-os-tf-m-regression-tests/issues/49
-        # There is no support for this target to run Firmware Framework tests
-        if suite == "IPC" and args.mcu == "ARM_MUSCA_S1":
-            logging.info(
-                "%s config is not supported for %s target" % (suite, args.mcu)
-            )
-            continue
-
         logging.info("Build PSA Compliance - %s suite for %s", suite, args.mcu)
 
         _build_tfm(args, "PsaApiTestIPC", suite)
