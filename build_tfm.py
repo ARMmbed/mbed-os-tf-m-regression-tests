@@ -66,38 +66,12 @@ def _detect_and_write_tfm_version(tfm_dir, commit):
         _commit_changes(VERSION_FILE_PATH)
 
 
-def _patch_psa_arch_tests(psa_arch_tests_dir, tfm_dir):
-    """
-    Apply patches to psa-arch-tests required by trusted-firmware-m
-    """
-    patches = glob.glob(
-        join(tfm_dir, "lib", "ext", "psa_arch_tests", "*.patch")
-    )
-    if patches:
-        cmd = [
-            "git",
-            "-C",
-            psa_arch_tests_dir,
-            "apply",
-        ] + patches
-        run_cmd_and_return(cmd)
-
-
 def _clone_tfm_repo(commit):
     """
     Clone TF-M git repos and it's dependencies
     :param commit: If True then commit VERSION.txt
     """
     check_and_clone_repo("trusted-firmware-m", "upstream-tfm", TF_M_BUILD_DIR)
-    check_and_clone_repo("tf-m-tests", "upstream-tfm", TF_M_BUILD_DIR)
-    check_and_clone_repo(
-        "psa-arch-tests", "psa-api-compliance", TF_M_BUILD_DIR
-    )
-
-    _patch_psa_arch_tests(
-        join(TF_M_BUILD_DIR, "psa-arch-tests"),
-        join(TF_M_BUILD_DIR, "trusted-firmware-m"),
-    )
 
     _detect_and_write_tfm_version(
         join(TF_M_BUILD_DIR, "trusted-firmware-m"), commit
@@ -242,7 +216,6 @@ def _run_cmake_build(cmake_build_dir, args, tgt, tfm_config):
     cmake_cmd = ["cmake", "../", "-GNinja", "-DTFM_PSA_API=ON"]
     cmake_cmd.append("-DTFM_PLATFORM=" + tgt[1])
     cmake_cmd.append("-DTFM_TOOLCHAIN_FILE=../toolchain_" + tgt[2] + ".cmake")
-    cmake_cmd.append("-DTFM_TEST_REPO_PATH=../../tf-m-tests")
 
     if args.config == SUPPORTED_TFM_CONFIGS[1]:
         cmake_cmd.extend(
@@ -264,8 +237,6 @@ def _run_cmake_build(cmake_build_dir, args, tgt, tfm_config):
         cmake_cmd.append("-DBL2=True")
 
     if args.config in SUPPORTED_TFM_PSA_CONFIGS:
-        cmake_cmd.append("-DPSA_ARCH_TESTS_PATH=../../psa-arch-tests")
-
         if args.suite in PSA_SUITE_CHOICES:
             cmake_cmd.append("-DTEST_PSA_API=" + args.suite)
 
