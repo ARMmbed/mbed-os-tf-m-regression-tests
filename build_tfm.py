@@ -71,7 +71,7 @@ def _clone_tfm_repo(commit):
     Clone TF-M git repos and it's dependencies
     :param commit: If True then commit VERSION.txt
     """
-    check_and_clone_repo("trusted-firmware-m", "upstream-tfm", TF_M_BUILD_DIR)
+    check_and_clone_repo("trusted-firmware-m", "latest-tfm", TF_M_BUILD_DIR)
 
     _detect_and_write_tfm_version(
         join(TF_M_BUILD_DIR, "trusted-firmware-m"), commit

@@ -32,41 +32,17 @@ except ImportError as e:
     exit(1)
 
 dependencies = {
-    # If the remote repo is changed, please delete TARGET_IGNORE folder.
+    # If the remote repo is changed, please delete tfm/repos/trusted-firmware-m.
     # Quick switch between remotes is not supported.
-    "mbed-tfm": {
-        "trusted-firmware-m": [
-            "https://github.com/ARMmbed/trusted-firmware-m.git",
-            "mbed-tfm-1.2",
-        ],
-        "tf-m-tests": [
-            "https://github.com/ARMmbed/tf-m-tests.git",
-            "mbed-tfm-1.2",
-        ],
-    },
-    "mbed-tfm-rebase": {
-        "trusted-firmware-m": [
-            "https://github.com/ARMmbed/trusted-firmware-m.git",
-            "mbed-tfm-rebase-check",
-        ],
-        "tf-m-tests": [
-            "https://github.com/ARMmbed/tf-m-tests.git",
-            "mbed-tfm-rebase-check",
-        ],
-    },
-    "upstream-tfm": {
+    "released-tfm": {
         "trusted-firmware-m": [
             "https://git.trustedfirmware.org/TF-M/trusted-firmware-m.git",
-            "master",
-        ],
-        "tf-m-tests": [
-            "https://git.trustedfirmware.org/TF-M/tf-m-tests.git",
-            "master",
+            "TF-Mv1.3.0",
         ],
     },
-    "psa-api-compliance": {
-        "psa-arch-tests": [
-            "https://github.com/ARM-software/psa-arch-tests.git",
+    "latest-tfm": {
+        "trusted-firmware-m": [
+            "https://git.trustedfirmware.org/TF-M/trusted-firmware-m.git",
             "master",
         ],
     },
