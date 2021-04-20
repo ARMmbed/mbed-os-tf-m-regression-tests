@@ -31,8 +31,6 @@ except ImportError as e:
     exit(1)
 
 dependencies = {
-    # If the remote repo is changed, please delete tfm/repos/trusted-firmware-m.
-    # Quick switch between remotes is not supported.
     "released-tfm": {
         "trusted-firmware-m": [
             "https://git.trustedfirmware.org/TF-M/trusted-firmware-m.git",
@@ -213,7 +211,8 @@ def check_and_clone_repo(name, deps, dir):
     """
 
     gitref = dependencies[deps].get(name)[1]
-    if not os.path.isdir(os.path.join(dir, name)):
+    tfm_dir = os.path.join(dir, name)
+    if not os.path.isdir(tfm_dir):
         logging.info("Cloning %s repo", name)
         cmd = [
             "git",
@@ -236,7 +235,32 @@ def check_and_clone_repo(name, deps, dir):
         logging.info(
             "%s repo exists, fetching latest from remote %s", name, deps
         )
-        cmd = ["git", "-C", os.path.join(dir, name), "fetch", deps]
+        cmd = [
+            "git",
+            "-C",
+            tfm_dir,
+            "remote",
+            "get-url",
+            deps,
+        ]
+        ret = run_cmd_and_return(cmd)
+        if ret != 0:
+            logging.info("%s is not a remote, adding it", deps)
+            cmd = [
+                "git",
+                "-C",
+                tfm_dir,
+                "remote",
+                "add",
+                deps,
+                dependencies[deps].get(name)[0],
+            ]
+            ret = run_cmd_and_return(cmd)
+            if ret != 0:
+                logging.critical("Failed to add remote %s", deps)
+                sys.exit(1)
+
+        cmd = ["git", "-C", tfm_dir, "fetch", deps]
         ret = run_cmd_and_return(cmd)
         if ret != 0:
             logging.critical(
@@ -247,22 +271,14 @@ def check_and_clone_repo(name, deps, dir):
         logging.info("Checking out %s..", gitref)
         # try gitref as a remote branch
         head = deps + "/" + gitref
-        cmd = [
-            "git",
-            "-C",
-            os.path.join(dir, name),
-            "checkout",
-            "-B",
-            gitref,
-            head,
-        ]
+        cmd = ["git", "-C", tfm_dir, "checkout", "-B", gitref, head]
         ret = run_cmd_and_return(cmd)
         if ret != 0:
             logging.info(
                 "%s is not a remote branch, trying %s directly", head, gitref
             )
             # gitref might be a tag or SHA1 which we checkout directly
-            cmd = ["git", "-C", os.path.join(dir, name), "checkout", gitref]
+            cmd = ["git", "-C", tfm_dir, "checkout", gitref]
             ret = run_cmd_and_return(cmd)
             if ret != 0:
                 logging.critical(
