@@ -109,7 +109,7 @@
                 "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_LATEST/include/psa_manifest"
             },
             {
-                "src": "../../tf-m-tests/app/os_wrapper_cmsis_rtos_v2.c",
+                "src": "lib/ext/tfm_test_repo-src/app/os_wrapper_cmsis_rtos_v2.c",
                 "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_LATEST/src/os_wrapper_cmsis_rtos_v2.c"
             }
         ],
@@ -190,15 +190,15 @@
                 "dst": "tfm/platform/include/tfm_plat_ns.h"
             },
             {
-                "src": "../tf-m-tests/test/test_services/tfm_secure_client_service/tfm_secure_client_service_api.h",
+                "src": "cmake_build/lib/ext/tfm_test_repo-src/test/test_services/tfm_secure_client_service/tfm_secure_client_service_api.h",
                 "dst": "test/inc"
             },
             {
-                "src": "../tf-m-tests/test/framework/test_framework_error_codes.h",
+                "src": "cmake_build/lib/ext/tfm_test_repo-src/test/framework/test_framework_error_codes.h",
                 "dst": "test/inc"
             },
             {
-                "src": "../tf-m-tests/test/framework/test_framework_integ_test.h",
+                "src": "cmake_build/lib/ext/tfm_test_repo-src/test/framework/test_framework_integ_test.h",
                 "dst": "test/inc"
             }
         ],
