@@ -160,46 +160,14 @@
     },
     # Files/folders to be copied to tf-m-regression folder
     "tf-m-regression": {
-         "ARM_MUSCA_S1": [
-            {
-                "src": "platform/ext/target/musca_s1/Device/Include/platform_base_address.h",
-                "dst": "tfm/targets/TARGET_ARM_SSG/TARGET_MUSCA_S1/device/platform_base_address.h"
-            },
-            {
-                "src": "platform/ext/target/musca_s1/tfm_peripherals_def.h",
-                "dst": "tfm/targets/TARGET_ARM_SSG/TARGET_MUSCA_S1/device/tfm_peripherals_def.h"
-            }
-         ],
-         "ARM_MUSCA_B1": [
-            {
-                "src": "platform/ext/target/musca_b1/sse_200/Device/Include/platform_base_address.h",
-                "dst": "tfm/targets/TARGET_ARM_SSG/TARGET_MUSCA_B1/device/platform_base_address.h"
-            },
-            {
-                "src": "platform/ext/target/musca_b1/sse_200/tfm_peripherals_def.h",
-                "dst": "tfm/targets/TARGET_ARM_SSG/TARGET_MUSCA_B1/device/tfm_peripherals_def.h"
-            }
-         ],
         "common": [
             {
-                "src": "platform/include/tfm_plat_defs.h",
-                "dst": "tfm/platform/include/tfm_plat_defs.h"
-            },
-            {
-                "src": "platform/include/tfm_plat_ns.h",
-                "dst": "tfm/platform/include/tfm_plat_ns.h"
-            },
-            {
-                "src": "cmake_build/lib/ext/tfm_test_repo-src/test/test_services/tfm_secure_client_service/tfm_secure_client_service_api.h",
-                "dst": "test/inc"
-            },
-            {
                 "src": "cmake_build/lib/ext/tfm_test_repo-src/test/framework/test_framework_error_codes.h",
-                "dst": "test/inc"
+                "dst": "test/inc/test_framework_error_codes.h"
             },
             {
                 "src": "cmake_build/lib/ext/tfm_test_repo-src/test/framework/test_framework_integ_test.h",
-                "dst": "test/inc"
+                "dst": "test/inc/test_framework_integ_test.h"
             }
         ],
         "regression_libs": [

@@ -1,7 +1,8 @@
 # Mbed OS directory
 mbed-os/
 
-# Test libraries directory
+# Test headers and libraries
+test/inc
 test/lib
 
 # TF-M and tests repositories
