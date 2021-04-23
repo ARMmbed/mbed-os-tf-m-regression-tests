@@ -72,10 +72,9 @@ matrix:
         - sudo ln -s $(which ccache) bin/arm-none-eabi-gcc
         - sudo ln -s $(which ccache) bin/arm-none-eabi-g++
         - export PATH="$(pwd)/bin:$PATH"
-        # Fetch mbed-os: We use manual clone, with depth=1 and --single-branch to save time.
-        - git clone --depth=1 --single-branch https://github.com/ARMmbed/mbed-os.git
         # Install Mbed CLI and dependencies
         - pip install --upgrade mbed-tools
+        - mbed-tools deploy
         - pip install -r mbed-os/requirements.txt
       script:
         # Build TF-M and all tests
