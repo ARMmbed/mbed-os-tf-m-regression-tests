@@ -22,7 +22,7 @@ jobs:
           apt-get update -y
           apt-get install -y cmake srecord ninja-build # TF-M dependencies
           cd mbed-os-tf-m-regression-tests
-          git clone --depth=1 --single-branch https://github.com/ARMmbed/mbed-os.git
+          mbed-tools deploy
       - compile:
           target: "ARM_MUSCA_S1"
       - compile:
