@@ -10,7 +10,6 @@
 #if MBED_CONF_APP_REGRESSION_TEST
 
 #include "test_framework_integ_test.h"
-#include "tfm_peripherals_def.h"
 
 extern "C" int tfm_log_printf(const char *fmt, ...)
 {
