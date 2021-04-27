@@ -12,6 +12,7 @@ apt-get install -y \
 	git \
 	mercurial \
 	python3-pip \
+	python-cryptography \
 	srecord \
 	unzip \
 	ninja-build \
