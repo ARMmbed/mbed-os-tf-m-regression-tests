@@ -20,7 +20,6 @@ limitations under the License.
 import os
 import sys
 import subprocess
-from os.path import join, dirname, abspath, isdir
 import logging
 import stat
 
@@ -89,11 +88,11 @@ PSA_SUITE_CHOICES = [
     "IPC",
 ]
 
-ROOT = abspath(dirname(__file__))
-mbed_path = join(ROOT, "mbed-os")
+ROOT = os.path.abspath(os.path.dirname(__file__))
+mbed_path = os.path.join(ROOT, "mbed-os")
 TF_M_RELATIVE_PATH = "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_LATEST"
 sys.path.insert(0, mbed_path)
-TF_M_BUILD_DIR = join(ROOT, "tfm", "repos")
+TF_M_BUILD_DIR = os.path.join(ROOT, "tfm", "repos")
 POPEN_INSTANCE = None
 
 from tools.targets import Target, TARGET_MAP, TARGET_NAMES
@@ -238,7 +237,7 @@ def check_and_clone_repo(name, deps, dir):
     """
 
     gitref = dependencies[deps].get(name)[1]
-    if not isdir(join(dir, name)):
+    if not os.path.isdir(os.path.join(dir, name)):
         logging.info("Cloning %s repo", name)
         cmd = [
             "git",
@@ -261,7 +260,7 @@ def check_and_clone_repo(name, deps, dir):
         logging.info(
             "%s repo exists, fetching latest from remote %s", name, deps
         )
-        cmd = ["git", "-C", join(dir, name), "fetch", deps]
+        cmd = ["git", "-C", os.path.join(dir, name), "fetch", deps]
         ret = run_cmd_and_return(cmd)
         if ret != 0:
             logging.critical(
@@ -272,14 +271,22 @@ def check_and_clone_repo(name, deps, dir):
         logging.info("Checking out %s..", gitref)
         # try gitref as a remote branch
         head = deps + "/" + gitref
-        cmd = ["git", "-C", join(dir, name), "checkout", "-B", gitref, head]
+        cmd = [
+            "git",
+            "-C",
+            os.path.join(dir, name),
+            "checkout",
+            "-B",
+            gitref,
+            head,
+        ]
         ret = run_cmd_and_return(cmd)
         if ret != 0:
             logging.info(
                 "%s is not a remote branch, trying %s directly", head, gitref
             )
             # gitref might be a tag or SHA1 which we checkout directly
-            cmd = ["git", "-C", join(dir, name), "checkout", gitref]
+            cmd = ["git", "-C", os.path.join(dir, name), "checkout", gitref]
             ret = run_cmd_and_return(cmd)
             if ret != 0:
                 logging.critical(
@@ -326,7 +333,9 @@ def get_tfm_regression_targets():
 
     :return: List of supported TF-M regression targets.
     """
-    with open(join(dirname(__file__), "tfm_ns_import.yaml")) as ns_import:
+    with open(
+        os.path.join(os.path.dirname(__file__), "tfm_ns_import.yaml")
+    ) as ns_import:
         yaml_data = yaml.safe_load(ns_import)
         mbed_os_data = yaml_data["mbed-os"]
         tfm_regression_data = yaml_data["tf-m-regression"]

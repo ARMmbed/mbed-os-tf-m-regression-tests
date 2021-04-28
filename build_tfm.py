@@ -18,7 +18,6 @@ limitations under the License.
 """
 
 import os
-from os.path import join, abspath, dirname, isdir, relpath, split
 import argparse
 import sys
 import signal
@@ -34,7 +33,7 @@ logging.basicConfig(
     datefmt="%H:%M:%S",
 )
 
-VERSION_FILE_PATH = join(mbed_path, TF_M_RELATIVE_PATH)
+VERSION_FILE_PATH = os.path.join(mbed_path, TF_M_RELATIVE_PATH)
 
 
 def _detect_and_write_tfm_version(tfm_dir, commit):
@@ -55,10 +54,10 @@ def _detect_and_write_tfm_version(tfm_dir, commit):
     ]
     tfm_version = run_cmd_and_return(cmd, True)
     logging.info("TF-M version: %s", tfm_version.strip("\n"))
-    if not isdir(VERSION_FILE_PATH):
+    if not os.path.isdir(VERSION_FILE_PATH):
         os.makedirs(VERSION_FILE_PATH)
     # Write the version to Mbed OS
-    with open(join(VERSION_FILE_PATH, "VERSION.txt"), "w") as f:
+    with open(os.path.join(VERSION_FILE_PATH, "VERSION.txt"), "w") as f:
         f.write(tfm_version)
 
     if commit:
@@ -77,7 +76,7 @@ def _clone_tfm_repo(commit):
     )
 
     _detect_and_write_tfm_version(
-        join(TF_M_BUILD_DIR, "trusted-firmware-m"), commit
+        os.path.join(TF_M_BUILD_DIR, "trusted-firmware-m"), commit
     )
 
 
@@ -106,7 +105,7 @@ def _get_target_info(target, toolchain=None):
     else:
         tc = TARGET_MAP[target].tfm_default_toolchain
 
-    delivery_dir = join(
+    delivery_dir = os.path.join(
         mbed_path, "targets", TARGET_MAP[target].tfm_delivery_dir
     )
 
@@ -160,10 +159,10 @@ def _commit_changes(directory, target_toolchain=None):
                 "-C",
                 mbed_path,
                 "add",
-                relpath(directory, mbed_path),
+                os.path.relpath(directory, mbed_path),
             ]
             run_cmd_and_return(cmd)
-            msg = '--message="Updated directory %s"' % relpath(
+            msg = '--message="Updated directory %s"' % os.path.relpath(
                 directory, mbed_path
             )
             cmd = ["git", "-C", mbed_path, "commit", msg]
@@ -171,13 +170,19 @@ def _commit_changes(directory, target_toolchain=None):
         else:
             logging.info(
                 "No changes detected in %s, skipping commit"
-                % relpath(directory, mbed_path)
+                % os.path.relpath(directory, mbed_path)
             )
         return
 
     if changes_made:
         logging.info("Committing image for %s" % target_toolchain)
-        cmd = ["git", "-C", mbed_path, "add", relpath(directory, mbed_path)]
+        cmd = [
+            "git",
+            "-C",
+            mbed_path,
+            "add",
+            os.path.relpath(directory, mbed_path),
+        ]
         run_cmd_and_return(cmd)
         msg = '--message="Updated secure binaries for %s"' % target_toolchain
         cmd = ["git", "-C", mbed_path, "commit", msg]
@@ -286,31 +291,34 @@ def _copy_binaries(source, destination, toolchain, target):
     else:
         output_dir = destination + "/"
 
-    tfm_secure_axf = join(source, "tfm_s.axf")
+    tfm_secure_axf = os.path.join(source, "tfm_s.axf")
     logging.info(
         "Copying %s to %s"
-        % (relpath(tfm_secure_axf, mbed_path), relpath(output_dir, mbed_path))
+        % (
+            os.path.relpath(tfm_secure_axf, mbed_path),
+            os.path.relpath(output_dir, mbed_path),
+        )
     )
     shutil.copy2(tfm_secure_axf, output_dir)
 
     try:
         out_ext = TARGET_MAP[target].TFM_OUTPUT_EXT
     except AttributeError:
-        tfm_secure_bin = join(source, "tfm_s.bin")
+        tfm_secure_bin = os.path.join(source, "tfm_s.bin")
         logging.info(
             "Copying %s to %s"
             % (
-                relpath(tfm_secure_bin, mbed_path),
-                relpath(output_dir, mbed_path),
+                os.path.relpath(tfm_secure_bin, mbed_path),
+                os.path.relpath(output_dir, mbed_path),
             )
         )
         shutil.copy2(tfm_secure_bin, output_dir)
     else:
         if out_ext == "hex":
-            tfm_secure_bin = join(source, "tfm_s.hex")
+            tfm_secure_bin = os.path.join(source, "tfm_s.hex")
             global TC_DICT
             if toolchain == "ARMCLANG":
-                elf2bin = join(
+                elf2bin = os.path.join(
                     TOOLCHAIN_PATHS[TC_DICT.get(toolchain)], "fromelf"
                 )
                 cmd = [
@@ -320,7 +328,7 @@ def _copy_binaries(source, destination, toolchain, target):
                     tfm_secure_axf,
                 ]
             elif toolchain == "GNUARM":
-                elf2bin = join(
+                elf2bin = os.path.join(
                     TOOLCHAIN_PATHS[TC_DICT.get(toolchain)],
                     "arm-none-eabi-objcopy",
                 )
@@ -331,26 +339,30 @@ def _copy_binaries(source, destination, toolchain, target):
             logging.info(
                 "Copying %s to %s"
                 % (
-                    relpath(tfm_secure_bin, mbed_path),
-                    relpath(output_dir, mbed_path),
+                    os.path.relpath(tfm_secure_bin, mbed_path),
+                    os.path.relpath(output_dir, mbed_path),
                 )
             )
             shutil.copy2(tfm_secure_bin, output_dir)
 
     if TARGET_MAP[target].tfm_bootloader_supported:
-        mcu_bin = join(source, "bl2.bin")
+        mcu_bin = os.path.join(source, "bl2.bin")
         shutil.copy2(mcu_bin, output_dir)
 
     if "TFM_V8M" in TARGET_MAP[target].extra_labels:
-        install_dir = abspath(join(source, os.pardir, os.pardir))
+        install_dir = os.path.abspath(
+            os.path.join(source, os.pardir, os.pardir)
+        )
 
         # Support multi-level TF-M target name.
-        head_tail = split(TARGET_MAP[target].tfm_target_name)
+        head_tail = os.path.split(TARGET_MAP[target].tfm_target_name)
         while head_tail[0]:
-            install_dir = join(install_dir, os.pardir)
-            head_tail = split(head_tail[0])
+            install_dir = os.path.join(install_dir, os.pardir)
+            head_tail = os.path.split(head_tail[0])
 
-        tfm_veneer = join(install_dir, "export", "tfm", "lib", "s_veneers.o")
+        tfm_veneer = os.path.join(
+            install_dir, "export", "tfm", "lib", "s_veneers.o"
+        )
         shutil.copy2(tfm_veneer, output_dir)
 
 
@@ -369,11 +381,11 @@ def _copy_tfm_ns_files(source, target):
         return False
 
     def _copy_file(fname, path):
-        src_file = join(source, fname["src"])
-        dst_file = join(path, fname["dst"])
+        src_file = os.path.join(source, fname["src"])
+        dst_file = os.path.join(path, fname["dst"])
         logging.info("Copying file: " + src_file + " - to - " + dst_file)
-        if not isdir(dirname(dst_file)):
-            os.makedirs(dirname(dst_file))
+        if not os.path.isdir(os.path.dirname(dst_file)):
+            os.makedirs(os.path.dirname(dst_file))
         try:
             if not _is_excluded(src_file):
                 shutil.copy2(src_file, dst_file)
@@ -385,28 +397,33 @@ def _copy_tfm_ns_files(source, target):
             # files/folders which are not exported (the path names in
             # `tfm_ns_import.yaml` which don't begin with `install`). These
             # are handled as exceptions.
-            src_file = join(source, os.pardir, fname["src"])
+            src_file = os.path.join(source, os.pardir, fname["src"])
             shutil.copy2(src_file, dst_file)
 
     def _copy_folder(folder, path):
-        src_folder = join(source, folder["src"])
-        dst_folder = join(path, folder["dst"])
+        src_folder = os.path.join(source, folder["src"])
+        dst_folder = os.path.join(path, folder["dst"])
         logging.info("Copying folder: " + src_folder + " - to - " + dst_folder)
-        if not isdir(dst_folder):
+        if not os.path.isdir(dst_folder):
             os.makedirs(dst_folder)
         for f in os.listdir(src_folder):
-            if os.path.isfile(join(src_folder, f)):
+            if os.path.isfile(os.path.join(src_folder, f)):
                 if not _is_excluded(f):
-                    shutil.copy2(join(src_folder, f), join(dst_folder, f))
+                    shutil.copy2(
+                        os.path.join(src_folder, f),
+                        os.path.join(dst_folder, f),
+                    )
 
     def _check_and_copy(list_of_items, path):
         for item in list_of_items:
-            if isdir(join(source, item["src"])):
+            if os.path.isdir(os.path.join(source, item["src"])):
                 _copy_folder(item, path)
             else:
                 _copy_file(item, path)
 
-    with open(join(dirname(__file__), "tfm_ns_import.yaml")) as ns_import:
+    with open(
+        os.path.join(os.path.dirname(__file__), "tfm_ns_import.yaml")
+    ) as ns_import:
         yaml_data = yaml.safe_load(ns_import)
         logging.info("Copying files/folders from TF-M to Mbed OS")
         mbed_os_data = yaml_data["mbed-os"]
@@ -445,22 +462,26 @@ def _copy_psa_libs(source, destination, args):
     :param args: Command-line arguments
     """
 
-    output_dir = join(
+    output_dir = os.path.join(
         destination, "test", "lib", "TOOLCHAIN_" + TC_DICT[args.toolchain]
     )
-    if not isdir(output_dir):
+    if not os.path.isdir(output_dir):
         os.makedirs(output_dir)
 
-    source = join(source, "app", "psa_api_tests")
+    source = os.path.join(source, "app", "psa_api_tests")
     output_lib_suffix = ".ar" if args.toolchain == "ARMCLANG" else ".a"
 
-    val_nspe = join(source, "val", "val_nspe.a")
-    val_nspe_output = join(output_dir, "libval_nspe" + output_lib_suffix)
+    val_nspe = os.path.join(source, "val", "val_nspe.a")
+    val_nspe_output = os.path.join(
+        output_dir, "libval_nspe" + output_lib_suffix
+    )
     logging.info("Copying file: %s - to - %s" % (val_nspe, val_nspe_output))
     shutil.copy2(val_nspe, val_nspe_output)
 
-    pal_nspe = join(source, "platform", "pal_nspe.a")
-    pal_nspe_output = join(output_dir, "libpal_nspe" + output_lib_suffix)
+    pal_nspe = os.path.join(source, "platform", "pal_nspe.a")
+    pal_nspe_output = os.path.join(
+        output_dir, "libpal_nspe" + output_lib_suffix
+    )
     logging.info("Copying file: %s - to - %s" % (pal_nspe, pal_nspe_output))
     shutil.copy2(pal_nspe, pal_nspe_output)
 
@@ -476,11 +497,15 @@ def _copy_psa_libs(source, destination, args):
         suite_folder = "storage"
 
     if args.suite == "IPC":
-        test_combine = join(source, "ff", suite_folder, "test_combine.a")
+        test_combine = os.path.join(
+            source, "ff", suite_folder, "test_combine.a"
+        )
     else:
-        test_combine = join(source, "dev_apis", suite_folder, "test_combine.a")
+        test_combine = os.path.join(
+            source, "dev_apis", suite_folder, "test_combine.a"
+        )
 
-    test_combine_output = join(
+    test_combine_output = os.path.join(
         output_dir, "libtest_combine" + output_lib_suffix
     )
     logging.info(
@@ -491,7 +516,9 @@ def _copy_psa_libs(source, destination, args):
 
 def _copy_library(source, toolchain):
 
-    with open(join(dirname(__file__), "tfm_ns_import.yaml")) as ns_import:
+    with open(
+        os.path.join(os.path.dirname(__file__), "tfm_ns_import.yaml")
+    ) as ns_import:
         logging.info(
             "Copying regression test libraries from TF-M to regression test"
         )
@@ -500,13 +527,13 @@ def _copy_library(source, toolchain):
 
         if "regression_libs" in tf_regression_data:
             for item in tf_regression_data["regression_libs"]:
-                src_file = join(source, item["src"])
+                src_file = os.path.join(source, item["src"])
                 dst_base = os.path.basename(src_file)
 
                 if toolchain == "ARMCLANG":
                     dst_base = os.path.splitext(dst_base)[0] + ".ar"
 
-                dst_file = join(
+                dst_file = os.path.join(
                     ROOT,
                     item["dst"],
                     "TOOLCHAIN_" + TC_DICT[toolchain],
@@ -515,8 +542,8 @@ def _copy_library(source, toolchain):
                 logging.info(
                     "Copying file: " + src_file + " - to - " + dst_file
                 )
-                if not isdir(dirname(dst_file)):
-                    os.makedirs(dirname(dst_file))
+                if not os.path.isdir(os.path.dirname(dst_file)):
+                    os.makedirs(os.path.dirname(dst_file))
 
                 shutil.copy2(src_file, dst_file)
 
@@ -537,7 +564,9 @@ def _build_target(tgt, cmake_build_dir, args):
     _run_cmake_build(cmake_build_dir, args, tgt, args.config)
 
     if not args.skip_copy:
-        source = join(cmake_build_dir, "install", "outputs", tgt[1].upper())
+        source = os.path.join(
+            cmake_build_dir, "install", "outputs", tgt[1].upper()
+        )
         _copy_binaries(source, tgt[3], tgt[2], tgt[0])
         tgt_list.append((tgt[0], tgt[2]))
 
@@ -562,8 +591,10 @@ def _build_tfm(args):
     if not args.skip_clone:
         _clone_tfm_repo(args.commit)
 
-    cmake_build_dir = join(TF_M_BUILD_DIR, "trusted-firmware-m", "cmake_build")
-    if isdir(cmake_build_dir):
+    cmake_build_dir = os.path.join(
+        TF_M_BUILD_DIR, "trusted-firmware-m", "cmake_build"
+    )
+    if os.path.isdir(cmake_build_dir):
         shutil.rmtree(cmake_build_dir, onerror=handle_read_permission_error)
 
     os.mkdir(cmake_build_dir)
@@ -736,11 +767,11 @@ def _main():
                 "Cannot force to skip cloning/checkout when clean option is specified"
             )
 
-        if isdir(TF_M_BUILD_DIR):
+        if os.path.isdir(TF_M_BUILD_DIR):
             logging.info("Removing folder %s" % TF_M_BUILD_DIR)
             shutil.rmtree(TF_M_BUILD_DIR, onerror=handle_read_permission_error)
 
-    if not isdir(TF_M_BUILD_DIR):
+    if not os.path.isdir(TF_M_BUILD_DIR):
         os.mkdir(TF_M_BUILD_DIR)
 
     logging.info("Using folder %s" % TF_M_BUILD_DIR)
