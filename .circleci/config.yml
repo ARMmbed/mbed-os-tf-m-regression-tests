@@ -13,7 +13,7 @@ commands:
 jobs:
   build:
     docker:
-      - image: mbedos/mbed-os-env:stable
+      - image: mbedos/mbed-os-env:latest
     working_directory: ~
     steps:
       - checkout:
