@@ -101,10 +101,6 @@
                 "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_LATEST/include"
             },
             {
-                "src": "../interface/include/os_wrapper",
-                "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_LATEST/include/os_wrapper"
-            },
-            {
                 "src": "install/interface/include/psa",
                 "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_LATEST/include/psa"
             },
@@ -115,6 +111,14 @@
             {
                 "src": "lib/ext/tfm_test_repo-src/app/os_wrapper_cmsis_rtos_v2.c",
                 "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_LATEST/src/os_wrapper_cmsis_rtos_v2.c"
+            },
+            {
+                "src": "lib/ext/tfm_test_repo-src/ns_interface/os_wrapper",
+                "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_LATEST/include/os_wrapper"
+            },
+            {
+                "src": "../interface/include/tfm_psa_call_param.h",
+                "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_LATEST/include/tfm_psa_call_param.h"
             }
         ],
         "v8-m": [
@@ -123,7 +127,7 @@
                 "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_LATEST/TARGET_TFM_V8M/src/tfm_psa_ns_api.c"
             },
             {
-                "src": "install/interface/src/tfm_ns_interface.c",
+                "src": "lib/ext/tfm_test_repo-src/app/tfm_ns_interface.c",
                 "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_LATEST/TARGET_TFM_V8M/src/tfm_ns_interface.c"
             }
         ],
