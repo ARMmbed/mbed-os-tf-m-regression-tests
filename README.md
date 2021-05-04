@@ -2,7 +2,10 @@
 
 This is an Mbed-flavored application which enables the user to run the
 **TF-M regression test suite (default)** or the **PSA Compliance test suite**
-for **TF-M v1.2** integrated with the **Mbed OS**.
+for **Trusted Firmware-M** (**TF-M**) integrated with the **Mbed OS**.
+
+The version of TF-M can be found in `dependencies["released-tfm"]` in
+[`psa_builder.py`](psa_builder.py).
 
 ## Prerequisites
 
