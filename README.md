@@ -185,3 +185,36 @@ memory prevents subsequent suites from running.
     `mbed_app.json`, and power cycle the target before and after
     the run to clear the memory. The total number of failures should match
     `CRYPTO.log` in [`test/logs`](./test/logs)`/<your-target>`.
+
+## Troubleshooting
+
+### Protected Storage (PS) test failures on Musca S1
+
+Since TF-M v1.3.0, Musca S1's Protected Storage (PS) is located in the target's QSPI flash.
+Normally tests should run without issues, but in case data in the QSPI flash is not cleaned up
+properly (e.g. it has been used for other purposes previously or a test run has been interrupted), you
+may need to erase it as follows:
+
+1. Unplug your Musca S1 board if connected.
+1. Change the position of the "BOOT" switch on your board to "QSPI", then connect the board to your PC.
+1. Copy [`tfm/utils/musca_s1_ps_erase.hex`](tfm/utils/musca_s1_ps_erase.hex) onto the board until the
+board remounts.
+1. Unplug your Musca S1 board, change the position of the "BOOT" switch to "MRAM", and reconnect to run
+the tests again.
+
+**Note**: `musca_s1_ps_erase.hex` is included in this repository, but you can also generate it
+as follows:
+
+1. Create an binary of 64KB filled with 0xFF. The PS area is 20KB but Musca S1's DAPLink aligns
+program operations to 64KB. On Linux (or macOS with commands from GNU coreutils), it can be done
+as follows
+
+    ```
+    dd if=/dev/zero bs=65536 count=1 | tr "\000" "\377" > tmp.bin
+    ```
+
+2. Convert the binary into an Intel HEX file with an offset:
+
+    ```
+    srec_cat tmp.bin -Binary -offset 0x00200000 -o musca_s1_ps_erase.hex -Intel
+    ```
