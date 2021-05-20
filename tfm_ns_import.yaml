@@ -250,7 +250,7 @@
                 "dst": "test/lib"
             },
             {
-                "src": "test/suites/fwu/libtfm_test_suite_fwu_ns.a",
+                "src": "test/suites/fwu/mcuboot/libtfm_test_suite_fwu_ns.a",
                 "dst": "test/lib"
             },
             {
