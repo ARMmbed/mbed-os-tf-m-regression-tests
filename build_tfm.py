@@ -28,6 +28,14 @@ from psa_builder import *
 from tools.toolchains import TOOLCHAIN_PATHS
 from tools.targets import TARGET_MAP
 
+# TEMPORARY: Targets have been renamed in the development version
+# of trusted-firmware-m, but mbed-os tracks the target names in
+# the current released version. This workaround should only live on
+# the tfm_latest_integration_check branch, and it's to be removed
+# once we update mbed-os/targets/targets.json for the next TF-M release.
+TARGET_MAP["ARM_MUSCA_B1"].tfm_target_name = "arm/musca_b1/sse_200"
+TARGET_MAP["ARM_MUSCA_S1"].tfm_target_name = "arm/musca_s1"
+
 logging.basicConfig(
     level=logging.INFO,
     format="[Build-TF-M] %(asctime)s: %(message)s.",
