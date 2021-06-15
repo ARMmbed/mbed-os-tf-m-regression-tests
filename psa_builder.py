@@ -81,14 +81,6 @@ def are_dependencies_installed():
         command = ["cmake", "--version"]
         return run_cmd_and_return(command)
 
-    def _is_make_installed():
-        """
-        Check if GNU Make is installed
-        :return: errorcode
-        """
-        command = ["make", "--version"]
-        return run_cmd_and_return(command)
-
     def _is_git_installed():
         """
         Check if git is installed
@@ -126,9 +118,6 @@ def are_dependencies_installed():
         return -1
     elif _is_cmake_installed() != 0:
         logging.error('"Cmake" is not installed. Exiting..')
-        return -1
-    elif _is_make_installed() != 0:
-        logging.error('"Make" is not installed. Exiting..')
         return -1
     elif _is_srec_installed() != 0:
         logging.error('"srec_cat" is not installed. Exiting..')
