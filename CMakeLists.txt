@@ -43,7 +43,10 @@ target_link_libraries(${APP_TARGET}
     PRIVATE
         mbed-os
         mbed-psa
-        mbed-greentea
+        mbed-unity
+        mbed-utest
+        mbed-greentea-io
+        greentea::client_userio
 )
 
 if ("${MBED_CONFIG_DEFINITIONS}" MATCHES "MBED_CONF_APP_REGRESSION_TEST=1")
