@@ -67,12 +67,12 @@ if ("${MBED_CONFIG_DEFINITIONS}" MATCHES "MBED_CONF_APP_REGRESSION_TEST=1")
         platform_ns
         tfm_ns_integration_test
         tfm_qcbor
-        tfm_t_cose
     )
     # Firmware Update test supports Musca B1 only
     if(${MBED_TARGET} STREQUAL ARM_MUSCA_B1)
         list(APPEND TEST_LIBS
             tfm_test_suite_fwu_ns
+            tfm_test_suite_irq
             tfm_api_ns
         )
     endif()
