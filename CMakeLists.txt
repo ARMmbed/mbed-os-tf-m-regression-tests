@@ -69,14 +69,17 @@ if ("${MBED_CONFIG_DEFINITIONS}" MATCHES "MBED_CONF_APP_REGRESSION_TEST=1")
         platform_ns
         tfm_ns_integration_test
         tfm_qcbor
-        tfm_t_cose
     )
-    # Firmware Update test supports Musca B1/M2354 only
+    # Firmware Update test supports Musca B1 and NU_M2354
     if((${MBED_TARGET} STREQUAL ARM_MUSCA_B1) OR (${MBED_TARGET} STREQUAL NU_M2354))
         list(APPEND TEST_LIBS
             tfm_test_suite_fwu_ns
             tfm_api_ns
         )
+    endif()
+    # IRQ test only supports Musca B1
+    if(${MBED_TARGET} STREQUAL ARM_MUSCA_B1)
+        list(APPEND TEST_LIBS tfm_test_suite_irq)
     endif()
 elseif ("${MBED_CONFIG_DEFINITIONS}" MATCHES "MBED_CONF_APP_PSA_COMPLIANCE_TEST=1")
     set(TEST_LIBS

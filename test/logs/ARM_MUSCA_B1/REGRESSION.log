@@ -9,4 +9,5 @@ Test suite 'T_COSE regression test\(TFM_NS_T_COSE_TEST_1XXX\)' has.*PASSED
 Test suite 'PSA firmware update NS interface tests \(TFM_NS_FWU_TEST_1xxx\)' has.*PASSED
 Test suite 'Core non-secure positive tests \(TFM_NS_CORE_TEST_1XXX\)' has.*PASSED
 Test suite 'IPC non-secure interface test \(TFM_NS_IPC_TEST_1XXX\)' has.*PASSED
+Test suite 'TFM IRQ Test \(TFM_IRQ_TEST_1xxx\)' has.*PASSED
 End of Non-secure test suites
