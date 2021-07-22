@@ -175,17 +175,7 @@ python3 test_psa_target.py -h
 
 ## Expected test results
 
-When you automate all tests, the Greentea test tool compares the test results with the logs in [`test/logs`](./test/logs) and prints a test report. *All test suites should pass*, except for the following suites that are currently **excluded** from the run:
-
-* PSA Crypto suite: Some test cases are known to crash and reboot the target. This
-causes the Greentea test framework to lose synchronization, and the residual data in the
-memory prevents subsequent suites from running.
-
-    **Tip**: You can flash and run the PSA Crypto suite separately. Make sure
-    to build the Crypto suite manually with `wait-for-sync` set to 0 in
-    `mbed_app.json`, and power cycle the target before and after
-    the run to clear the memory. The total number of failures should match
-    `CRYPTO.log` in [`test/logs`](./test/logs)`/<your-target>`.
+When you automate all tests, the Greentea test tool compares the test results with the logs in [`test/logs`](./test/logs) and prints a test report. *All test suites should pass or match the numbers of known failures in the logs.*
 
 * M2354 hasn't supported PSA compliance test yet.
 
