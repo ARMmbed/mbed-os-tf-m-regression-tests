@@ -326,16 +326,9 @@ def _build_compliance_test(args, test_spec):
         _build_mbed_os(args)
         binary_name = _erase_flash_storage(args, suite)
 
-        # Issue: https://github.com/ARM-software/psa-arch-tests/issues/252
-        # The Crypto suite is known to crash and reset the target during runs.
-        # This causes the Greentea test framework to lose synchronization, and
-        # messes up the memory and prevents subsequent suites from running.
-        # The PSA tests currently provide no option to skip known failures.
-        # Users can still run the Crypto suite manually without automation.
-        if suite != "CRYPTO":
-            test_spec["builds"][test_group]["tests"][
-                suite.lower()
-            ] = _get_test_spec(args, suite, binary_name)
+        test_spec["builds"][test_group]["tests"][
+            suite.lower()
+        ] = _get_test_spec(args, suite, binary_name)
 
 
 def _get_parser():
