@@ -28,6 +28,10 @@
         ],
         "ARM_MUSCA_B1": [
             {
+                "src": "install/interface/src/tfm_firmware_update_ipc_api.c",
+                "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_LATEST/src/tfm_firmware_update_ipc_api.c"
+            },
+            {
                 "src": "install/image_signing/layout_files/signing_layout_ns.o",
                 "dst": "targets/TARGET_ARM_SSG/TARGET_MUSCA_B1/partition/signing_layout_ns.c"
             },
