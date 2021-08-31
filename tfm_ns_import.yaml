@@ -46,6 +46,10 @@
                 "dst": "targets/TARGET_NUVOTON/TARGET_M2354/TARGET_TFM/TARGET_NU_M2354/COMPONENT_TFM_S_FW/partition/flash_layout.h"
             },
             {
+                "src": "../platform/ext/target/nuvoton/m2354/partition/partition_M2354.h",
+                "dst": "targets/TARGET_NUVOTON/TARGET_M2354/TARGET_TFM/TARGET_NU_M2354/COMPONENT_TFM_S_FW/partition/partition_M2354_im.h"
+            },
+            {
                 "src": "../platform/ext/target/nuvoton/m2354/partition/region_defs.h",
                 "dst": "targets/TARGET_NUVOTON/TARGET_M2354/TARGET_TFM/TARGET_NU_M2354/COMPONENT_TFM_S_FW/partition/region_defs.h"
             },
