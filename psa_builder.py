@@ -34,7 +34,7 @@ dependencies = {
     "released-tfm": {
         "trusted-firmware-m": [
             "https://git.trustedfirmware.org/TF-M/trusted-firmware-m.git",
-            "TF-Mv1.3.0",
+            "TF-Mv1.4.0",
         ],
     },
     "latest-tfm": {
@@ -46,7 +46,7 @@ dependencies = {
     "nuvoton-tfm": {
         "trusted-firmware-m": [
             "https://github.com/OpenNuvoton/trusted-firmware-m",
-            "nuvoton_mbed_m2354_tfm-1.3",
+            "nuvoton_mbed_m2354_tfm-1.4",
         ],
     },
 }
