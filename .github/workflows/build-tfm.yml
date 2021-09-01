@@ -1,0 +1,29 @@
+name: Build-TFM
+
+on:
+  push:
+    branches:
+        - '**'
+  pull_request:
+    branches:
+        - '**'
+
+jobs:
+  build-tfm:
+    runs-on: ubuntu-latest
+    container: ghcr.io/armmbed/mbed-os-env:master-latest
+    strategy:
+      matrix:
+        board: [ARM_MUSCA_S1, ARM_MUSCA_B1, NU_M2354]
+        cli_version: [1, 2]
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: |
+          apt-get update -y
+          apt-get install -y srecord
+          mbed-tools deploy
+
+      - name: Build TF-M and all tests
+        run: python3 test_psa_target.py -t GNUARM -m ${{ matrix.board }} --cli=${{ matrix.cli_version }} -b
