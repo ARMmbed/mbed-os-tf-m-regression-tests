@@ -24,6 +24,10 @@
             {
                 "src": "install/image_signing/layout_files/signing_layout_s.o",
                 "dst": "targets/TARGET_ARM_SSG/TARGET_MUSCA_S1/partition/signing_layout_s.c"
+            },
+            {
+                "src": "lib/ext/tfm_test_repo-src/app/tfm_ns_interface.c",
+                "dst": "targets/TARGET_ARM_SSG/TARGET_MUSCA_S1/tfm_ns_interface.c"
             }
         ],
         "ARM_MUSCA_B1": [
@@ -38,6 +42,10 @@
             {
                 "src": "install/image_signing/layout_files/signing_layout_s.o",
                 "dst": "targets/TARGET_ARM_SSG/TARGET_MUSCA_B1/partition/signing_layout_s.c"
+            },
+            {
+                "src": "lib/ext/tfm_test_repo-src/app/tfm_ns_interface.c",
+                "dst": "targets/TARGET_ARM_SSG/TARGET_MUSCA_B1/tfm_ns_interface.c"
             }
         ],
         "NU_M2354": [
@@ -156,10 +164,6 @@
                 "src": "install/interface/src/tfm_psa_ns_api.c",
                 "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_LATEST/TARGET_TFM_V8M/src/tfm_psa_ns_api.c"
             },
-            {
-                "src": "lib/ext/tfm_test_repo-src/app/tfm_ns_interface.c",
-                "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_LATEST/TARGET_TFM_V8M/src/tfm_ns_interface.c"
-            }
         ],
         "dualcpu": [
             {
