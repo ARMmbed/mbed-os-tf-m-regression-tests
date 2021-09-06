@@ -50,6 +50,10 @@
         ],
         "NU_M2354": [
             {
+                "src": "install/interface/src/tfm_firmware_update_ipc_api.c",
+                "dst": "platform/FEATURE_EXPERIMENTAL_API/FEATURE_PSA/TARGET_TFM/TARGET_TFM_LATEST/src/tfm_firmware_update_ipc_api.c"
+            },
+            {
                 "src": "../platform/ext/target/nuvoton/m2354/partition/flash_layout.h",
                 "dst": "targets/TARGET_NUVOTON/TARGET_M2354/TARGET_TFM/TARGET_NU_M2354/COMPONENT_TFM_S_FW/partition/flash_layout.h"
             },
