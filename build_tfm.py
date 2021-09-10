@@ -167,7 +167,7 @@ def _commit_changes(directory, target_toolchain=None):
                 os.path.relpath(directory, mbed_path),
             ]
             run_cmd_and_return(cmd)
-            msg = '--message="Updated directory %s"' % os.path.relpath(
+            msg = '--message="Update directory %s"' % os.path.relpath(
                 directory, mbed_path
             )
             cmd = ["git", "-C", mbed_path, "commit", msg]
@@ -189,7 +189,7 @@ def _commit_changes(directory, target_toolchain=None):
             os.path.relpath(directory, mbed_path),
         ]
         run_cmd_and_return(cmd)
-        msg = '--message="Updated secure binaries for %s"' % target_toolchain
+        msg = '--message="Update secure binaries for %s"' % target_toolchain
         cmd = ["git", "-C", mbed_path, "commit", msg]
         run_cmd_and_return(cmd)
     else:
