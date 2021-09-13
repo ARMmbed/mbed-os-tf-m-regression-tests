@@ -211,3 +211,16 @@ as follows
     ```
     srec_cat tmp.bin -Binary -offset 0x00200000 -o musca_s1_ps_erase.hex -Intel
     ```
+
+### Firmware Update test failures on M2354
+
+The M2354 build configures TF-M to use a microSD card as the update staging area. Insert a microSD card into the slot on the board to allow the tests to pass.
+
+Alternatively you can configure TF-M to use embedded flash as the update staging area with the following CMake variables:
+
+```
+set(NU_UPDATE_STAGE_SDH     ON      CACHE BOOL      "Whether enable SDH as update staging area")
+set(NU_UPDATE_STAGE_FLASH   OFF     CACHE BOOL      "Whether enable embedded flash as update staging area")
+```
+
+The configuration variables must be passed in on the command line when building TF-M with CMake. The provided scripts in this repository don't have a mechanism for forwarding command line arguments to CMake, so to configure TF-M in this way you have to build TF-M using CMake commands.
