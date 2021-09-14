@@ -28,6 +28,14 @@
             {
                 "src": "lib/ext/tfm_test_repo-src/app/tfm_ns_interface.c",
                 "dst": "targets/TARGET_ARM_SSG/TARGET_MUSCA_S1/tfm_ns_interface.c"
+            },
+            {
+                "src": "../platform/ext/target/arm/musca_s1/partition/flash_layout.h",
+                "dst": "targets/TARGET_ARM_SSG/TARGET_MUSCA_S1/partition/flash_layout.h"
+            },
+            {
+                "src": "../platform/ext/target/arm/musca_s1/partition/region_defs.h",
+                "dst": "targets/TARGET_ARM_SSG/TARGET_MUSCA_S1/partition/region_defs.h"
             }
         ],
         "ARM_MUSCA_B1": [
@@ -46,6 +54,14 @@
             {
                 "src": "lib/ext/tfm_test_repo-src/app/tfm_ns_interface.c",
                 "dst": "targets/TARGET_ARM_SSG/TARGET_MUSCA_B1/tfm_ns_interface.c"
+            },
+            {
+                "src": "../platform/ext/target/arm/musca_b1/sse_200/partition/flash_layout.h",
+                "dst": "targets/TARGET_ARM_SSG/TARGET_MUSCA_B1/partition/flash_layout.h"
+            },
+            {
+                "src": "../platform/ext/target/arm/musca_b1/sse_200/partition/region_defs.h",
+                "dst": "targets/TARGET_ARM_SSG/TARGET_MUSCA_B1/partition/region_defs.h"
             }
         ],
         "NU_M2354": [
