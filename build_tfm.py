@@ -230,6 +230,9 @@ def _run_cmake_build(cmake_build_dir, args, tgt, tfm_config):
     cmake_cmd.append("-DTFM_PLATFORM=" + tgt[1])
     cmake_cmd.append("-DTFM_TOOLCHAIN_FILE=../toolchain_" + tgt[2] + ".cmake")
 
+    if args.profile:
+        cmake_cmd.append("-DTFM_PROFILE=" + args.profile.lower())
+
     if args.config == SUPPORTED_TFM_CONFIGS[1]:
         cmake_cmd.extend(
             [
@@ -688,6 +691,14 @@ def _get_parser():
         help=hmsg,
         default=None,
         choices=["ARMCLANG", "GNUARM"],
+    )
+
+    parser.add_argument(
+        "-p",
+        "--profile",
+        help="Build with the given TFM profile",
+        default=None,
+        choices=["PROFILE_LARGE", "PROFILE_MEDIUM", "PROFILE_SMALL"],
     )
 
     parser.add_argument(
